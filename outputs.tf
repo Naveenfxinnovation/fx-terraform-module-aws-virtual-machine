@@ -1,37 +1,37 @@
 output "id" {
-  value = "${module.this.id}"
+  value = "${element(concat(module.this.id, list("")), 0)}"
 }
 
 output "private_ip" {
-  value = "${module.this.private_ip}"
+  value = "${element(concat(module.this.private_ip, list("")), 0)}"
 }
 
 output "public_ip" {
-  value = "${module.this.public_ip}"
+  value = "${element(concat(module.this.public_ip, list("")), 0)}"
 }
 
 output "public_dns" {
-  value = "${module.this.public_dns}"
+  value = "${element(concat(module.this.public_dns, list("")), 0)}"
 }
 
 output "private_dns" {
-  value = "${module.this.private_dns}"
+  value = "${element(concat(module.this.private_dns, list("")), 0)}"
 }
 
 output "subnet_id" {
-  value = "${module.this.subnet_id}"
+  value = "${element(concat(module.this.subnet_id, list("")), 0)}"
 }
 
 output "availability_zone" {
-  value = "${module.this.availability_zone}"
+  value = "${element(concat(module.this.availability_zone, list("")), 0)}"
 }
 
 output "network_interface_id" {
-  value = "${module.this.network_interface_id}"
+  value = "${element(concat(module.this.network_interface_id, list("")), 0)}"
 }
 
 output "primary_network_interface_id" {
-  value = "${module.this.primary_network_interface_id}"
+  value = "${element(concat(module.this.primary_network_interface_id, list("")), 0)}"
 }
 
 output "kms_key_id" {
