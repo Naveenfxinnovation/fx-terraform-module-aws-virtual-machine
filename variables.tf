@@ -76,7 +76,7 @@ variable "user_data" {
 }
 
 variable "volume_tags" {
-  description = "Tags of the root volume of the instance."
+  description = "Tags of the root volume of the instance. Will be merged with tags."
   default     = {}
 }
 
@@ -85,9 +85,9 @@ variable "vpc_security_group_ids" {
   default     = []
 }
 
-variable "external_volume_create" {
-  description = "If true, will create an external volume."
-  default     = "true"
+variable "external_volume_count" {
+  description = "Number of external volumes to create."
+  default     = 1
 }
 
 variable "external_volume_kms_key_arn" {
@@ -100,17 +100,17 @@ variable "external_volume_kms_key_tags" {
   default     = {}
 }
 
-variable "external_volume_size" {
-  description = "Size of the external volume."
-  default     = "40"
+variable "external_volume_sizes" {
+  description = "Size of the external volumes."
+  default     = ["40"]
 }
 
 variable "external_volume_tags" {
-  description = "Tags for the external volume."
+  description = "Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes."
   default     = {}
 }
 
-variable "external_volume_device_name" {
-  description = "Device name for the external volume."
-  default     = "/dev/sdh"
+variable "external_volume_device_names" {
+  description = "Device names for the external volumes."
+  default     = ["/dev/sdh"]
 }

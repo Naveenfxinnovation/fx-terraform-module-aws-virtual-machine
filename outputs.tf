@@ -38,10 +38,10 @@ output "kms_key_id" {
   value = "${element(concat(aws_kms_key.this.*.id, list("")), 0)}"
 }
 
-output "external_volume_id" {
-  value = "${element(concat(aws_ebs_volume.this.*.id, list("")), 0)}"
+output "external_volume_ids" {
+  value = "${aws_ebs_volume.this.*.id}"
 }
 
-output "external_volume_arn" {
-  value = "${element(concat(aws_ebs_volume.this.*.arn, list("")), 0)}"
+output "external_volume_arns" {
+  value = "${aws_ebs_volume.this.*.arn}"
 }

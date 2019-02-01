@@ -35,18 +35,18 @@ data "aws_subnet" "instance_subnet" {
 }
 
 resource "aws_volume_attachment" "this_ec2" {
-  count = "${var.external_volume_create ? 1 : 0}"
+  count = "${var.external_volume_count}"
 
-  device_name = "${var.external_volume_device_name}"
-  volume_id   = "${aws_ebs_volume.this.id}"
+  device_name = "${element(var.external_volume_device_names, count.index)}"
+  volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
   instance_id = "${module.this.id[0]}"
 }
 
 resource "aws_ebs_volume" "this" {
-  count = "${var.external_volume_create ? 1 : 0}"
+  count = "${var.external_volume_count}"
 
   availability_zone = "${data.aws_subnet.instance_subnet.availability_zone}"
-  size              = "${var.external_volume_size}"
+  size              = "${element(var.external_volume_sizes, count.index)}"
 
   encrypted  = true
   kms_key_id = "${element(coalescelist(list(var.external_volume_kms_key_arn), aws_kms_key.this.*.arn), 0)}"
@@ -55,7 +55,7 @@ resource "aws_ebs_volume" "this" {
 }
 
 resource "aws_kms_key" "this" {
-  count = "${var.external_volume_create && var.external_volume_kms_key_arn == "" ? 1 : 0}"
+  count = "${var.external_volume_count > 0 && var.external_volume_kms_key_arn == "" ? 1 : 0}"
 
   description = "KMS key for ${var.name} external volume."
 
