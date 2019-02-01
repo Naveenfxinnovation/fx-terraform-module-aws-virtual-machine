@@ -48,5 +48,5 @@ module "standard_ec2_with_volume" {
   subnet_id              = "${element(data.aws_subnet_ids.all.ids, 0)}"
   vpc_security_group_ids = ["${aws_security_group.standard_ec2_with_volume.id}"]
 
-  external_volume_size = 50
+  external_volume_sizes = [10]
 }

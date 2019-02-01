@@ -38,10 +38,10 @@ output "kms_key_id" {
   value = "${module.standard_ec2_with_volume.kms_key_id}"
 }
 
-output "external_volume_id" {
-  value = "${module.standard_ec2_with_volume.external_volume_id}"
+output "external_volume_ids" {
+  value = "${module.standard_ec2_with_volume.external_volume_ids}"
 }
 
-output "external_volume_arn" {
-  value = "${module.standard_ec2_with_volume.external_volume_arn}"
+output "external_volume_arns" {
+  value = "${module.standard_ec2_with_volume.external_volume_arns}"
 }

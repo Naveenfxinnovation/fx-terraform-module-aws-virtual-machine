@@ -28,8 +28,8 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | Name | Description |
 |------|-------------|
 | availability\_zone |  |
-| external\_volume\_arn |  |
-| external\_volume\_id |  |
+| external\_volume\_arns |  |
+| external\_volume\_ids |  |
 | id |  |
 | kms\_key\_id |  |
 | network\_interface\_id |  |
