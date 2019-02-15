@@ -21,7 +21,7 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | access\_key | Credentials: AWS access key. | string | `"PLEASE SET THE AWS ACCESS KEY"` | no |
-| region | Region. | string | `"us-east-1"` | no |
+| region | Region. | string | `"ca-central-1"` | no |
 | secret\_key | Credentials: AWS secret key. Pass this a variable, never write password in the code. | string | `"PLEASE SET THE AWS SECRET KEY. DO NOT WRITE YOUR SECRET IN THIS FILE."` | no |
 
 ## Outputs
