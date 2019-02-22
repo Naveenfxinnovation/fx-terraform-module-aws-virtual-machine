@@ -90,8 +90,13 @@ variable "external_volume_count" {
   default     = 1
 }
 
+variable "external_volume_kms_key_create" {
+  description = "Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0."
+  default     = false
+}
+
 variable "external_volume_kms_key_arn" {
-  description = "KMS key used to encrypt the external volume. If not set, a new key will be created."
+  description = "KMS key used to encrypt the external volume."
   default     = ""
 }
 

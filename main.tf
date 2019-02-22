@@ -55,7 +55,7 @@ resource "aws_ebs_volume" "this" {
 }
 
 resource "aws_kms_key" "this" {
-  count = "${var.external_volume_count > 0 && var.external_volume_kms_key_arn == "" ? 1 : 0}"
+  count = "${var.external_volume_kms_key_create}"
 
   description = "KMS key for ${var.name} external volume."
 
