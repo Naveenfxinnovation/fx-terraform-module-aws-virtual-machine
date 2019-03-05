@@ -1,6 +1,6 @@
 module "this" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "1.14.0"
+  version = "1.19.0"
 
   name           = "${var.name}"
   instance_count = 1
