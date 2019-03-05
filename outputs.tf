@@ -26,10 +26,6 @@ output "availability_zone" {
   value = "${element(concat(module.this.availability_zone, list("")), 0)}"
 }
 
-output "network_interface_id" {
-  value = "${element(concat(module.this.network_interface_id, list("")), 0)}"
-}
-
 output "primary_network_interface_id" {
   value = "${element(concat(module.this.primary_network_interface_id, list("")), 0)}"
 }

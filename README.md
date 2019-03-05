@@ -47,7 +47,6 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_ids |  |
 | id |  |
 | kms\_key\_id |  |
-| network\_interface\_id |  |
 | primary\_network\_interface\_id |  |
 | private\_dns |  |
 | private\_ip |  |
