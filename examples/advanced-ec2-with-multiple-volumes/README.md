@@ -33,7 +33,6 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | external\_volume\_ids |  |
 | id |  |
 | kms\_key\_id |  |
-| network\_interface\_id |  |
 | primary\_network\_interface\_id |  |
 | private\_dns |  |
 | private\_ip |  |

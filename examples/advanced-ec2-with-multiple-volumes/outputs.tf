@@ -26,10 +26,6 @@ output "availability_zone" {
   value = "${module.advanced_ec2_with_multiple_volumes.availability_zone}"
 }
 
-output "network_interface_id" {
-  value = "${module.advanced_ec2_with_multiple_volumes.network_interface_id}"
-}
-
 output "primary_network_interface_id" {
   value = "${module.advanced_ec2_with_multiple_volumes.primary_network_interface_id}"
 }

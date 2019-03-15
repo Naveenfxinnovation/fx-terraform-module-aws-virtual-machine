@@ -26,10 +26,6 @@ output "availability_zone" {
   value = "${module.standard_ec2_with_volume.availability_zone}"
 }
 
-output "network_interface_id" {
-  value = "${module.standard_ec2_with_volume.network_interface_id}"
-}
-
 output "primary_network_interface_id" {
   value = "${module.standard_ec2_with_volume.primary_network_interface_id}"
 }
