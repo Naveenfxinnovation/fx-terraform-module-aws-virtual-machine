@@ -11,7 +11,7 @@ module "this" {
   version = "1.19.0"
 
   name           = "${var.name}"
-  instance_count = 1
+  instance_count = "${var.create_instance ? 1 : 0}"
 
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
@@ -43,7 +43,7 @@ data "aws_subnet" "instance_subnet" {
 }
 
 resource "aws_volume_attachment" "this_ec2" {
-  count = "${var.external_volume_count}"
+  count = "${var.create_instance ? var.external_volume_count : 0}"
 
   device_name = "${element(var.external_volume_device_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
@@ -51,7 +51,7 @@ resource "aws_volume_attachment" "this_ec2" {
 }
 
 resource "aws_ebs_volume" "this" {
-  count = "${var.external_volume_count}"
+  count = "${var.create_instance ? var.external_volume_count : 0}"
 
   availability_zone = "${data.aws_subnet.instance_subnet.availability_zone}"
   size              = "${element(var.external_volume_sizes, count.index)}"

@@ -12,8 +12,9 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| ami | AMI to be used. | string | n/a | yes |
+| ami | AMI to be used. | string | `""` | no |
 | associate\_public\_ip\_address | Associate a public IP to the instance. | string | `"false"` | no |
+| create\_instance | Whether or not to create the instance. Useful to toggle off the instance creation on specific deployments. | string | `"true"` | no |
 | disable\_api\_termination | If true, enables EC2 Instance Termination Protection. | string | `"false"` | no |
 | ebs\_block\_device | Additional EBS block devices to attach to the instance. | list | `[]` | no |
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized. | string | `"false"` | no |
@@ -25,14 +26,14 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_sizes | Size of the external volumes. | list | `[ "40" ]` | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | map | `{}` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | string | `""` | no |
-| instance\_type | Instance type. | string | n/a | yes |
+| instance\_type | Instance type. | string | `""` | no |
 | key\_name | Key name for the instance. | string | `""` | no |
 | monitoring | If true, the launched EC2 instance will have detailed monitoring enabled | string | `"false"` | no |
 | name | Name of the instance. | string | `""` | no |
 | private\_ip | Private IP of the instance. | string | `""` | no |
 | root\_block\_device | Customize details about the root block device of the instance. See Block Devices below for details | list | `[]` | no |
 | source\_dest\_check | Source/destination AWS check. | string | `"true"` | no |
-| subnet\_id | Subnet id. | string | n/a | yes |
+| subnet\_id | Subnet id. | string | `""` | no |
 | tags | Tags of the instance. | map | `{}` | no |
 | user\_data | User data of the instance. | string | `""` | no |
 | volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | map | `{}` | no |

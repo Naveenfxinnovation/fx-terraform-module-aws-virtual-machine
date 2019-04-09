@@ -1,18 +1,16 @@
 variable "ami" {
   description = "AMI to be used."
-}
-
-variable "instance_type" {
-  description = "Instance type."
-}
-
-variable "subnet_id" {
-  description = "Subnet id."
+  default     = ""
 }
 
 variable "associate_public_ip_address" {
   description = "Associate a public IP to the instance."
-  default     = "false"
+  default     = false
+}
+
+variable "create_instance" {
+  description = "Whether or not to create the instance. Useful to toggle off the instance creation on specific deployments."
+  default     = true
 }
 
 variable "disable_api_termination" {
@@ -28,6 +26,11 @@ variable "ebs_block_device" {
 variable "ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized."
   default     = false
+}
+
+variable "instance_type" {
+  description = "Instance type."
+  default     = ""
 }
 
 variable "iam_instance_profile" {
@@ -63,6 +66,11 @@ variable "root_block_device" {
 variable "source_dest_check" {
   description = "Source/destination AWS check."
   default     = "true"
+}
+
+variable "subnet_id" {
+  description = "Subnet id."
+  default     = ""
 }
 
 variable "tags" {
