@@ -1,3 +1,11 @@
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "all" {
+  vpc_id = "${data.aws_vpc.default.id}"
+}
+
 module "this" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "1.19.0"
@@ -31,7 +39,7 @@ module "this" {
 // This is needed to circumvent:
 // https://github.com/terraform-providers/terraform-provider-aws/issues/1352
 data "aws_subnet" "instance_subnet" {
-  id = "${var.subnet_id}"
+  id = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
 }
 
 resource "aws_volume_attachment" "this_ec2" {
@@ -55,7 +63,7 @@ resource "aws_ebs_volume" "this" {
 }
 
 resource "aws_kms_key" "this" {
-  count = "${var.external_volume_kms_key_create}"
+  count = "${var.create_instance && var.external_volume_kms_key_create ? 1 : 0}"
 
   description = "KMS key for ${var.name} external volume."
 
