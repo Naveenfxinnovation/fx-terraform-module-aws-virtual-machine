@@ -4,6 +4,10 @@ provider "aws" {
   secret_key = "${var.secret_key}"
 }
 
+data "aws_vpc" "default" {
+  default = true
+}
+
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
