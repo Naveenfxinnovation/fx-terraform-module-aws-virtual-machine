@@ -1,14 +1,22 @@
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnet_ids" "all" {
+  vpc_id = "${data.aws_vpc.default.id}"
+}
+
 module "this" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "1.19.0"
 
   name           = "${var.name}"
-  instance_count = 1
+  instance_count = "${var.create_instance ? 1 : 0}"
 
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${var.subnet_id}"
+  subnet_id              = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
@@ -31,11 +39,11 @@ module "this" {
 // This is needed to circumvent:
 // https://github.com/terraform-providers/terraform-provider-aws/issues/1352
 data "aws_subnet" "instance_subnet" {
-  id = "${var.subnet_id}"
+  id = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
 }
 
 resource "aws_volume_attachment" "this_ec2" {
-  count = "${var.external_volume_count}"
+  count = "${var.create_instance ? var.external_volume_count : 0}"
 
   device_name = "${element(var.external_volume_device_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
@@ -43,7 +51,7 @@ resource "aws_volume_attachment" "this_ec2" {
 }
 
 resource "aws_ebs_volume" "this" {
-  count = "${var.external_volume_count}"
+  count = "${var.create_instance ? var.external_volume_count : 0}"
 
   availability_zone = "${data.aws_subnet.instance_subnet.availability_zone}"
   size              = "${element(var.external_volume_sizes, count.index)}"
@@ -55,7 +63,7 @@ resource "aws_ebs_volume" "this" {
 }
 
 resource "aws_kms_key" "this" {
-  count = "${var.external_volume_kms_key_create}"
+  count = "${var.create_instance && var.external_volume_kms_key_create ? 1 : 0}"
 
   description = "KMS key for ${var.name} external volume."
 

@@ -1,18 +1,16 @@
 variable "ami" {
   description = "AMI to be used."
-}
-
-variable "instance_type" {
-  description = "Instance type."
-}
-
-variable "subnet_id" {
-  description = "Subnet id."
+  default     = ""
 }
 
 variable "associate_public_ip_address" {
   description = "Associate a public IP to the instance."
-  default     = "false"
+  default     = false
+}
+
+variable "create_instance" {
+  description = "Whether or not to create the instance. Useful to toggle off the instance creation on specific deployments."
+  default     = true
 }
 
 variable "disable_api_termination" {
@@ -28,6 +26,11 @@ variable "ebs_block_device" {
 variable "ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized."
   default     = false
+}
+
+variable "instance_type" {
+  description = "Instance type."
+  default     = ""
 }
 
 variable "iam_instance_profile" {
@@ -65,6 +68,11 @@ variable "source_dest_check" {
   default     = "true"
 }
 
+variable "subnet_id" {
+  description = "Subnet id."
+  default     = ""
+}
+
 variable "tags" {
   description = "Tags of the instance."
   default     = {}
@@ -87,7 +95,7 @@ variable "vpc_security_group_ids" {
 
 variable "external_volume_count" {
   description = "Number of external volumes to create."
-  default     = 1
+  default     = 0
 }
 
 variable "external_volume_kms_key_create" {
@@ -107,7 +115,7 @@ variable "external_volume_kms_key_tags" {
 
 variable "external_volume_sizes" {
   description = "Size of the external volumes."
-  default     = ["40"]
+  default     = [""]
 }
 
 variable "external_volume_tags" {
@@ -117,5 +125,5 @@ variable "external_volume_tags" {
 
 variable "external_volume_device_names" {
   description = "Device names for the external volumes."
-  default     = ["/dev/sdh"]
+  default     = [""]
 }

@@ -1,6 +1,6 @@
-# Standard EC2 with another data volume
+# No instances, no volumes.
 
-Configuration in this directory creates a standard EC2 with an additional EBS volume.
+Configuration in this directory creates nothing. It is useful to disable instances on specific environments.
 
 ## Usage
 
@@ -11,8 +11,6 @@ $ terraform init
 $ terraform plan
 $ terraform apply
 ```
-
-Note that this example may create resources which can cost money (AWS Elastic IP, for example). Run `terraform destroy` when you don't need these resources.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs
