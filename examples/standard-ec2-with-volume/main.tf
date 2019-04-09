@@ -4,14 +4,6 @@ provider "aws" {
   secret_key = "${var.secret_key}"
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnet_ids" "all" {
-  vpc_id = "${data.aws_vpc.default.id}"
-}
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -47,8 +39,9 @@ module "standard_ec2_with_volume" {
 
   ami                    = "${data.aws_ami.amazon_linux.image_id}"
   instance_type          = "t2.micro"
-  subnet_id              = "${element(data.aws_subnet_ids.all.ids, 0)}"
   vpc_security_group_ids = ["${aws_security_group.standard_ec2_with_volume.id}"]
 
-  external_volume_sizes = [10]
+  external_volume_count        = 1
+  external_volume_sizes        = [10]
+  external_volume_device_names = ["/dev/sdh"]
 }

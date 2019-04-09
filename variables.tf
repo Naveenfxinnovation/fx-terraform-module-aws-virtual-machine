@@ -95,7 +95,7 @@ variable "vpc_security_group_ids" {
 
 variable "external_volume_count" {
   description = "Number of external volumes to create."
-  default     = 1
+  default     = 0
 }
 
 variable "external_volume_kms_key_create" {
@@ -115,7 +115,7 @@ variable "external_volume_kms_key_tags" {
 
 variable "external_volume_sizes" {
   description = "Size of the external volumes."
-  default     = ["40"]
+  default     = [""]
 }
 
 variable "external_volume_tags" {
@@ -125,5 +125,5 @@ variable "external_volume_tags" {
 
 variable "external_volume_device_names" {
   description = "Device names for the external volumes."
-  default     = ["/dev/sdh"]
+  default     = [""]
 }
