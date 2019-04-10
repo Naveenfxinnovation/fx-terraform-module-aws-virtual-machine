@@ -22,11 +22,12 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_kms\_key\_arn | KMS key used to encrypt the external volume. | string | `""` | no |
 | external\_volume\_kms\_key\_create | Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0. | string | `"false"` | no |
 | external\_volume\_kms\_key\_tags | Tags for the KMS key to be used for externale volume | map | `{}` | no |
+| external\_volume\_name\_suffix | Suffix of the external volumes to create. | string | `"extra-volumes"` | no |
 | external\_volume\_sizes | Size of the external volumes. | list | `[ "" ]` | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | map | `{}` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | string | `""` | no |
 | instance\_count | Number of instances to create. Can alsot be 0. | string | `"1"` | no |
-| instance\_type | Instance type. | string | `""` | no |
+| instance\_types | Instance types. | list | n/a | yes |
 | key\_name | Key name for the instance. | string | `""` | no |
 | monitoring | If true, the launched EC2 instance will have detailed monitoring enabled | string | `"false"` | no |
 | name | Name of the instance. | string | `""` | no |

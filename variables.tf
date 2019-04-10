@@ -13,6 +13,11 @@ variable "instance_count" {
   default     = 1
 }
 
+variable "instance_types" {
+  description = "Instance types."
+  type        = "list"
+}
+
 variable "disable_api_termination" {
   description = "If true, enables EC2 Instance Termination Protection."
   default     = false
@@ -26,11 +31,6 @@ variable "ebs_block_device" {
 variable "ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized."
   default     = false
-}
-
-variable "instance_type" {
-  description = "Instance type."
-  default     = ""
 }
 
 variable "iam_instance_profile" {
@@ -96,6 +96,11 @@ variable "vpc_security_group_ids" {
 variable "external_volume_count" {
   description = "Number of external volumes to create."
   default     = 0
+}
+
+variable "external_volume_name_suffix" {
+  description = "Suffix of the external volumes to create."
+  default     = "extra-volumes"
 }
 
 variable "external_volume_kms_key_create" {
