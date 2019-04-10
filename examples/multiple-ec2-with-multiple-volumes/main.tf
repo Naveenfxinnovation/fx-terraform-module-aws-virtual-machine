@@ -1,9 +1,3 @@
-provider "aws" {
-  region     = "${var.region}"
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -30,20 +24,22 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-resource "aws_security_group" "standard_ec2_with_volume" {
+resource "aws_security_group" "multiple_ec2_with_multiple_volumes" {
   name        = "tftest-standard_ec2_with_volume"
   description = "Terraform test standard_ec2_with_volume."
   vpc_id      = "${data.aws_vpc.default.id}"
 }
 
-module "standard_ec2_with_volume" {
+module "multiple_ec2_with_multiple_volumes" {
   source = "../../"
 
-  name = "tftest-standard_ec2_with_volume"
+  name = "tftest-multiple_ec2_with_multiple_volumes"
 
   ami                    = "${data.aws_ami.amazon_linux.image_id}"
   instance_type          = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.standard_ec2_with_volume.id}"]
+  vpc_security_group_ids = ["${aws_security_group.multiple_ec2_with_multiple_volumes.id}"]
+
+  external_volume_kms_key_create = true
 
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
@@ -53,7 +49,9 @@ module "standard_ec2_with_volume" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
-  external_volume_count        = 1
-  external_volume_sizes        = [10]
-  external_volume_device_names = ["/dev/sdh"]
+  instance_count = 2
+
+  external_volume_count        = 3
+  external_volume_sizes        = [5, 10, 15]
+  external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
 }

@@ -8,9 +8,14 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
-variable "create_instance" {
-  description = "Whether or not to create the instance. Useful to toggle off the instance creation on specific deployments."
-  default     = true
+variable "instance_count" {
+  description = "Number of instances to create. Can also be 0."
+  default     = 1
+}
+
+variable "instance_type" {
+  description = "Instance types."
+  type        = "string"
 }
 
 variable "disable_api_termination" {
@@ -26,11 +31,6 @@ variable "ebs_block_device" {
 variable "ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized."
   default     = false
-}
-
-variable "instance_type" {
-  description = "Instance type."
-  default     = ""
 }
 
 variable "iam_instance_profile" {
@@ -96,6 +96,11 @@ variable "vpc_security_group_ids" {
 variable "external_volume_count" {
   description = "Number of external volumes to create."
   default     = 0
+}
+
+variable "external_volume_name_suffix" {
+  description = "Suffix of the external volumes to create."
+  default     = "extra-volumes"
 }
 
 variable "external_volume_kms_key_create" {

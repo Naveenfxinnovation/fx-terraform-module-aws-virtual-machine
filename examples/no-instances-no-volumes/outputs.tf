@@ -1,13 +1,13 @@
-output "id" {
-  value = "${module.no_instances_no_volumes.id}"
+output "ids" {
+  value = "${module.no_instances_no_volumes.ids}"
 }
 
-output "private_ip" {
-  value = "${module.no_instances_no_volumes.private_ip}"
+output "private_ips" {
+  value = "${module.no_instances_no_volumes.private_ips}"
 }
 
-output "public_ip" {
-  value = "${module.no_instances_no_volumes.public_ip}"
+output "public_ips" {
+  value = "${module.no_instances_no_volumes.public_ips}"
 }
 
 output "public_dns" {
@@ -26,8 +26,8 @@ output "availability_zone" {
   value = "${module.no_instances_no_volumes.availability_zone}"
 }
 
-output "primary_network_interface_id" {
-  value = "${module.no_instances_no_volumes.primary_network_interface_id}"
+output "primary_network_interface_ids" {
+  value = "${module.no_instances_no_volumes.primary_network_interface_ids}"
 }
 
 output "kms_key_id" {

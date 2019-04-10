@@ -1,13 +1,13 @@
-output "id" {
-  value = "${module.standard_ec2_with_volume.id}"
+output "ids" {
+  value = "${module.standard_ec2_with_volume.ids}"
 }
 
-output "private_ip" {
-  value = "${module.standard_ec2_with_volume.private_ip}"
+output "private_ips" {
+  value = "${module.standard_ec2_with_volume.private_ips}"
 }
 
-output "public_ip" {
-  value = "${module.standard_ec2_with_volume.public_ip}"
+output "public_ips" {
+  value = "${module.standard_ec2_with_volume.public_ips}"
 }
 
 output "public_dns" {
@@ -26,8 +26,8 @@ output "availability_zone" {
   value = "${module.standard_ec2_with_volume.availability_zone}"
 }
 
-output "primary_network_interface_id" {
-  value = "${module.standard_ec2_with_volume.primary_network_interface_id}"
+output "primary_network_interface_ids" {
+  value = "${module.standard_ec2_with_volume.primary_network_interface_ids}"
 }
 
 output "kms_key_id" {
