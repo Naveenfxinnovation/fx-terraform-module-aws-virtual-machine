@@ -8,9 +8,9 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
-variable "create_instance" {
-  description = "Whether or not to create the instance. Useful to toggle off the instance creation on specific deployments."
-  default     = true
+variable "instance_count" {
+  description = "Number of instances to create. Can alsot be 0."
+  default     = 1
 }
 
 variable "disable_api_termination" {
