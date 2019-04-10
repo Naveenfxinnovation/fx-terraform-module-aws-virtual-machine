@@ -1,6 +1,10 @@
-# Terraform module: EC2 with volume
+# Terraform module: EC2
 
-Create an EC2 instance with one or multiple volumes, encrypted by default.
+Create X EC2 instances with X extra volumes, encrypted by default.
+
+This module creates the same kind of instances.
+Except instance_types, they share the same features.
+To create different instances, calls this module multiple times.
 
 ## Notes
 
