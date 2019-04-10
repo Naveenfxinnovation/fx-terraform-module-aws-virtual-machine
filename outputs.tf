@@ -1,21 +1,21 @@
-output "id" {
-  value = "${element(concat(module.this.id, list("")), 0)}"
+output "ids" {
+  value = "${concat(module.this.id, list(""))}"
 }
 
-output "private_ip" {
-  value = "${element(concat(module.this.private_ip, list("")), 0)}"
+output "private_ips" {
+  value = "${concat(module.this.private_ip, list(""))}"
 }
 
-output "public_ip" {
-  value = "${element(concat(module.this.public_ip, list("")), 0)}"
+output "public_ips" {
+  value = "${concat(module.this.public_ip, list(""))}"
 }
 
 output "public_dns" {
-  value = "${element(concat(module.this.public_dns, list("")), 0)}"
+  value = "${concat(module.this.public_dns, list(""))}"
 }
 
 output "private_dns" {
-  value = "${element(concat(module.this.private_dns, list("")), 0)}"
+  value = "${concat(module.this.private_dns, list(""))}"
 }
 
 output "subnet_id" {
@@ -26,8 +26,8 @@ output "availability_zone" {
   value = "${element(concat(module.this.availability_zone, list("")), 0)}"
 }
 
-output "primary_network_interface_id" {
-  value = "${element(concat(module.this.primary_network_interface_id, list("")), 0)}"
+output "primary_network_interface_ids" {
+  value = "${concat(module.this.primary_network_interface_id, list(""))}"
 }
 
 output "kms_key_id" {

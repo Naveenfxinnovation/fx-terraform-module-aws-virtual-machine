@@ -28,13 +28,13 @@ $ terraform apply
 | availability\_zone |  |
 | external\_volume\_arns |  |
 | external\_volume\_ids |  |
-| id |  |
+| ids |  |
 | kms\_key\_id |  |
-| primary\_network\_interface\_id |  |
+| primary\_network\_interface\_ids |  |
 | private\_dns |  |
-| private\_ip |  |
+| private\_ips |  |
 | public\_dns |  |
-| public\_ip |  |
+| public\_ips |  |
 | subnet\_id |  |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
