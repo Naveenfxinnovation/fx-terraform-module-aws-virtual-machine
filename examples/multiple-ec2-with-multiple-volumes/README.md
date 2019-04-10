@@ -1,7 +1,6 @@
-# Advanced EC2 with multiple data volumes
+# Multiple EC2 with multiple volumes
 
-Configuration in this directory creates an EC2 with lots of options.
-It also create multiple EBS volumes and attached them to the instance.
+Configuration in this directory creates multiple EC2 with multiple volumes.
 
 ## Usage
 
