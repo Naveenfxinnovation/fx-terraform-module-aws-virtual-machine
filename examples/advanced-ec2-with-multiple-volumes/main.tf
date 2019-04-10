@@ -62,13 +62,13 @@ module "advanced_ec2_with_multiple_volumes" {
   associate_public_ip_address = true
   source_dest_check           = false
 
-  tags = {
-    Test = "Tftest"
-  }
-
   volume_tags = {
     Name     = "tftest-advanced_ec2_with_multiple_volumes"
     Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
+  }
+
+  external_volume_tags = {
+    Name = "tftest-advanced_ec2_with_multiple_volumes"
   }
 
   external_volume_count        = 3

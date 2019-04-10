@@ -15,7 +15,7 @@ variable "instance_count" {
 
 variable "instance_type" {
   description = "Instance types."
-  type        = "list"
+  type        = "string"
 }
 
 variable "disable_api_termination" {
