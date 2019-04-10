@@ -16,11 +16,11 @@ module "this" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "1.21.0"
 
-  name           = "${format("%s-%02d", var.name, count.index + 1)}"
+  name           = "${var.name}"
   instance_count = "${var.instance_count}"
 
   ami                    = "${var.ami}"
-  instance_type          = "${element(var.instance_types, count.index)}"
+  instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
   subnet_id              = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
   key_name               = "${var.key_name}"
@@ -35,7 +35,7 @@ module "this" {
   disable_api_termination = "${var.disable_api_termination}"
 
   ebs_optimized     = "${var.ebs_optimized}"
-  volume_tags       = "${merge(map("Name", format("%s-%02d", var.name, count.index + 1)), map("Terraform", "true"), var.tags, var.volume_tags)}"
+  volume_tags       = "${merge(map("Name", format("%s", var.name)), map("Terraform", "true"), var.tags, var.volume_tags)}"
   ebs_block_device  = "${var.ebs_block_device}"
   root_block_device = "${var.root_block_device}"
 
@@ -47,7 +47,7 @@ resource "aws_volume_attachment" "this_ec2" {
 
   device_name = "${element(var.external_volume_device_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
-  instance_id = "${element(module.this.*.id, count.index % var.instance_count)}"
+  instance_id = "${element(module.this.id, count.index % var.instance_count)}"
 }
 
 resource "aws_ebs_volume" "this" {

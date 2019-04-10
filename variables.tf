@@ -13,7 +13,7 @@ variable "instance_count" {
   default     = 1
 }
 
-variable "instance_types" {
+variable "instance_type" {
   description = "Instance types."
   type        = "list"
 }
