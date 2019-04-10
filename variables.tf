@@ -9,7 +9,7 @@ variable "associate_public_ip_address" {
 }
 
 variable "instance_count" {
-  description = "Number of instances to create. Can alsot be 0."
+  description = "Number of instances to create. Can also be 0."
   default     = 1
 }
 
