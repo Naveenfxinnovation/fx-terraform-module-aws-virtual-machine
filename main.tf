@@ -41,7 +41,10 @@ module "this" {
   ebs_block_device  = "${var.ebs_block_device}"
   root_block_device = "${var.root_block_device}"
 
-  tags = "${merge(map("Name", format("%s", var.name)), map("Terraform", "true"), var.tags)}"
+  tags = "${merge(
+    map("Terraform", "true"),
+    var.tags
+  )}"
 }
 
 resource "aws_volume_attachment" "this_ec2" {
