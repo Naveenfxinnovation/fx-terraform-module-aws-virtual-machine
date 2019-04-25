@@ -50,7 +50,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 
 | Name | Description |
 |------|-------------|
-| availability\_zone |  |
+| availability\_zones |  |
 | external\_volume\_arns |  |
 | external\_volume\_ids |  |
 | ids |  |
