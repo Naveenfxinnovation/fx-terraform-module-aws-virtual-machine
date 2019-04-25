@@ -18,8 +18,8 @@ output "private_dns" {
   value = "${module.multiple_ec2_with_multiple_volumes.private_dns}"
 }
 
-output "subnet_id" {
-  value = "${module.multiple_ec2_with_multiple_volumes.subnet_id}"
+output "subnet_ids" {
+  value = "${module.multiple_ec2_with_multiple_volumes.subnet_ids}"
 }
 
 output "availability_zone" {

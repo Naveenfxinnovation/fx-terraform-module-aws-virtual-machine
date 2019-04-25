@@ -35,6 +35,6 @@ $ terraform apply
 | private\_ips |  |
 | public\_dns |  |
 | public\_ips |  |
-| subnet\_id |  |
+| subnet\_ids |  |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

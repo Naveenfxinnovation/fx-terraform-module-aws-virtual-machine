@@ -18,8 +18,8 @@ output "private_dns" {
   value = "${module.no_instances_no_volumes.private_dns}"
 }
 
-output "subnet_id" {
-  value = "${module.no_instances_no_volumes.subnet_id}"
+output "subnet_ids" {
+  value = "${module.no_instances_no_volumes.subnet_ids}"
 }
 
 output "availability_zone" {
