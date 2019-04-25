@@ -68,9 +68,9 @@ variable "source_dest_check" {
   default     = "true"
 }
 
-variable "subnet_id" {
-  description = "Subnet id."
-  default     = ""
+variable "subnet_ids" {
+  description = "Subnet ids."
+  default     = [""]
 }
 
 variable "tags" {

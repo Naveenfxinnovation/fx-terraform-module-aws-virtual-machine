@@ -38,7 +38,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | private\_ip | Private IP of the instance. | string | `""` | no |
 | root\_block\_device | Customize details about the root block device of the instance. See Block Devices below for details | list | `[]` | no |
 | source\_dest\_check | Source/destination AWS check. | string | `"true"` | no |
-| subnet\_id | Subnet id. | string | `""` | no |
+| subnet\_ids | Subnet ids. | list | `[ "" ]` | no |
 | tags | Tags of the instance. | map | `{}` | no |
 | user\_data | User data of the instance. | string | `""` | no |
 | volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | map | `{}` | no |
