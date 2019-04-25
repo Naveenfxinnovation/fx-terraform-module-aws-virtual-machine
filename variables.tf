@@ -68,6 +68,11 @@ variable "source_dest_check" {
   default     = "true"
 }
 
+variable "subnet_ids_count" {
+  description = "How many subnet ids in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.11.X."
+  default     = 0
+}
+
 variable "subnet_ids" {
   description = "Subnet ids."
   default     = [""]

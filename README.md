@@ -39,6 +39,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | root\_block\_device | Customize details about the root block device of the instance. See Block Devices below for details | list | `[]` | no |
 | source\_dest\_check | Source/destination AWS check. | string | `"true"` | no |
 | subnet\_ids | Subnet ids. | list | `[ "" ]` | no |
+| subnet\_ids\_count | How many subnet ids in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.11.X. | string | `"0"` | no |
 | tags | Tags of the instance. | map | `{}` | no |
 | user\_data | User data of the instance. | string | `""` | no |
 | volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | map | `{}` | no |
