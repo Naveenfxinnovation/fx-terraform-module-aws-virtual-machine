@@ -8,8 +8,8 @@ data "aws_subnet_ids" "all" {
 
 // This is needed to circumvent:
 // https://github.com/terraform-providers/terraform-provider-aws/issues/1352
-data "aws_subnet" "instance_subnet" {
-  id = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
+data "aws_subnet" "instance_subnets" {
+  id = "${element(var.subnet_ids, 0) != "" ? var.subnet_ids : element(data.aws_subnet_ids.all.ids, 0)}"
 }
 
 module "this" {
@@ -24,7 +24,7 @@ module "this" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_ids             = ["${element(var.subnet_ids, 0) != "" ? var.subnet_ids : data.aws_subnet_ids.all.ids}"]
+  subnet_ids             = ["${data.aws_subnet.instance_subnets}"]
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
@@ -58,7 +58,7 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  availability_zone = "${data.aws_subnet.instance_subnet.availability_zone}"
+  availability_zone = "${element(data.aws_subnet.instance_subnets.*.availability_zone, count.index)}"
   size              = "${element(var.external_volume_sizes, floor(count.index / var.instance_count) % var.external_volume_count)}"
 
   encrypted  = true
