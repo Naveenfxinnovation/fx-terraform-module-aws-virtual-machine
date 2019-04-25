@@ -22,8 +22,8 @@ output "subnet_ids" {
   value = "${module.no_instances_no_volumes.subnet_ids}"
 }
 
-output "availability_zone" {
-  value = "${module.no_instances_no_volumes.availability_zone}"
+output "availability_zones" {
+  value = "${module.no_instances_no_volumes.availability_zones}"
 }
 
 output "primary_network_interface_ids" {

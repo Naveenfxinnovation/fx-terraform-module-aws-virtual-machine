@@ -19,7 +19,7 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 
 | Name | Description |
 |------|-------------|
-| availability\_zone |  |
+| availability\_zones |  |
 | external\_volume\_arns |  |
 | external\_volume\_ids |  |
 | ids |  |

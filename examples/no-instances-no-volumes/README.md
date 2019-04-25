@@ -25,7 +25,7 @@ $ terraform apply
 
 | Name | Description |
 |------|-------------|
-| availability\_zone |  |
+| availability\_zones |  |
 | external\_volume\_arns |  |
 | external\_volume\_ids |  |
 | ids |  |
