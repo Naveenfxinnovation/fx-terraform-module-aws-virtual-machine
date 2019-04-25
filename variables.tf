@@ -118,6 +118,11 @@ variable "external_volume_kms_key_arn" {
   default     = ""
 }
 
+variable "external_volume_kms_key_name" {
+  description = "Name prefix for the KMS key to be used for external volumes. Will be suffixes with a two-digit count index."
+  default     = ""
+}
+
 variable "external_volume_kms_key_tags" {
   description = "Tags for the KMS key to be used for externale volume"
   default     = {}

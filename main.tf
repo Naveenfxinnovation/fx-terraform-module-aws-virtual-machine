@@ -66,6 +66,7 @@ resource "aws_ebs_volume" "this" {
   encrypted  = true
   kms_key_id = "${element(coalescelist(list(var.external_volume_kms_key_arn), aws_kms_key.this.*.arn), 0)}"
 
+  // Without https://github.com/terraform-aws-modules/terraform-aws-ec2-instance/pull/85, we cannot have count suffixes
   tags = "${var.external_volume_tags}"
 }
 
@@ -74,5 +75,10 @@ resource "aws_kms_key" "this" {
 
   description = "KMS key for ${var.name} external volume."
 
-  tags = "${merge(map("Name", format("%s", var.name)), map("Terraform", "true"), var.tags, var.external_volume_kms_key_tags)}"
+  tags = "${merge(
+    map("Name", format("%s-%02d", var.external_volume_kms_key_name, count + 1)),
+    map("Terraform", "true"),
+    var.tags,
+    var.external_volume_kms_key_tags
+  )}"
 }

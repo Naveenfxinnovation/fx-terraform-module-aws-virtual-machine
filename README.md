@@ -25,6 +25,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_device\_names | Device names for the external volumes. | list | `[ "" ]` | no |
 | external\_volume\_kms\_key\_arn | KMS key used to encrypt the external volume. | string | `""` | no |
 | external\_volume\_kms\_key\_create | Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0. | string | `"false"` | no |
+| external\_volume\_kms\_key\_name | Name prefix for the KMS key to be used for external volumes. Will be suffixes with a two-digit count index. | string | `""` | no |
 | external\_volume\_kms\_key\_tags | Tags for the KMS key to be used for externale volume | map | `{}` | no |
 | external\_volume\_name\_suffix | Suffix of the external volumes to create. | string | `"extra-volumes"` | no |
 | external\_volume\_sizes | Size of the external volumes. | list | `[ "" ]` | no |
