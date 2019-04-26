@@ -15,7 +15,7 @@ variable "instance_count" {
 
 variable "instance_type" {
   description = "Instance types."
-  type        = "string"
+  default     = "t3.small"
 }
 
 variable "disable_api_termination" {

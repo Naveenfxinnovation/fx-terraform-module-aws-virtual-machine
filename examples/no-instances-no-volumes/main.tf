@@ -7,5 +7,6 @@ provider "aws" {
 module "no_instances_no_volumes" {
   source = "../../"
 
-  create_instance = 0
+  instance_count        = 0
+  external_volume_count = 0
 }

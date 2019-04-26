@@ -32,7 +32,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | map | `{}` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instances with. Specified as the name of the Instance Profile. | string | `""` | no |
 | instance\_count | Number of instances to create. Can also be 0. | string | `"1"` | no |
-| instance\_type | Instance types. | string | n/a | yes |
+| instance\_type | Instance types. | string | `"t3.small"` | no |
 | key\_name | Key name for the instances. | string | `""` | no |
 | monitoring | If true, the launched EC2 instances will have detailed monitoring enabled | string | `"false"` | no |
 | name | Name prefix of the instance. Will be suffixed by a two-digit instance count index. | string | `""` | no |
