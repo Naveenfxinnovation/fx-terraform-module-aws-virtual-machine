@@ -76,7 +76,7 @@ resource "aws_kms_key" "this" {
   description = "KMS key for ${var.name} external volume."
 
   tags = "${merge(
-    map("Name", format("%s-%02d", var.external_volume_kms_key_name, count + 1)),
+    map("Name", format("%s-%02d", var.external_volume_kms_key_name, count.index + 1)),
     map("Terraform", "true"),
     var.tags,
     var.external_volume_kms_key_tags
