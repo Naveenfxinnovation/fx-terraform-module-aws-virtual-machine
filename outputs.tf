@@ -18,12 +18,12 @@ output "private_dns" {
   value = "${concat(module.this.private_dns, list(""))}"
 }
 
-output "subnet_id" {
-  value = "${element(concat(module.this.subnet_id, list("")), 0)}"
+output "subnet_ids" {
+  value = "${concat(module.this.subnet_id, list(""))}"
 }
 
-output "availability_zone" {
-  value = "${element(concat(module.this.availability_zone, list("")), 0)}"
+output "availability_zones" {
+  value = "${concat(module.this.availability_zone, list(""))}"
 }
 
 output "primary_network_interface_ids" {

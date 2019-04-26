@@ -52,7 +52,8 @@ module "advanced_ec2_with_multiple_volumes" {
 
   ami                    = "${data.aws_ami.amazon_linux.image_id}"
   instance_type          = "t2.micro"
-  subnet_id              = "${element(data.aws_subnet_ids.all.ids, 0)}"
+  subnet_ids_count       = 1
+  subnet_ids             = ["${element(data.aws_subnet_ids.all.ids, 0)}"]
   vpc_security_group_ids = ["${aws_security_group.advanced_ec2_with_multiple_volumes.id}"]
 
   user_data = "#!/bin/bash echo test"

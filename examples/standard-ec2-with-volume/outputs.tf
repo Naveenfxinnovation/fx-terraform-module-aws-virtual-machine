@@ -18,12 +18,12 @@ output "private_dns" {
   value = "${module.standard_ec2_with_volume.private_dns}"
 }
 
-output "subnet_id" {
-  value = "${module.standard_ec2_with_volume.subnet_id}"
+output "subnet_ids" {
+  value = "${module.standard_ec2_with_volume.subnet_ids}"
 }
 
-output "availability_zone" {
-  value = "${module.standard_ec2_with_volume.availability_zone}"
+output "availability_zones" {
+  value = "${module.standard_ec2_with_volume.availability_zones}"
 }
 
 output "primary_network_interface_ids" {

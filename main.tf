@@ -8,8 +8,10 @@ data "aws_subnet_ids" "all" {
 
 // This is needed to circumvent:
 // https://github.com/terraform-providers/terraform-provider-aws/issues/1352
-data "aws_subnet" "instance_subnet" {
-  id = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
+data "aws_subnet" "instance_subnets" {
+  count = "${element(var.subnet_ids, 0) != "" ? var.subnet_ids_count : length(data.aws_subnet_ids.all.ids)}"
+
+  id = "${element(var.subnet_ids, 0) != "" ? element(var.subnet_ids, count.index) : element(data.aws_subnet_ids.all.ids, count.index)}"
 }
 
 module "this" {
@@ -24,7 +26,7 @@ module "this" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${var.subnet_id != "" ? var.subnet_id : element(data.aws_subnet_ids.all.ids, 0)}"
+  subnet_ids             = ["${data.aws_subnet.instance_subnets.*.id}"]
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
@@ -58,12 +60,13 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  availability_zone = "${data.aws_subnet.instance_subnet.availability_zone}"
+  availability_zone = "${element(data.aws_subnet.instance_subnets.*.availability_zone, count.index)}"
   size              = "${element(var.external_volume_sizes, floor(count.index / var.instance_count) % var.external_volume_count)}"
 
   encrypted  = true
   kms_key_id = "${element(coalescelist(list(var.external_volume_kms_key_arn), aws_kms_key.this.*.arn), 0)}"
 
+  // Without https://github.com/terraform-aws-modules/terraform-aws-ec2-instance/pull/85, we cannot have count suffixes
   tags = "${var.external_volume_tags}"
 }
 
@@ -72,5 +75,10 @@ resource "aws_kms_key" "this" {
 
   description = "KMS key for ${var.name} external volume."
 
-  tags = "${merge(map("Name", format("%s", var.name)), map("Terraform", "true"), var.tags, var.external_volume_kms_key_tags)}"
+  tags = "${merge(
+    map("Name", format("%s-%02d", var.external_volume_kms_key_name, count.index + 1)),
+    map("Terraform", "true"),
+    var.tags,
+    var.external_volume_kms_key_tags
+  )}"
 }

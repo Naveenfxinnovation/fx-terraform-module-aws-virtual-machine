@@ -1,10 +1,10 @@
 variable "ami" {
-  description = "AMI to be used."
+  description = "AMI id to be used."
   default     = ""
 }
 
 variable "associate_public_ip_address" {
-  description = "Associate a public IP to the instance."
+  description = "Associate a public IP to the instances."
   default     = false
 }
 
@@ -15,7 +15,7 @@ variable "instance_count" {
 
 variable "instance_type" {
   description = "Instance types."
-  type        = "string"
+  default     = "t3.small"
 }
 
 variable "disable_api_termination" {
@@ -24,42 +24,42 @@ variable "disable_api_termination" {
 }
 
 variable "ebs_block_device" {
-  description = "Additional EBS block devices to attach to the instance."
+  description = "Additional EBS block devices to attach to each instance."
   default     = []
 }
 
 variable "ebs_optimized" {
-  description = "If true, the launched EC2 instance will be EBS-optimized."
+  description = "If true, each instance will be EBS-optimized."
   default     = false
 }
 
 variable "iam_instance_profile" {
-  description = "The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile."
+  description = "The IAM Instance Profile to launch the instances with. Specified as the name of the Instance Profile."
   default     = ""
 }
 
 variable "name" {
-  description = "Name of the instance."
+  description = "Name prefix of the instance. Will be suffixed by a two-digit instance count index."
   default     = ""
 }
 
 variable "key_name" {
-  description = "Key name for the instance."
+  description = "Key name for the instances."
   default     = ""
 }
 
 variable "monitoring" {
-  description = "If true, the launched EC2 instance will have detailed monitoring enabled"
+  description = "If true, the launched EC2 instances will have detailed monitoring enabled"
   default     = false
 }
 
 variable "private_ip" {
-  description = "Private IP of the instance."
+  description = "Private IP of the instances."
   default     = ""
 }
 
 variable "root_block_device" {
-  description = "Customize details about the root block device of the instance. See Block Devices below for details"
+  description = "Customize details about the root block device of the instances. See Block Devices below for details"
   default     = []
 }
 
@@ -68,18 +68,23 @@ variable "source_dest_check" {
   default     = "true"
 }
 
-variable "subnet_id" {
-  description = "Subnet id."
-  default     = ""
+variable "subnet_ids_count" {
+  description = "How many subnet ids in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.11.X."
+  default     = 0
+}
+
+variable "subnet_ids" {
+  description = "Subnet ids where to provision the instances."
+  default     = [""]
 }
 
 variable "tags" {
-  description = "Tags of the instance."
+  description = "Tags to be used for all this module resources. Will be merged with specific tags."
   default     = {}
 }
 
 variable "user_data" {
-  description = "User data of the instance."
+  description = "User data of the instances."
   default     = ""
 }
 
@@ -89,7 +94,7 @@ variable "volume_tags" {
 }
 
 variable "vpc_security_group_ids" {
-  description = "Security groups."
+  description = "Security groups for the instances."
   default     = []
 }
 
@@ -113,8 +118,13 @@ variable "external_volume_kms_key_arn" {
   default     = ""
 }
 
+variable "external_volume_kms_key_name" {
+  description = "Name prefix for the KMS key to be used for external volumes. Will be suffixes with a two-digit count index."
+  default     = ""
+}
+
 variable "external_volume_kms_key_tags" {
-  description = "Tags for the KMS key to be used for externale volume"
+  description = "Tags for the KMS key to be used for external volumes."
   default     = {}
 }
 
