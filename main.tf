@@ -121,7 +121,7 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  availability_zone = "${element(data.aws_subnet.subnets.*.availability_zone, count.index)}"
+  availability_zone = "${element(data.aws_subnet.subnets.*.availability_zone, floor(count.index / var.instance_count) % var.external_volume_count)}"
   size              = "${element(var.external_volume_sizes, floor(count.index / var.instance_count) % var.external_volume_count)}"
 
   encrypted  = true
