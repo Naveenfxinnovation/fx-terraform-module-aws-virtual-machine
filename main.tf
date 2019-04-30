@@ -7,6 +7,8 @@ locals {
 
   use_default_subnets = "${var.subnet_ids_count == 0}"
 
+  used_subnet_count = "${floor(min(local.subnet_count, var.instance_count))}"
+
   subnet_count = "${local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count}"
   subnet_ids   = "${split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat(list(var.subnet_id), var.subnet_ids)))))}"
 }
@@ -113,7 +115,7 @@ locals {
 resource "aws_volume_attachment" "this_ec2" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  device_name = "${element(var.external_volume_device_names, count.index)}"
+  device_name = "${element(var.external_volume_device_names, floor(count.index / var.instance_count) % var.external_volume_count)}"
   volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
   instance_id = "${element(local.instance_ids, count.index % var.instance_count)}"
 }
@@ -121,7 +123,7 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  availability_zone = "${element(data.aws_subnet.subnets.*.availability_zone, count.index % local.subnet_count)}"
+  availability_zone = "${element(data.aws_subnet.subnets.*.availability_zone, count.index % local.used_subnet_count)}"
   size              = "${element(var.external_volume_sizes, floor(count.index / var.instance_count) % var.external_volume_count)}"
 
   encrypted  = true

@@ -58,9 +58,11 @@ module "multiple_ec2_with_multiple_volumes" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
+  // Reason for high number for instance count and external volumes is to
+  // make sure the math is correct under the hood: 4 instances, 3 extra volumes, 2 subnets
   instance_count = 4
 
-  external_volume_count        = 2
-  external_volume_sizes        = [5, 10]
-  external_volume_device_names = ["/dev/sdh", "/dev/sdi"]
+  external_volume_count        = 3
+  external_volume_sizes        = [5, 6, 7]
+  external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
 }
