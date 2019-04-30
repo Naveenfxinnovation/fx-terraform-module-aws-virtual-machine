@@ -58,7 +58,7 @@ module "advanced_ec2_with_multiple_volumes" {
   name = "tftest-advanced_ec2_with_multiple_volumes"
 
   ami              = "${data.aws_ami.amazon_linux.image_id}"
-  instance_type    = "t2.micro"
+  instance_type    = "t3.micro"
   subnet_ids_count = 2
   subnet_ids       = ["${element(data.aws_subnet_ids.all.ids, 0)}", "${element(data.aws_subnet_ids.all.ids, 1)}"]
 
