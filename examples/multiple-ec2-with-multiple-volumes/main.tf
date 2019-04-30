@@ -55,9 +55,9 @@ module "multiple_ec2_with_multiple_volumes" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
-  instance_count = 2
+  instance_count = 4
 
-  external_volume_count        = 3
-  external_volume_sizes        = [5, 10, 15]
-  external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
+  external_volume_count        = 2
+  external_volume_sizes        = [5, 10]
+  external_volume_device_names = ["/dev/sdh", "/dev/sdi"]
 }

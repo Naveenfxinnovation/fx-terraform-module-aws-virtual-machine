@@ -56,20 +56,34 @@ module "advanced_ec2_with_multiple_volumes" {
   subnet_ids             = ["${element(data.aws_subnet_ids.all.ids, 0)}"]
   vpc_security_group_ids = ["${aws_security_group.advanced_ec2_with_multiple_volumes.id}"]
 
+  use_num_suffix    = true
+  num_suffix_digits = 3
+
   user_data = "#!/bin/bash echo test"
   key_name  = "${aws_key_pair.advanced_ec2_with_multiple_volumes.key_name}"
 
+  ebs_optimized               = true
   monitoring                  = true
   associate_public_ip_address = true
   source_dest_check           = false
 
+  instance_tags = {
+    Fullname = "Tftest instance."
+  }
+
   volume_tags = {
     Name     = "tftest-advanced_ec2_with_multiple_volumes"
+    Fullname = "Root volume for advanced_ec2_with_multiple_volumes"
+  }
+
+  external_volume_tags = {
+    Name     = "tftest-advanced_ec2_with_multiple_volumes_external"
     Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
   external_volume_tags = {
-    Name = "tftest-advanced_ec2_with_multiple_volumes"
+    Name     = "tftest-advanced_ec2_with_multiple_volumes_external"
+    Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
   external_volume_count        = 3
