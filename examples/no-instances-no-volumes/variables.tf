@@ -1,8 +1,3 @@
-variable "region" {
-  description = "Region."
-  default     = "ca-central-1"
-}
-
 variable "access_key" {
   description = "Credentials: AWS access key."
 }
