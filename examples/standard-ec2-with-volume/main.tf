@@ -1,8 +1,8 @@
-//provider "aws" {
-//  region     = "ca-central-1"
-//  access_key = "${var.access_key}"
-//  secret_key = "${var.secret_key}"
-//}
+provider "aws" {
+  region     = "ca-central-1"
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
+}
 
 data "aws_vpc" "default" {
   default = true
@@ -50,7 +50,7 @@ module "standard_ec2_with_volume" {
   instance_type = "t2.micro"
 
   vpc_security_group_ids = {
-    OK = "${aws_security_group.standard_ec2_with_volume.id}"
+    "0" = "${aws_security_group.standard_ec2_with_volume.id}"
   }
 
   volume_tags = {

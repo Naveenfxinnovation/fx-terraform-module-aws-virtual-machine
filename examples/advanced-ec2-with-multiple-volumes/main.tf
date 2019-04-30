@@ -57,11 +57,14 @@ module "advanced_ec2_with_multiple_volumes" {
 
   name = "tftest-advanced_ec2_with_multiple_volumes"
 
-  ami                    = "${data.aws_ami.amazon_linux.image_id}"
-  instance_type          = "t2.micro"
-  subnet_ids_count       = 2
-  subnet_ids             = ["${element(data.aws_subnet_ids.all.ids, 0), element(data.aws_subnet_ids.all.ids, 1)}"]
-  vpc_security_group_ids = ["${aws_security_group.advanced_ec2_with_multiple_volumes.id}"]
+  ami              = "${data.aws_ami.amazon_linux.image_id}"
+  instance_type    = "t2.micro"
+  subnet_ids_count = 2
+  subnet_ids       = ["${element(data.aws_subnet_ids.all.ids, 0)}", "${element(data.aws_subnet_ids.all.ids, 1)}"]
+
+  vpc_security_group_ids = {
+    "0" = "${aws_security_group.advanced_ec2_with_multiple_volumes.id}"
+  }
 
   use_num_suffix    = true
   num_suffix_digits = 3
