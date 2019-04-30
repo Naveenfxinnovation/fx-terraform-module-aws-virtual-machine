@@ -166,8 +166,8 @@ variable "external_volume_count" {
   default     = 0
 }
 
-variable "external_volume_name_suffix" {
-  description = "Suffix of the external volumes to create."
+variable "external_volume_name" {
+  description = "Prefix of the external volumes to create."
   default     = "extra-volumes"
 }
 

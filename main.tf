@@ -21,7 +21,7 @@ resource "aws_instance" "this" {
   iam_instance_profile   = "${var.iam_instance_profile}"
 
   associate_public_ip_address = "${var.associate_public_ip_address}"
-  private_ip                  = "${private_ips != [] ? element(var.private_ips, count.index) : ""}"
+  private_ip                  = "${length(private_ips) != 0 ? element(var.private_ips, count.index) : ""}"
   ipv6_address_count          = "${var.ipv6_address_count}"
   ipv6_addresses              = "${var.ipv6_addresses}"
 
@@ -64,7 +64,7 @@ resource "aws_instance" "this_t" {
   iam_instance_profile   = "${var.iam_instance_profile}"
 
   associate_public_ip_address = "${var.associate_public_ip_address}"
-  private_ip                  = "${private_ips != [] ? element(var.private_ips, count.index) : ""}"
+  private_ip                  = "${length(private_ips) != 0 ? element(var.private_ips, count.index) : ""}"
   ipv6_address_count          = "${var.ipv6_address_count}"
   ipv6_addresses              = "${var.ipv6_addresses}"
 
@@ -102,12 +102,16 @@ resource "aws_instance" "this_t" {
 # Extra volumes
 ####
 
+locals {
+  instance_ids = "${compact(concat(aws_instance.this.*.availability_zone, aws_instance.this_t.*.availability_zone, list("")))}"
+}
+
 resource "aws_volume_attachment" "this_ec2" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
   device_name = "${element(var.external_volume_device_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.this.*.id, count.index)}"
-  instance_id = "${element(module.this.id, count.index % var.instance_count)}"
+  instance_id = "${element(local.instance_ids, count.index % var.instance_count)}"
 }
 
 resource "aws_ebs_volume" "this" {
