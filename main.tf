@@ -4,8 +4,11 @@
 
 locals {
   is_t_instance_type = "${replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"}"
-  num_subnet_ids     = "${length(distinct(compact(concat(list(var.subnet_id), var.subnet_ids))))}"
-  subnets            = "${distinct(compact(concat(list(var.subnet_id), var.subnet_ids)))}"
+
+  use_default_subnets = "${var.subnet_ids_count == 0}"
+
+  subnet_count = "${local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count}"
+  subnet_ids   = "${split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat(list(var.subnet_id), var.subnet_ids)))))}"
 }
 
 resource "aws_instance" "this" {
@@ -14,14 +17,14 @@ resource "aws_instance" "this" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${element(local.subnets, count.index % length(local.subnets))}"
+  subnet_id              = "${element(local.subnet_ids, count.index % local.subnet_count)}"
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
-  vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
+  vpc_security_group_ids = ["${var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]}"]
   iam_instance_profile   = "${var.iam_instance_profile}"
 
   associate_public_ip_address = "${var.associate_public_ip_address}"
-  private_ip                  = "${length(private_ips) != 0 ? element(var.private_ips, count.index) : ""}"
+  private_ip                  = "${length(var.private_ips) != 0 ? element(concat(var.private_ips, list("")), count.index) : ""}"
   ipv6_address_count          = "${var.ipv6_address_count}"
   ipv6_addresses              = "${var.ipv6_addresses}"
 
@@ -38,7 +41,7 @@ resource "aws_instance" "this" {
   tenancy                              = "${var.tenancy}"
 
   tags = "${merge(
-    map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
+    map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
     var.tags,
     var.instance_tags
   )}"
@@ -57,14 +60,14 @@ resource "aws_instance" "this_t" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${element(local.subnets, count.index % length(local.subnets))}"
+  subnet_id              = "${element(local.subnet_ids, count.index % local.subnet_count)}"
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
-  vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
+  vpc_security_group_ids = ["${var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]}"]
   iam_instance_profile   = "${var.iam_instance_profile}"
 
   associate_public_ip_address = "${var.associate_public_ip_address}"
-  private_ip                  = "${length(private_ips) != 0 ? element(var.private_ips, count.index) : ""}"
+  private_ip                  = "${length(var.private_ips) != 0 ? element(concat(var.private_ips, list("")), count.index) : ""}"
   ipv6_address_count          = "${var.ipv6_address_count}"
   ipv6_addresses              = "${var.ipv6_addresses}"
 
@@ -85,8 +88,9 @@ resource "aws_instance" "this_t" {
   }
 
   tags = "${merge(
-    map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
-    var.tags,
+  map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
+
+var.tags,
     var.instance_tags
   )}"
 
@@ -103,7 +107,7 @@ resource "aws_instance" "this_t" {
 ####
 
 locals {
-  instance_ids = "${compact(concat(aws_instance.this.*.availability_zone, aws_instance.this_t.*.availability_zone, list("")))}"
+  instance_ids = "${compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, list("")))}"
 }
 
 resource "aws_volume_attachment" "this_ec2" {
@@ -117,11 +121,11 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = "${var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0}"
 
-  availability_zone = "${element(data.aws_subnet.instance_subnets.*.availability_zone, count.index)}"
+  availability_zone = "${element(data.aws_subnet.subnets.*.availability_zone, count.index)}"
   size              = "${element(var.external_volume_sizes, floor(count.index / var.instance_count) % var.external_volume_count)}"
 
   encrypted  = true
-  kms_key_id = "${element(coalescelist(list(var.external_volume_kms_key_arn), aws_kms_key.this.*.arn), 0)}"
+  kms_key_id = "${var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn}"
 
   tags = "${merge(
     map("Name", (var.external_volume_count * var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name),
@@ -142,4 +146,11 @@ resource "aws_kms_key" "this" {
     var.tags,
     var.external_volume_kms_key_tags
   )}"
+}
+
+resource "aws_kms_alias" "this" {
+  count = "${var.instance_count > 0 && var.external_volume_kms_key_create ? 1 : 0}"
+
+  name          = "${var.external_volume_kms_key_alias}"
+  target_key_id = "${aws_kms_key.this.key_id}"
 }

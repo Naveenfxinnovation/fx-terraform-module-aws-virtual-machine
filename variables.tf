@@ -171,13 +171,18 @@ variable "external_volume_name" {
   default     = "extra-volumes"
 }
 
+variable "external_volume_kms_key_alias" {
+  description = "Alias of the KMS key used to encrypt the external volume."
+  default     = "alias/default/ec2"
+}
+
 variable "external_volume_kms_key_create" {
   description = "Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0."
-  default     = false
+  default     = true
 }
 
 variable "external_volume_kms_key_arn" {
-  description = "KMS key used to encrypt the external volume."
+  description = "KMS key used to encrypt the external volume. To be used "
   default     = ""
 }
 

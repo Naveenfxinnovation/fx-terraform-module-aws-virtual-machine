@@ -25,8 +25,9 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | ephemeral\_block\_device | Customize Ephemeral (also known as Instance Store) volumes on the instance. | list | `[]` | no |
 | external\_volume\_count | Number of external volumes to create. | string | `"0"` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | list | `[ "" ]` | no |
-| external\_volume\_kms\_key\_arn | KMS key used to encrypt the external volume. | string | `""` | no |
-| external\_volume\_kms\_key\_create | Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0. | string | `"false"` | no |
+| external\_volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the external volume. | string | `"alias/default/ec2"` | no |
+| external\_volume\_kms\_key\_arn | KMS key used to encrypt the external volume. To be used | string | `""` | no |
+| external\_volume\_kms\_key\_create | Whether or not to create KMS key. Cannot be computed from other variable in terraform 0.11.0. | string | `"true"` | no |
 | external\_volume\_kms\_key\_name | Name prefix for the KMS key to be used for external volumes. Will be suffixes with a two-digit count index. | string | `""` | no |
 | external\_volume\_kms\_key\_tags | Tags for the KMS key to be used for external volumes. | map | `{}` | no |
 | external\_volume\_name | Prefix of the external volumes to create. | string | `"extra-volumes"` | no |
@@ -63,11 +64,11 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 |------|-------------|
 | arns | Instance ARNs. |
 | availability\_zones | Availability zones of the instances. |
-| credit\_specifications | Credit specification of instance.. |
+| credit\_specifications | Credit specification of instance. |
 | external\_volume\_arns | ARNs of all the extra volumes. |
 | external\_volume\_ids | IDs of all the extra volumes. |
 | ids | Instance IDs. |
-| kms\_key\_id | KMS key ID used to encrypt all the extra volumes. |
+| kms\_key\_id | KMS key ID (ARN) used to encrypt all the extra volumes. |
 | primary\_network\_interface\_ids | The IDs of the instances primary network interfaces. |
 | private\_dns | Private domain names of the instances. |
 | private\_ips | Private IPs of the instances. |

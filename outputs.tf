@@ -13,8 +13,8 @@ output "arns" {
 }
 
 output "credit_specifications" {
-  description = "Credit specification of instance.."
-  value       = "${compact(concat(aws_instance.this.*.credit_specification, aws_instance.this_t.*.credit_specification, list("")))}"
+  description = "Credit specification of instance."
+  value       = "${aws_instance.this_t.*.credit_specification}"
 }
 
 output "ids" {
@@ -57,7 +57,7 @@ output "subnet_ids" {
 ####
 
 output "kms_key_id" {
-  description = "KMS key ID used to encrypt all the extra volumes."
+  description = "KMS key ID (ARN) used to encrypt all the extra volumes."
   value       = "${element(coalescelist(list(var.external_volume_kms_key_arn), aws_kms_key.this.*.arn), 0)}"
 }
 
