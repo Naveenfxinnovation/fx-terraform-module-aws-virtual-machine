@@ -48,7 +48,7 @@ resource "aws_key_pair" "advanced_ec2_with_multiple_volumes" {
 resource "aws_kms_key" "advanced_ec2_with_multiple_volumes" {}
 
 resource "aws_kms_alias" "advanced_ec2_with_multiple_volumes" {
-  name          = "tftest/advanced/ec2"
+  name          = "alias/tftest/advanced/ec2"
   target_key_id = "${aws_kms_key.advanced_ec2_with_multiple_volumes.key_id}"
 }
 
