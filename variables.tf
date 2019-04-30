@@ -54,7 +54,7 @@ variable "vpc_security_group_ids" {
 
 variable "ami" {
   description = "The AMI to use for the instances."
-  type        = "string"
+  default     = ""
 }
 
 variable "associate_public_ip_address" {

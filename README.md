@@ -16,7 +16,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| ami | The AMI to use for the instances. | string | n/a | yes |
+| ami | The AMI to use for the instances. | string | `""` | no |
 | associate\_public\_ip\_address | Associate a public ip address for each instances. | string | `"false"` | no |
 | cpu\_credits | The credit option for CPU usage (unlimited or standard). | string | `"standard"` | no |
 | disable\_api\_termination | If true, enables EC2 Instance Termination Protection. | string | `"false"` | no |
