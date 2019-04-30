@@ -14,7 +14,7 @@ resource "aws_instance" "this" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${element(local.subnets, count.index % length(local.local.subnets))}"
+  subnet_id              = "${element(local.subnets, count.index % length(local.subnets))}"
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
   vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
@@ -57,7 +57,7 @@ resource "aws_instance" "this_t" {
   ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   user_data              = "${var.user_data}"
-  subnet_id              = "${element(local.subnets, count.index % length(local.local.subnets))}"
+  subnet_id              = "${element(local.subnets, count.index % length(local.subnets))}"
   key_name               = "${var.key_name}"
   monitoring             = "${var.monitoring}"
   vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
