@@ -43,7 +43,7 @@ resource "aws_instance" "this" {
   tenancy                              = "${var.tenancy}"
 
   tags = "${merge(
-    map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
+    map("Name", (var.instance_count > 1) || var.use_num_suffix ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
     var.tags,
     var.instance_tags
   )}"
@@ -90,7 +90,7 @@ resource "aws_instance" "this_t" {
   }
 
   tags = "${merge(
-  map("Name", (var.instance_count > 1) || (var.use_num_suffix == "true") ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
+  map("Name", (var.instance_count > 1) || var.use_num_suffix ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name),
 
 var.tags,
     var.instance_tags

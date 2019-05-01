@@ -43,7 +43,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | key\_name | The key name of the Key Pair to use for the instance; which can be managed using the aws_key_pair resource. | string | `""` | no |
 | monitoring | If true, the launched EC2 instances will have detailed monitoring enabled. | string | `"false"` | no |
 | name | Name prefix of the instances. Will be suffixed by a var.num_suffix_digits count index. | string | `""` | no |
-| num\_suffix\_digits | Number of significant digits to append to instances name. | string | `"2"` | no |
+| num\_suffix\_digits | Number of significant digits to append to instances name. Use a string containing a leading 0. | string | `"02"` | no |
 | placement\_group | The Placement Group to start the instances in. | string | `""` | no |
 | private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance_count. | list | `[]` | no |
 | root\_block\_device | Customize details about the root block device of the instance. See Block Devices below for details | list | `[]` | no |

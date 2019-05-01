@@ -67,7 +67,7 @@ module "advanced_ec2_with_multiple_volumes" {
   }
 
   use_num_suffix    = true
-  num_suffix_digits = 3
+  num_suffix_digits = "03"
 
   user_data = "#!/bin/bash echo test"
   key_name  = "${aws_key_pair.advanced_ec2_with_multiple_volumes.key_name}"

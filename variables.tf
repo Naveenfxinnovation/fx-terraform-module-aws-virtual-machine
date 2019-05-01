@@ -14,8 +14,8 @@ variable "name" {
 }
 
 variable "num_suffix_digits" {
-  description = "Number of significant digits to append to instances name."
-  default     = 2
+  description = "Number of significant digits to append to instances name. Use a string containing a leading 0."
+  default     = "02"
 }
 
 variable "subnet_id" {
