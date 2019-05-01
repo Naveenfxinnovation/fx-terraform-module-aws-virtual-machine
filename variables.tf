@@ -182,7 +182,7 @@ variable "external_volume_kms_key_create" {
 }
 
 variable "external_volume_kms_key_arn" {
-  description = "KMS key used to encrypt the external volume. To be used "
+  description = "KMS key used to encrypt the external volume. To be used when var.external_volume_kms_key_create is set to false."
   default     = ""
 }
 
