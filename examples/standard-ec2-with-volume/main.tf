@@ -34,8 +34,14 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+resource "random_string" "this" {
+  length  = 8
+  upper   = false
+  special = false
+}
+
 resource "aws_security_group" "standard_ec2_with_volume" {
-  name        = "tftest-standard_ec2_with_volume"
+  name        = "tftest-standard_ec2_with_volume${random_string.this.result}"
   description = "Terraform test standard_ec2_with_volume."
   vpc_id      = "${data.aws_vpc.default.id}"
 }
