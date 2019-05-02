@@ -21,23 +21,24 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | access\_key | Credentials: AWS access key. | string | n/a | yes |
-| region | Region. | string | `"ca-central-1"` | no |
 | secret\_key | Credentials: AWS secret key. Pass this a variable, never write password in the code. | string | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| availability\_zones |  |
-| external\_volume\_arns |  |
-| external\_volume\_ids |  |
-| ids |  |
-| kms\_key\_id |  |
-| primary\_network\_interface\_ids |  |
-| private\_dns |  |
-| private\_ips |  |
-| public\_dns |  |
-| public\_ips |  |
-| subnet\_ids |  |
+| arns | Instance ARNs. |
+| availability\_zones | Availability zones of the instances. |
+| credit\_specifications | Credit specification of instance. |
+| external\_volume\_arns | ARNs of all the extra volumes. |
+| external\_volume\_ids | IDs of all the extra volumes. |
+| ids | Instance IDs. |
+| kms\_key\_id | KMS key ID used to encrypt all the extra volumes. |
+| primary\_network\_interface\_ids | The IDs of the instances primary network interfaces. |
+| private\_dns | Private domain names of the instances. |
+| private\_ips | Private IPs of the instances. |
+| public\_dns | Public domain names of the instances. |
+| public\_ips | Public IPs of the instances. |
+| subnet\_ids | The VPC subnet IDs where the instances are. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

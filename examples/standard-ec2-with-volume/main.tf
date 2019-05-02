@@ -1,11 +1,15 @@
 provider "aws" {
-  region     = "${var.region}"
+  region     = "ca-central-1"
   access_key = "${var.access_key}"
   secret_key = "${var.secret_key}"
 }
 
 data "aws_vpc" "default" {
   default = true
+}
+
+data "aws_subnet_ids" "all" {
+  vpc_id = "${data.aws_vpc.default.id}"
 }
 
 data "aws_ami" "amazon_linux" {
@@ -30,8 +34,14 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
+resource "random_string" "this" {
+  length  = 8
+  upper   = false
+  special = false
+}
+
 resource "aws_security_group" "standard_ec2_with_volume" {
-  name        = "tftest-standard_ec2_with_volume"
+  name        = "tftest-standard_ec2_with_volume${random_string.this.result}"
   description = "Terraform test standard_ec2_with_volume."
   vpc_id      = "${data.aws_vpc.default.id}"
 }
@@ -41,9 +51,13 @@ module "standard_ec2_with_volume" {
 
   name = "tftest-standard_ec2_with_volume"
 
-  ami                    = "${data.aws_ami.amazon_linux.image_id}"
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = ["${aws_security_group.standard_ec2_with_volume.id}"]
+  subnet_id     = "${element(data.aws_subnet_ids.all.ids, 0)}"
+  ami           = "${data.aws_ami.amazon_linux.image_id}"
+  instance_type = "t2.micro"
+
+  vpc_security_group_ids = {
+    "0" = "${aws_security_group.standard_ec2_with_volume.id}"
+  }
 
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
@@ -52,6 +66,9 @@ module "standard_ec2_with_volume" {
   external_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
+
+  external_volume_kms_key_create = true
+  external_volume_kms_key_alias  = "alias/tftest/ec2"
 
   external_volume_count        = 1
   external_volume_sizes        = [10]
