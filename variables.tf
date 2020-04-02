@@ -139,18 +139,6 @@ variable "private_ips" {
   default     = []
 }
 
-variable "root_block_device_device_name" {
-  description = "Customize details about the root block device of the instance: The name of the device to mount."
-  type        = string
-  default     = ""
-}
-
-variable "root_block_device_snapshot_id" {
-  description = "Customize details about the root block device of the instance: The Snapshot ID to mount."
-  type        = string
-  default     = null
-}
-
 variable "root_block_device_volume_type" {
   description = "Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
   type        = string
@@ -169,7 +157,7 @@ variable "root_block_device_iops" {
   default     = null
 }
 
-variable "root_block_encrypted" {
+variable "root_block_device_encrypted" {
   description = "Customize details about the root block device of the instance: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot_id. Must be configured to perform drift detection."
   type        = string
   default     = true

@@ -5,6 +5,8 @@
 locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
+  should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted != null || var.root_block_device_iops != null
+
   use_default_subnets = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
@@ -45,47 +47,22 @@ resource "aws_instance" "this" {
   volume_tags   = var.volume_tags
 
   dynamic "root_block_device" {
-    for_each = var.root_block_device
-    content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
+    for_each = local.should_update_root_device ? [1] : [0]
 
-      delete_on_termination = lookup(root_block_device.value, "delete_on_termination", null)
-      encrypted             = lookup(root_block_device.value, "encrypted", null)
-      iops                  = lookup(root_block_device.value, "iops", null)
-      kms_key_id            = lookup(root_block_device.value, "kms_key_id", null)
-      volume_size           = lookup(root_block_device.value, "volume_size", null)
-      volume_type           = lookup(root_block_device.value, "volume_type", null)
+    content {
+      delete_on_termination = true
+      encrypted             = var.root_block_device_encrypted
+      iops                  = var.root_block_device_iops
+      volume_size           = var.root_block_device_volume_size
+      volume_type           = var.root_block_device_volume_type
+      kms_key_id            = var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn
     }
   }
-  dynamic "ebs_block_device" {
-    for_each = var.ebs_block_device
-    content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
 
-      delete_on_termination = lookup(ebs_block_device.value, "delete_on_termination", null)
-      device_name           = ebs_block_device.value.device_name
-      encrypted             = lookup(ebs_block_device.value, "encrypted", null)
-      iops                  = lookup(ebs_block_device.value, "iops", null)
-      kms_key_id            = lookup(ebs_block_device.value, "kms_key_id", null)
-      snapshot_id           = lookup(ebs_block_device.value, "snapshot_id", null)
-      volume_size           = lookup(ebs_block_device.value, "volume_size", null)
-      volume_type           = lookup(ebs_block_device.value, "volume_type", null)
-    }
-  }
   dynamic "ephemeral_block_device" {
-    for_each = var.ephemeral_block_device
-    content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
+    for_each = length(var.ephemeral_block_devices) > 0 ? var.ephemeral_block_devices : [0]
 
+    content {
       device_name  = ephemeral_block_device.value.device_name
       no_device    = lookup(ephemeral_block_device.value, "no_device", null)
       virtual_name = lookup(ephemeral_block_device.value, "virtual_name", null)
@@ -145,20 +122,15 @@ resource "aws_instance" "this_t" {
   volume_tags   = var.volume_tags
 
   dynamic "root_block_device" {
-    for_each = var.root_block_device
-    content {
-      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
-      # which keys might be set in maps assigned here, so it has
-      # produced a comprehensive set here. Consider simplifying
-      # this after confirming which keys can be set in practice.
+    for_each = local.should_update_root_device ? [1] : [0]
 
+    content {
       delete_on_termination = true
-      encrypted             = var.root_block_encrypted
+      encrypted             = var.root_block_device_encrypted
       iops                  = var.root_block_device_iops
-      kms_key_id            = var.root_block_device_snapshot_id
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id           = var.
+      kms_key_id            = var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn
     }
   }
 
@@ -258,7 +230,7 @@ resource "aws_ebs_volume" "this" {
 resource "aws_kms_key" "this" {
   count = var.instance_count > 0 && var.external_volume_kms_key_create ? 1 : 0
 
-  description = "KMS key for ${var.name} external volume."
+  description = "KMS key for ${var.name} instances volumes."
 
   tags = merge(
     {
