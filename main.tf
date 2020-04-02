@@ -6,7 +6,7 @@ locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted != null || var.root_block_device_iops != null
-
+  use_incrmental_names = var.instance_count > 1 || var.use_num_suffix
   use_default_subnets = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
@@ -27,10 +27,7 @@ resource "aws_instance" "this" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id = element(
-    data.aws_subnet.subnets.*.id,
-    count.index % local.subnet_count,
-  )
+  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
   key_name   = var.key_name
   monitoring = var.monitoring
   host_id    = var.host_id
@@ -55,7 +52,7 @@ resource "aws_instance" "this" {
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn
+      kms_key_id            = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
     }
   }
 
@@ -77,7 +74,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = var.instance_count > 1 || var.use_num_suffix ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incrmental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -102,10 +99,7 @@ resource "aws_instance" "this_t" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id = element(
-    data.aws_subnet.subnets.*.id,
-    count.index % local.subnet_count,
-  )
+  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
   key_name   = var.key_name
   monitoring = var.monitoring
   host_id    = var.host_id
@@ -130,7 +124,7 @@ resource "aws_instance" "this_t" {
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn
+      kms_key_id            = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
     }
   }
 
@@ -156,7 +150,7 @@ resource "aws_instance" "this_t" {
 
   tags = merge(
     {
-      "Name" = var.instance_count > 1 || var.use_num_suffix ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incrmental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -176,13 +170,41 @@ resource "aws_instance" "this_t" {
 }
 
 ####
-# Extra volumes
+# KMS
+####
+
+resource "aws_kms_key" "this" {
+  count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
+
+  description = "KMS key for ${var.name} instances volumes."
+  customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
+
+  tags = merge(
+    {
+      "Name" = var.use_num_suffix == "true" ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + 1) : var.volume_kms_key_name
+    },
+    {
+      "Terraform" = "true"
+    },
+    var.tags,
+    var.volume_kms_key_tags,
+  )
+}
+
+resource "aws_kms_alias" "this" {
+  count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
+
+  name          = var.volume_kms_key_alias
+  target_key_id = aws_kms_key.this[0].key_id
+}
+
+####
+# EBS
 ####
 
 locals {
-  instance_ids = compact(
-    concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]),
-  )
+  external_volume_use_incrmental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
+  instance_ids = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
 }
 
 resource "aws_volume_attachment" "this_ec2" {
@@ -199,25 +221,18 @@ resource "aws_volume_attachment" "this_ec2" {
 resource "aws_ebs_volume" "this" {
   count = var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0
 
-  availability_zone = element(
-    data.aws_subnet.subnets.*.availability_zone,
-    count.index % local.used_subnet_count,
-  )
+  availability_zone = element(data.aws_subnet.subnets.*.availability_zone, count.index % local.used_subnet_count)
   size = element(
     var.external_volume_sizes,
     floor(count.index / var.instance_count) % var.external_volume_count,
   )
 
   encrypted  = true
-  kms_key_id = var.external_volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.external_volume_kms_key_arn
+  kms_key_id = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
 
   tags = merge(
     {
-      "Name" = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true" ? format(
-        "%s-%0${var.num_suffix_digits}d",
-        var.external_volume_name,
-        count.index + 1,
-      ) : var.external_volume_name
+      "Name" = local.external_volume_use_incrmental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name
     },
     {
       "Terraform" = "true"
@@ -226,32 +241,3 @@ resource "aws_ebs_volume" "this" {
     var.external_volume_tags,
   )
 }
-
-resource "aws_kms_key" "this" {
-  count = var.instance_count > 0 && var.external_volume_kms_key_create ? 1 : 0
-
-  description = "KMS key for ${var.name} instances volumes."
-
-  tags = merge(
-    {
-      "Name" = var.use_num_suffix == "true" ? format(
-        "%s-%0${var.num_suffix_digits}d",
-        var.external_volume_kms_key_name,
-        count.index + 1,
-      ) : var.external_volume_kms_key_name
-    },
-    {
-      "Terraform" = "true"
-    },
-    var.tags,
-    var.external_volume_kms_key_tags,
-  )
-}
-
-resource "aws_kms_alias" "this" {
-  count = var.instance_count > 0 && var.external_volume_kms_key_create ? 1 : 0
-
-  name          = var.external_volume_kms_key_alias
-  target_key_id = aws_kms_key.this[0].key_id
-}
-
