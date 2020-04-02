@@ -189,38 +189,45 @@ variable "volume_tags" {
 # KMS
 ####
 
-variable "volume_kms_key_create" {
-  description = "Whether or not to create KMS key."
-  type        = bool
-  default     = true
-}
-
-variable "volume_kms_key_customer_master_key_spec" {
-  description = "Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1. Defaults to SYMMETRIC_DEFAULT."
-  type        = string
-  default     = null
-}
-
 variable "volume_kms_key_alias" {
-  description = "Alias of the KMS key used to encrypt the external volume."
+  description = "Alias of the KMS key used to encrypt the volumes."
   type        = string
   default     = "alias/default/ec2"
 }
 
 variable "volume_kms_key_arn" {
-  description = "KMS key used to encrypt the external volume. To be used when var.volume_kms_key_create is set to false."
+  description = "KMS key used to encrypt the volumes. To be used when var.volume_kms_key_create is set to false."
   type        = string
   default     = null
 }
 
+variable "volume_kms_key_create" {
+  description = "Whether or not to create a KMS key to be used for volumes encryption."
+  type        = bool
+  default     = true
+}
+
+variable "volume_kms_key_customer_master_key_spec" {
+  description = "Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports for the KMS key to be used for volumes. Valid values: SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1. Defaults to SYMMETRIC_DEFAULT."
+  type        = string
+  default     = null
+}
+
+
 variable "volume_kms_key_name" {
-  description = "Name prefix for the KMS key to be used for external volumes. Will be suffixes with a two-digit count index."
+  description = "Name prefix for the KMS key to be used for volumes. Will be suffixes with a two-digit count index."
+  type        = string
+  default     = null
+}
+
+variable "volume_kms_key_policy" {
+  description = "A valid policy JSON document for the KMS key to be used for volumes."
   type        = string
   default     = null
 }
 
 variable "volume_kms_key_tags" {
-  description = "Tags for the KMS key to be used for external volumes. Will be merge with var.tags."
+  description = "Tags for the KMS key to be used for volumes. Will be merge with var.tags."
   default     = {}
 }
 

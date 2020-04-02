@@ -178,6 +178,7 @@ resource "aws_kms_key" "this" {
 
   description = "KMS key for ${var.name} instances volumes."
   customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
+  policy = var.volume_kms_key_policy
 
   tags = merge(
     {
