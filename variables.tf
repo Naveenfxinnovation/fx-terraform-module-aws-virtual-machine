@@ -88,6 +88,12 @@ variable "ephemeral_block_devices" {
   default     = []
 }
 
+variable "host_id" {
+  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
+  type        = string
+  default     = null
+}
+
 variable "iam_instance_profile" {
   description = "The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile."
   default     = ""

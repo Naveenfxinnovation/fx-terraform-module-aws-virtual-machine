@@ -31,6 +31,7 @@ resource "aws_instance" "this" {
   )
   key_name   = var.key_name
   monitoring = var.monitoring
+  host_id    = var.host_id
 
   vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
   iam_instance_profile   = var.iam_instance_profile
@@ -130,6 +131,7 @@ resource "aws_instance" "this_t" {
   )
   key_name   = var.key_name
   monitoring = var.monitoring
+  host_id    = var.host_id
 
   vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
   iam_instance_profile   = var.iam_instance_profile
