@@ -61,8 +61,8 @@ module "standard_ec2_with_volume" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
-  external_volume_kms_key_create = true
-  external_volume_kms_key_alias  = "alias/tftest/ec2"
+  volume_kms_key_create = true
+  volume_kms_key_alias  = "alias/tftest/ec2"
 
   external_volume_count        = 1
   external_volume_sizes        = [10]

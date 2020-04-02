@@ -43,12 +43,13 @@ module "multiple_ec2_with_multiple_volumes" {
 
   ami           = "${data.aws_ami.amazon_linux.image_id}"
   instance_type = "t2.micro"
+  root_block_device_encrypted = true
 
   vpc_security_group_ids = {
     "0" = "${aws_security_group.multiple_ec2_with_multiple_volumes.id}"
   }
 
-  external_volume_kms_key_create = true
+  volume_kms_key_create = true
 
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
