@@ -72,7 +72,7 @@ variable "disable_api_termination" {
   default     = false
 }
 
-variable "ebs_block_device" {
+variable "ebs_block_devices" {
   description = "Additional EBS block devices to attach to the instance."
   default     = []
 }
@@ -82,8 +82,9 @@ variable "ebs_optimized" {
   default     = false
 }
 
-variable "ephemeral_block_device" {
+variable "ephemeral_block_devices" {
   description = "Customize Ephemeral (also known as Instance Store) volumes on the instance."
+  type        = list(object({ device_name = string, virtual_name = string, no_device = string }))
   default     = []
 }
 
@@ -132,9 +133,40 @@ variable "private_ips" {
   default     = []
 }
 
-variable "root_block_device" {
-  description = "Customize details about the root block device of the instance. See Block Devices below for details"
-  default     = []
+variable "root_block_device_device_name" {
+  description = "Customize details about the root block device of the instance: The name of the device to mount."
+  type        = string
+  default     = ""
+}
+
+variable "root_block_device_snapshot_id" {
+  description = "Customize details about the root block device of the instance: The Snapshot ID to mount."
+  type        = string
+  default     = null
+}
+
+variable "root_block_device_volume_type" {
+  description = "Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
+  type        = string
+  default     = null
+}
+
+variable "root_block_device_volume_size" {
+  description = "Customize details about the root block device of the instance: The size of the volume in gibibytes (GiB)."
+  type        = string
+  default     = null
+}
+
+variable "root_block_device_iops" {
+  description = "Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
+  type        = string
+  default     = null
+}
+
+variable "root_block_encrypted" {
+  description = "Customize details about the root block device of the instance: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot_id. Must be configured to perform drift detection."
+  type        = string
+  default     = true
 }
 
 variable "source_dest_check" {
@@ -210,3 +242,4 @@ variable "external_volume_device_names" {
   description = "Device names for the external volumes."
   default     = [""]
 }
+
