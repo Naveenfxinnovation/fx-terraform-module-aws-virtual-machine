@@ -1,9 +1,3 @@
-provider "aws" {
-  region     = "ca-central-1"
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-}
-
 data "aws_vpc" "default" {
   default = true
 }
@@ -90,11 +84,6 @@ module "advanced_ec2_with_multiple_volumes" {
   volume_tags = {
     Name     = "tftest-advanced_ec2_with_multiple_volumes"
     Fullname = "Root volume for advanced_ec2_with_multiple_volumes"
-  }
-
-  external_volume_tags = {
-    Name     = "tftest-advanced_ec2_with_multiple_volumes_external"
-    Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
   external_volume_tags = {

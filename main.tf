@@ -6,19 +6,13 @@ locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted != null || var.root_block_device_iops != null
-  use_incrmental_names = var.instance_count > 1 || var.use_num_suffix
-  use_default_subnets = var.subnet_ids_count == 0
+  use_incrmental_names      = var.instance_count > 1 || var.use_num_suffix
+  use_default_subnets       = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
 
   subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count
-  subnet_ids = split(
-    ",",
-    local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(
-      ",",
-      distinct(compact(concat([var.subnet_id], var.subnet_ids))),
-    ),
-  )
+  subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
 }
 
 resource "aws_instance" "this" {
@@ -27,10 +21,13 @@ resource "aws_instance" "this" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
-  key_name   = var.key_name
-  monitoring = var.monitoring
-  host_id    = var.host_id
+  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
+  key_name      = var.key_name
+  monitoring    = var.monitoring
+  host_id       = var.host_id
+
+  cpu_core_count       = var.cpu_core_count
+  cpu_threads_per_core = var.cpu_threads_per_core
 
   vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
   iam_instance_profile   = var.iam_instance_profile
@@ -99,10 +96,10 @@ resource "aws_instance" "this_t" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
-  key_name   = var.key_name
-  monitoring = var.monitoring
-  host_id    = var.host_id
+  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
+  key_name      = var.key_name
+  monitoring    = var.monitoring
+  host_id       = var.host_id
 
   vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
   iam_instance_profile   = var.iam_instance_profile
@@ -176,9 +173,9 @@ resource "aws_instance" "this_t" {
 resource "aws_kms_key" "this" {
   count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
 
-  description = "KMS key for ${var.name} instances volumes."
+  description              = "KMS key for ${var.name} instances volumes."
   customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
-  policy = var.volume_kms_key_policy
+  policy                   = var.volume_kms_key_policy
 
   tags = merge(
     {
@@ -205,7 +202,7 @@ resource "aws_kms_alias" "this" {
 
 locals {
   external_volume_use_incrmental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
-  instance_ids = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
+  instance_ids                         = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
 }
 
 resource "aws_volume_attachment" "this_ec2" {

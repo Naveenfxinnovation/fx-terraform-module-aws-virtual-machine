@@ -67,6 +67,18 @@ variable "cpu_credits" {
   default     = "standard"
 }
 
+variable "cpu_core_count" {
+  description = "Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API."
+  type        = number
+  default     = null
+}
+
+variable "cpu_threads_per_core" {
+  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information."
+  type        = number
+  default     = null
+}
+
 variable "disable_api_termination" {
   description = "If true, enables EC2 Instance Termination Protection."
   default     = false
@@ -259,4 +271,3 @@ variable "external_volume_device_names" {
   description = "Device names for the external volumes."
   default     = [""]
 }
-

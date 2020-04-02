@@ -13,12 +13,16 @@ $ terraform apply
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Providers
+
+No provider.
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| access\_key | Credentials: AWS access key. | string | n/a | yes |
-| secret\_key | Credentials: AWS secret key. Pass this a variable, never write password in the code. | string | n/a | yes |
+|------|-------------|------|---------|:-----:|
+| access\_key | Credentials: AWS access key. | `any` | n/a | yes |
+| secret\_key | Credentials: AWS secret key. Pass this a variable, never write password in the code. | `any` | n/a | yes |
 
 ## Outputs
 

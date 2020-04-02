@@ -119,4 +119,3 @@ output "external_volume_arns" {
   description = "ARNs of all the extra volumes."
   value       = aws_ebs_volume.this.*.arn
 }
-
