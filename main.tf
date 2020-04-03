@@ -22,7 +22,7 @@ resource "aws_instance" "this" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
+  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = var.key_name
   monitoring    = var.monitoring
   host_id       = var.host_id
@@ -50,7 +50,7 @@ resource "aws_instance" "this" {
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
+      kms_key_id            = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
     }
   }
 
@@ -96,7 +96,7 @@ resource "aws_instance" "this_t" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index % local.subnet_count)
+  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = var.key_name
   monitoring    = var.monitoring
   host_id       = var.host_id
@@ -121,7 +121,7 @@ resource "aws_instance" "this_t" {
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
+      kms_key_id            = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
     }
   }
 

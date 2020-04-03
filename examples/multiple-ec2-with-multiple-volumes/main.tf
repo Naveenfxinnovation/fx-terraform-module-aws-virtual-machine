@@ -2,6 +2,10 @@ data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_subnet_ids" "all" {
+  vpc_id = data.aws_vpc.default.id
+}
+
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -47,13 +51,16 @@ module "multiple_ec2_with_multiple_volumes" {
 
   ami                         = data.aws_ami.amazon_linux.image_id
   instance_type               = "t2.micro"
-  root_block_device_encrypted = true
+  root_block_device_encrypted = null
+
+  subnet_ids_count = 2
+  subnet_ids       = [element(tolist(data.aws_subnet_ids.all.ids), 0), element(tolist(data.aws_subnet_ids.all.ids), 1)]
 
   vpc_security_group_ids = [
-    [aws_security_group.example1.id, aws_security_group.example2.id]
-    [aws_security_group.example1.id]
-    [aws_security_group.example1.id]
-    [aws_security_group.example1.id]
+    [aws_security_group.example1.id, aws_security_group.example2.id],
+    [aws_security_group.example1.id],
+    [aws_security_group.example1.id],
+    [aws_security_group.example1.id],
   ]
 
   volume_kms_key_create = true
