@@ -84,7 +84,6 @@ resource "aws_instance" "this" {
     ignore_changes = [
       private_ip,
       root_block_device,
-      ebs_block_device,
       volume_tags,
     ]
   }
@@ -160,7 +159,6 @@ resource "aws_instance" "this_t" {
     ignore_changes = [
       private_ip,
       root_block_device,
-      ebs_block_device,
       volume_tags,
     ]
   }
