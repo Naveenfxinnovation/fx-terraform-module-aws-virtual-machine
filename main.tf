@@ -6,7 +6,7 @@ locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted != null || var.root_block_device_iops != null
-  use_incrmental_names      = var.instance_count > 1 || var.use_num_suffix
+  use_incremental_names      = var.instance_count > 1 || var.use_num_suffix
   use_default_subnets       = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
@@ -71,7 +71,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = local.use_incrmental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -147,7 +147,7 @@ resource "aws_instance" "this_t" {
 
   tags = merge(
     {
-      "Name" = local.use_incrmental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -201,8 +201,8 @@ resource "aws_kms_alias" "this" {
 ####
 
 locals {
-  external_volume_use_incrmental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
-  instance_ids                         = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
+  external_volume_use_incremental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
+  instance_ids                          = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
 }
 
 resource "aws_volume_attachment" "this_ec2" {
@@ -230,7 +230,7 @@ resource "aws_ebs_volume" "this" {
 
   tags = merge(
     {
-      "Name" = local.external_volume_use_incrmental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name
+      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name
     },
     {
       "Terraform" = "true"
