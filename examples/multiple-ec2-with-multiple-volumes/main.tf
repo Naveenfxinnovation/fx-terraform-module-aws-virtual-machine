@@ -41,8 +41,8 @@ module "multiple_ec2_with_multiple_volumes" {
 
   name = "tftest-multiple_ec2_with_multiple_volumes"
 
-  ami           = "${data.aws_ami.amazon_linux.image_id}"
-  instance_type = "t2.micro"
+  ami                         = "${data.aws_ami.amazon_linux.image_id}"
+  instance_type               = "t2.micro"
   root_block_device_encrypted = true
 
   vpc_security_group_ids = {
