@@ -1,4 +1,4 @@
-2.0.0
+1.0.0
 =======
 
 * feat: adds more accurate type validation for variables
@@ -12,7 +12,7 @@
 * tech: bumps pre-commit config versions
 * doc: adds CHANGELOG
 
-1.0.0
+0.0.0
 =======
 
-* First stable version
+* Fork from terraform-module-aws-ec2 module
