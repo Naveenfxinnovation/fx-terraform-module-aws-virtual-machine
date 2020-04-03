@@ -25,6 +25,7 @@ variable "subnet_id" {
 
 variable "subnet_ids" {
   description = "Subnet IDs where to provision the instances. Can be used instead or along with var.subnet_id."
+  type        = list(string)
   default     = [""]
 }
 
@@ -123,7 +124,8 @@ variable "instance_type" {
 
 variable "ipv6_addresses" {
   description = "Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface."
-  default     = []
+  type        = list(string)
+  default     = null
 }
 
 variable "ipv6_address_count" {
@@ -142,13 +144,15 @@ variable "monitoring" {
 }
 
 variable "placement_group" {
-  description = "The Placement Group to start the instances in. "
-  default     = ""
+  description = "The Placement Group to start the instances in."
+  type        = string
+  default     = null
 }
 
 variable "private_ips" {
   description = "Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance_count."
-  default     = []
+  type        = list(string)
+  default     = null
 }
 
 variable "root_block_device_volume_type" {
@@ -187,10 +191,9 @@ variable "tenancy" {
 
 variable "user_data" {
   description = "The user data to provide when launching the instance."
-  default     = ""
+  type        = string
+  default     = null
 }
-
-
 
 variable "volume_tags" {
   description = "Tags of the root volume of the instance. Will be merged with tags."
@@ -259,7 +262,8 @@ variable "external_volume_name" {
 
 variable "external_volume_sizes" {
   description = "Size of the external volumes."
-  default     = [""]
+  type        = list(number)
+  default     = []
 }
 
 variable "external_volume_tags" {
@@ -269,5 +273,6 @@ variable "external_volume_tags" {
 
 variable "external_volume_device_names" {
   description = "Device names for the external volumes."
+  type        = list(string)
   default     = [""]
 }
