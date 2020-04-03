@@ -16,7 +16,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | ~>2.54.0 |
 
 ## Inputs
 
