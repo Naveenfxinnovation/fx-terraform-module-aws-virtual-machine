@@ -54,7 +54,7 @@ resource "aws_instance" "this" {
   }
 
   dynamic "ephemeral_block_device" {
-    for_each = length(var.ephemeral_block_devices) > 0 ? var.ephemeral_block_devices : [0]
+    for_each = var.ephemeral_block_devices
 
     content {
       device_name  = ephemeral_block_device.value.device_name
@@ -125,7 +125,7 @@ resource "aws_instance" "this_t" {
   }
 
   dynamic "ephemeral_block_device" {
-    for_each = length(var.ephemeral_block_devices) > 0 ? var.ephemeral_block_devices : [0]
+    for_each = var.ephemeral_block_devices
 
     content {
       device_name  = ephemeral_block_device.value.device_name
