@@ -11,7 +11,6 @@ data "aws_subnet_ids" "all" {
   }
 }
 
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -51,9 +50,10 @@ module "standard_ec2_with_volume" {
 
   name = "tftest-standard_ec2_with_volume"
 
-  subnet_id     = element(tolist(data.aws_subnet_ids.all.ids), 0)
-  ami           = data.aws_ami.amazon_linux.image_id
-  instance_type = "t3.micro"
+  subnet_ids_count = 1
+  subnet_id        = element(tolist(data.aws_subnet_ids.all.ids), 0)
+  ami              = data.aws_ami.amazon_linux.image_id
+  instance_type    = "t3.micro"
 
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
