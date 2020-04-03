@@ -1,6 +1,6 @@
-# Terraform module: EC2
+# Terraform module: Virtual Machine (EC2, AutoScaling Group)
 
-Create X EC2 instances with X extra volumes, encrypted by default.
+Create X EC2/AutoScaling Group instances with X extra volumes, encrypted by default.
 
 This module creates the same kind of instances.
 They share the same features.
