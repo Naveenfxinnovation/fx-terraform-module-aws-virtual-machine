@@ -77,7 +77,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | volume\_kms\_key\_policy | A valid policy JSON document for the KMS key to be used for volumes. | `string` | `null` | no |
 | volume\_kms\_key\_tags | Tags for the KMS key to be used for volumes. Will be merge with var.tags. | `map` | `{}` | no |
 | volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
-| vpc\_security\_group\_ids | An object containing the list of security group IDs to associate with each instance. | `map` | `{}` | no |
+| vpc\_security\_group\_ids | An object containing the list of security group IDs to associate with each instance. | `list(list(string))` | `null` | no |
 
 ## Outputs
 

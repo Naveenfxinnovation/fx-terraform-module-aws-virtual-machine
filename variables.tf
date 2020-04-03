@@ -46,7 +46,8 @@ variable "use_num_suffix" {
 
 variable "vpc_security_group_ids" {
   description = "An object containing the list of security group IDs to associate with each instance."
-  default     = {}
+  type        = list(list(string))
+  default     = null
 }
 
 ####

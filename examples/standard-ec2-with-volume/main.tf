@@ -49,10 +49,6 @@ module "standard_ec2_with_volume" {
   ami           = data.aws_ami.amazon_linux.image_id
   instance_type = "t2.micro"
 
-  vpc_security_group_ids = {
-    "0" = aws_security_group.standard_ec2_with_volume.id
-  }
-
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }

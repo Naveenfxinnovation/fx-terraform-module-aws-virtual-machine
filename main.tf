@@ -13,6 +13,7 @@ locals {
 
   subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count
   subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
+  vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
 }
 
 resource "aws_instance" "this" {
@@ -29,11 +30,11 @@ resource "aws_instance" "this" {
   cpu_core_count       = var.cpu_core_count
   cpu_threads_per_core = var.cpu_threads_per_core
 
-  vpc_security_group_ids = lookup(var.vpc_security_group_ids, count.index % length(var.vpc_security_group_ids))
+  vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = length(var.private_ips) != 0 ? element(concat(var.private_ips, [""]), count.index) : ""
+  private_ip                  = var.private_ips != null ? element(concat(var.private_ips, [""]), count.index) : ""
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
 
@@ -100,11 +101,11 @@ resource "aws_instance" "this_t" {
   monitoring    = var.monitoring
   host_id       = var.host_id
 
-  vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
+  vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = length(var.private_ips) != 0 ? element(concat(var.private_ips, [""]), count.index) : ""
+  private_ip                  = var.private_ips != null ? element(concat(var.private_ips, [""]), count.index) : ""
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
 

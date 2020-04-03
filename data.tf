@@ -13,3 +13,8 @@ data "aws_subnet" "subnets" {
 
   id = element(local.subnet_ids, count.index)
 }
+
+data "aws_security_group" "default" {
+  vpc_id = local.vpc_id
+  name   = "default"
+}

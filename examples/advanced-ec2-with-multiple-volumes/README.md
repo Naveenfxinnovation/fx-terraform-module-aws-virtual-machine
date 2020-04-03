@@ -34,8 +34,8 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| access\_key | Credentials: AWS access key. | `any` | n/a | yes |
-| secret\_key | Credentials: AWS secret key. Pass this a variable, never write password in the code. | `any` | n/a | yes |
+| access\_key | n/a | `string` | n/a | yes |
+| secret\_key | n/a | `string` | n/a | yes |
 
 ## Outputs
 

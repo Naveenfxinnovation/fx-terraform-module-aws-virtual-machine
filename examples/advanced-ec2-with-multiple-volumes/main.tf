@@ -34,23 +34,22 @@ resource "random_string" "this" {
   special = false
 }
 
-resource "aws_security_group" "advanced_ec2_with_multiple_volumes" {
-  name        = "tftest-advanced_ec2_with_multiple_volumes${random_string.this.result}"
-  description = "Terraform test advanced_ec2_with_multiple_volumes."
-  vpc_id      = data.aws_vpc.default.id
+resource "aws_security_group" "example1" {
+  name   = "tftest${random_string.this.result}1"
+  vpc_id = data.aws_vpc.default.id
 }
 
-resource "aws_key_pair" "advanced_ec2_with_multiple_volumes" {
+resource "aws_key_pair" "example" {
   key_name   = "tftest_advanced_ec2_with_multiple_volumes"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAYu5mhM79nek7IsctWFXB8rkkmN2kmFBtNO8bVEsuxmB+WYBYwfpqWvzkSNtV3fTmnVKK+9zJtAxz7vke3DIg0e7asdQAC4TlyIQBye60dj5BT2AlAsjTjSoGZh9YQIAxvh7KBLBOiYBJ5VMQG0iQQwcpvZ1Lc1C81Uar1BE4ph5PRU9C7aukCtDW9j/L/BbxYWNLDdx/RvYKhRX87q7wDZztTYY0IJJzctysL67qV9V6dR9Ar2CGGxLAmKoMwBm60MILlC5UC/UPGCRVPULcrOpKphb72yujMS8R7QaPxqEvIXv0/bk0wa9b4azJoKNdp0L2St0M58WxXnNTlV0L dummy@key"
 }
 
-resource "aws_kms_key" "advanced_ec2_with_multiple_volumes" {
+resource "aws_kms_key" "example" {
 }
 
-resource "aws_kms_alias" "advanced_ec2_with_multiple_volumes" {
+resource "aws_kms_alias" "example" {
   name          = "alias/tftest/advanced/ec2"
-  target_key_id = aws_kms_key.advanced_ec2_with_multiple_volumes.key_id
+  target_key_id = aws_kms_key.example.key_id
 }
 
 module "advanced_ec2_with_multiple_volumes" {
@@ -63,15 +62,15 @@ module "advanced_ec2_with_multiple_volumes" {
   subnet_ids_count = 2
   subnet_ids       = [element(tolist(data.aws_subnet_ids.all.ids), 0), element(tolist(data.aws_subnet_ids.all.ids), 1)]
 
-  vpc_security_group_ids = {
-    "0" = aws_security_group.advanced_ec2_with_multiple_volumes.id
-  }
+  vpc_security_group_ids = [
+    [aws_security_group.example1.id]
+  ]
 
   use_num_suffix    = true
   num_suffix_digits = "03"
 
   user_data = "#!/bin/bash echo test"
-  key_name  = aws_key_pair.advanced_ec2_with_multiple_volumes.key_name
+  key_name  = aws_key_pair.example.key_name
 
   ebs_optimized               = true
   monitoring                  = true
@@ -92,7 +91,7 @@ module "advanced_ec2_with_multiple_volumes" {
     Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
-  volume_kms_key_arn = aws_kms_key.advanced_ec2_with_multiple_volumes.arn
+  volume_kms_key_arn = aws_kms_key.example.arn
 
   external_volume_count        = 3
   external_volume_sizes        = [20, 10, 15]
