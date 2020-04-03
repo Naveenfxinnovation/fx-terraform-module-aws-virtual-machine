@@ -32,7 +32,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
 | ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance. | `list(object({ device_name = string, virtual_name = string, no_device = string }))` | `[]` | no |
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
-| external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
+| external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]<br></pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
 | external\_volume\_sizes | Size of the external volumes. | `list(number)` | `[]` | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
@@ -56,7 +56,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | root\_block\_device\_volume\_type | Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2'). | `string` | n/a | yes |
 | source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | subnet\_id | Subnet ID where to provision all the instances. Can be used instead or along with var.subnet\_ids. | `string` | `""` | no |
-| subnet\_ids | Subnet IDs where to provision the instances. Can be used instead or along with var.subnet\_id. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
+| subnet\_ids | Subnet IDs where to provision the instances. Can be used instead or along with var.subnet\_id. | `list(string)` | <pre>[<br>  ""<br>]<br></pre> | no |
 | subnet\_ids\_count | How many subnet IDs in subnet\_ids. Cannot be computed automatically from other variables in Terraform 0.11.X. | `number` | `0` | no |
 | tags | Tags to be used for all this module resources. Will be merged with specific tags. | `map` | `{}` | no |
 | tenancy | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |

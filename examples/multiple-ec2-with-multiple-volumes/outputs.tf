@@ -49,4 +49,3 @@ output "external_volume_ids" {
 output "external_volume_arns" {
   value = module.multiple_ec2_with_multiple_volumes.external_volume_arns
 }
-

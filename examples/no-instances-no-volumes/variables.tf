@@ -5,4 +5,3 @@ variable "access_key" {
 variable "secret_key" {
   description = "Credentials: AWS secret key. Pass this a variable, never write password in the code."
 }
-

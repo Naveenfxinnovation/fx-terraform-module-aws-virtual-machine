@@ -4,4 +4,3 @@ module "no_instances_no_volumes" {
   instance_count        = 0
   external_volume_count = 0
 }
-

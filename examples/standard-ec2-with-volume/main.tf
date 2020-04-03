@@ -68,4 +68,3 @@ module "standard_ec2_with_volume" {
   external_volume_sizes        = [10]
   external_volume_device_names = ["/dev/sdh"]
 }
-

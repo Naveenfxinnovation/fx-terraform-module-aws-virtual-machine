@@ -67,4 +67,3 @@ module "multiple_ec2_with_multiple_volumes" {
   external_volume_sizes        = [5, 6, 7]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
 }
-

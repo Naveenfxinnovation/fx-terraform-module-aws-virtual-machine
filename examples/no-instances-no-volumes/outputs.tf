@@ -49,4 +49,3 @@ output "external_volume_ids" {
 output "external_volume_arns" {
   value = module.no_instances_no_volumes.external_volume_arns
 }
-
