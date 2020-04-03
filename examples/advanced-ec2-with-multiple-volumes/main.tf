@@ -60,7 +60,7 @@ module "advanced_ec2_with_multiple_volumes" {
   ami              = data.aws_ami.amazon_linux.image_id
   instance_type    = "m5.large"
   subnet_ids_count = 2
-  subnet_ids       = [element(tolist(data.aws_subnet_ids.all.ids), 0), element(tolist(data.aws_subnet_ids.all.ids), 1)]
+  subnet_ids       = [element(sort(tolist(data.aws_subnet_ids.all.ids)), 0), element(sort(tolist(data.aws_subnet_ids.all.ids)), 1)]
 
   vpc_security_group_ids = [
     [aws_security_group.example1.id]
