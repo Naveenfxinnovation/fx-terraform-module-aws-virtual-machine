@@ -105,7 +105,7 @@ output "subnet_ids" {
 output "kms_key_id" {
   description = "KMS key ID (ARN) used to encrypt all the extra volumes."
   value = element(
-    coalescelist([var.external_volume_kms_key_arn], aws_kms_key.this.*.arn),
+    coalescelist([var.volume_kms_key_arn], aws_kms_key.this.*.arn),
     0,
   )
 }
