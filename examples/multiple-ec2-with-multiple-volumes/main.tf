@@ -4,6 +4,11 @@ data "aws_vpc" "default" {
 
 data "aws_subnet_ids" "all" {
   vpc_id = data.aws_vpc.default.id
+
+  filter {
+    name   = "availability-zone"
+    values = ["us-east-1a", "us-east-1b"] # insert values here
+  }
 }
 
 data "aws_ami" "amazon_linux" {
