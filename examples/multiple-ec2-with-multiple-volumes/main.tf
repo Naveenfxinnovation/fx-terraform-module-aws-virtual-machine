@@ -33,7 +33,7 @@ resource "random_string" "this" {
 resource "aws_security_group" "multiple_ec2_with_multiple_volumes" {
   name        = "tftest-standard_ec2_with_volume${random_string.this.result}"
   description = "Terraform test standard_ec2_with_volume."
-  vpc_id      = "${data.aws_vpc.default.id}"
+  vpc_id      = data.aws_vpc.default.id
 }
 
 module "multiple_ec2_with_multiple_volumes" {
@@ -41,12 +41,12 @@ module "multiple_ec2_with_multiple_volumes" {
 
   name = "tftest-multiple_ec2_with_multiple_volumes"
 
-  ami                         = "${data.aws_ami.amazon_linux.image_id}"
+  ami                         = data.aws_ami.amazon_linux.image_id
   instance_type               = "t2.micro"
   root_block_device_encrypted = true
 
   vpc_security_group_ids = {
-    "0" = "${aws_security_group.multiple_ec2_with_multiple_volumes.id}"
+    "0" = aws_security_group.multiple_ec2_with_multiple_volumes.id
   }
 
   volume_kms_key_create = true
@@ -67,3 +67,4 @@ module "multiple_ec2_with_multiple_volumes" {
   external_volume_sizes        = [5, 6, 7]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
 }
+

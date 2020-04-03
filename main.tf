@@ -29,7 +29,7 @@ resource "aws_instance" "this" {
   cpu_core_count       = var.cpu_core_count
   cpu_threads_per_core = var.cpu_threads_per_core
 
-  vpc_security_group_ids = var.vpc_security_group_ids[count.index % length(var.vpc_security_group_ids)]
+  vpc_security_group_ids = lookup(var.vpc_security_group_ids, count.index % length(var.vpc_security_group_ids))
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
