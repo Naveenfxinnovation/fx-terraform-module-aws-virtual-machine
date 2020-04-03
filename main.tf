@@ -6,7 +6,7 @@ locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted != null || var.root_block_device_iops != null
-  use_incremental_names      = var.instance_count > 1 || var.use_num_suffix
+  use_incremental_names     = var.instance_count > 1 || var.use_num_suffix
   use_default_subnets       = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
