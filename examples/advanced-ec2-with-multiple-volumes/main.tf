@@ -60,7 +60,7 @@ module "advanced_ec2_with_multiple_volumes" {
   ami              = "${data.aws_ami.amazon_linux.image_id}"
   instance_type    = "t3.micro"
   subnet_ids_count = 2
-  subnet_ids       = ["${element(data.aws_subnet_ids.all.ids, 0)}", "${element(data.aws_subnet_ids.all.ids, 1)}"]
+  subnet_ids       = ["${element(tolist(data.aws_subnet_ids.all.ids), 0)}", "${element(tolist(data.aws_subnet_ids.all.ids), 1)}"]
 
   vpc_security_group_ids = {
     "0" = "${aws_security_group.advanced_ec2_with_multiple_volumes.id}"

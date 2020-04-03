@@ -45,7 +45,7 @@ module "standard_ec2_with_volume" {
 
   name = "tftest-standard_ec2_with_volume"
 
-  subnet_id     = "${element(data.aws_subnet_ids.all.ids, 0)}"
+  subnet_id     = "${element(tolist(data.aws_subnet_ids.all.ids), 0)}"
   ami           = "${data.aws_ami.amazon_linux.image_id}"
   instance_type = "t2.micro"
 
