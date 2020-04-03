@@ -47,7 +47,7 @@ module "standard_ec2_with_volume" {
 
   subnet_id     = element(tolist(data.aws_subnet_ids.all.ids), 0)
   ami           = data.aws_ami.amazon_linux.image_id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
 
   volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
