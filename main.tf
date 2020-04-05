@@ -310,7 +310,7 @@ resource "aws_instance" "this_t" {
 ####
 
 locals {
-  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false
+  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false && var.instance_count > 0
 }
 
 resource "aws_kms_key" "this" {
