@@ -1,7 +1,3 @@
-####
-# EC2
-####
-
 locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
@@ -16,6 +12,123 @@ locals {
   vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
 }
 
+####
+# AutoScaling Group
+####
+
+resource "aws_launch_configuration" "this" {
+  count = var.use_autoscaling_group ? 1 : 0
+
+  name_prefix = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+
+  image_id             = var.ami
+  instance_type        = var.instance_type
+  iam_instance_profile = var.iam_instance_profile
+  key_name             = var.key_name
+  enable_monitoring    = var.monitoring
+
+  security_groups = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
+
+  associate_public_ip_address = var.associate_public_ip_address
+  user_data                   = var.user_data
+
+  ebs_optimized = var.ebs_optimized
+
+  dynamic "root_block_device" {
+    for_each = local.should_update_root_device ? [1] : [0]
+
+    content {
+      // Unlike EC2, launch configuration does not supporton-the-fly ecnryption of root device
+      // Only device from encrypted snapshots can be encrypted
+      delete_on_termination = true
+      encrypted             = var.root_block_device_encrypted
+      iops                  = var.root_block_device_iops
+      volume_size           = var.root_block_device_volume_size
+      volume_type           = var.root_block_device_volume_type
+    }
+  }
+
+  dynamic "ephemeral_block_device" {
+    for_each = var.ephemeral_block_devices
+
+    content {
+      device_name  = ephemeral_block_device.value.device_name
+      no_device    = lookup(ephemeral_block_device.value, "no_device", null)
+      virtual_name = lookup(ephemeral_block_device.value, "virtual_name", null)
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "this" {
+  count = var.use_autoscaling_group ? 1 : 0
+
+  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + 1) : var.autoscaling_group_name
+
+  desired_capacity = var.instance_count
+  max_size         = var.autoscaling_group_max_size
+  min_size         = var.autoscaling_group_min_size
+
+  health_check_grace_period = var.autoscaling_group_health_check_grace_period
+  health_check_type         = var.autoscaling_group_health_check_type
+  default_cooldown          = var.autoscaling_group_default_cooldown
+
+  force_delete              = false
+  wait_for_capacity_timeout = var.autoscaling_group_wait_for_capacity_timeout
+  min_elb_capacity          = var.autoscaling_group_min_elb_capacity
+  wait_for_elb_capacity     = var.autoscaling_group_wait_for_elb_capacity
+
+  vpc_zone_identifier = data.aws_subnet.subnets.*.id
+
+  launch_configuration = aws_launch_configuration.this.*.id[0]
+
+  termination_policies  = var.autoscaling_group_termination_policies
+  suspended_processes   = var.autoscaling_group_suspended_processes
+  metrics_granularity   = var.autoscaling_group_metrics_granularity
+  enabled_metrics       = var.autoscaling_group_enabled_metrics
+  max_instance_lifetime = var.autoscaling_group_max_instance_lifetime
+
+  placement_group = var.placement_group
+
+  tags = concat([
+    {
+      key                 = "Terraform"
+      value               = true
+      propagate_at_launch = true
+    }
+    ], [
+    for key, value in var.tags : {
+      key                 = key,
+      value               = value,
+      propagate_at_launch = true,
+    }
+    ], [
+    for key, value in var.autoscaling_group_tags : {
+      key                 = key,
+      value               = value,
+      propagate_at_launch = false,
+    }
+    ], [
+    for key, value in var.instance_tags : {
+      key                 = key,
+      value               = value,
+      propagate_at_launch = true,
+    }
+    ],
+  )
+
+  timeouts {
+    delete = "15m"
+  }
+}
+
+####
+# EC2
+####
+
 resource "aws_instance" "this" {
   count = var.use_autoscaling_group ? 0 : var.instance_count * (1 - local.is_t_instance_type)
 
@@ -25,21 +138,21 @@ resource "aws_instance" "this" {
   subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = var.key_name
   monitoring    = var.monitoring
-  host_id       = var.host_id
+  host_id       = var.ec2_host_id
 
-  cpu_core_count       = var.cpu_core_count
-  cpu_threads_per_core = var.cpu_threads_per_core
+  cpu_core_count       = var.ec2_cpu_core_count
+  cpu_threads_per_core = var.ec2_cpu_threads_per_core
 
   vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = var.private_ips != null ? element(concat(var.private_ips, [""]), count.index) : null
-  ipv6_address_count          = var.ipv6_address_count
-  ipv6_addresses              = var.ipv6_addresses
+  private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
+  ipv6_address_count          = var.ec2_ipv6_address_count
+  ipv6_addresses              = var.ec2_ipv6_addresses
 
   ebs_optimized = var.ebs_optimized
-  volume_tags   = var.volume_tags
+  volume_tags   = var.ec2_volume_tags
 
   dynamic "root_block_device" {
     for_each = local.should_update_root_device ? [1] : [0]
@@ -64,15 +177,15 @@ resource "aws_instance" "this" {
     }
   }
 
-  source_dest_check                    = var.source_dest_check
-  disable_api_termination              = var.disable_api_termination
-  instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
+  source_dest_check                    = var.ec2_source_dest_check
+  disable_api_termination              = var.ec2_disable_api_termination
+  instance_initiated_shutdown_behavior = var.ec2_instance_initiated_shutdown_behavior
   placement_group                      = var.placement_group
-  tenancy                              = var.tenancy
+  tenancy                              = var.ec2_tenancy
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -99,18 +212,18 @@ resource "aws_instance" "this_t" {
   subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = var.key_name
   monitoring    = var.monitoring
-  host_id       = var.host_id
+  host_id       = var.ec2_host_id
 
   vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = var.private_ips != null ? element(concat(var.private_ips, [""]), count.index) : null
-  ipv6_address_count          = var.ipv6_address_count
-  ipv6_addresses              = var.ipv6_addresses
+  private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
+  ipv6_address_count          = var.ec2_ipv6_address_count
+  ipv6_addresses              = var.ec2_ipv6_addresses
 
   ebs_optimized = var.ebs_optimized
-  volume_tags   = var.volume_tags
+  volume_tags   = var.ec2_volume_tags
 
   dynamic "root_block_device" {
     for_each = local.should_update_root_device ? [1] : [0]
@@ -135,19 +248,19 @@ resource "aws_instance" "this_t" {
     }
   }
 
-  source_dest_check                    = var.source_dest_check
-  disable_api_termination              = var.disable_api_termination
-  instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
+  source_dest_check                    = var.ec2_source_dest_check
+  disable_api_termination              = var.ec2_disable_api_termination
+  instance_initiated_shutdown_behavior = var.ec2_instance_initiated_shutdown_behavior
   placement_group                      = var.placement_group
-  tenancy                              = var.tenancy
+  tenancy                              = var.ec2_tenancy
 
   credit_specification {
-    cpu_credits = var.cpu_credits
+    cpu_credits = var.ec2_cpu_credits
   }
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
