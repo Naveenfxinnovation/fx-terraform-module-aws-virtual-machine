@@ -99,7 +99,7 @@ module "advanced_ec2_with_multiple_volumes" {
   volume_kms_key_arn = aws_kms_key.example.arn
 
   external_volume_count        = 3
-  external_volume_sizes        = [20, 10, 15]
+  external_volume_sizes        = [500, 15]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
-  external_volume_types        = ["st1"]
+  external_volume_types        = ["sc1", "gp2"]
 }
