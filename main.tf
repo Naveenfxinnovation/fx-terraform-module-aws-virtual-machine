@@ -92,32 +92,41 @@ resource "aws_autoscaling_group" "this" {
 
   placement_group = var.placement_group
 
-  tags = concat([
-    {
-      key                 = "Terraform"
-      value               = true
+  tag {
+    key                 = "Terraform"
+    value               = true
+    propagate_at_launch = true
+  }
+
+  dynamic "tag" {
+    for_each = var.tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
       propagate_at_launch = true
     }
-    ], [
-    for key, value in var.tags : {
-      key                 = key,
-      value               = value,
-      propagate_at_launch = true,
+  }
+
+  dynamic "tag" {
+    for_each = var.autoscaling_group_tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = false
     }
-    ], [
-    for key, value in var.autoscaling_group_tags : {
-      key                 = key,
-      value               = value,
-      propagate_at_launch = false,
+  }
+
+  dynamic "tag" {
+    for_each = var.instance_tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
     }
-    ], [
-    for key, value in var.instance_tags : {
-      key                 = key,
-      value               = value,
-      propagate_at_launch = true,
-    }
-    ],
-  )
+  }
 
   timeouts {
     delete = "15m"
