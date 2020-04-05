@@ -125,6 +125,13 @@ resource "aws_autoscaling_group" "this" {
   }
 }
 
+resource "aws_autoscaling_attachment" "this" {
+  count = length(var.autoscaling_group_target_group_arns)
+
+  autoscaling_group_name = aws_autoscaling_group.this.id
+  alb_target_group_arn   = element(var.autoscaling_group_target_group_arns, count.index)
+}
+
 ####
 # EC2
 ####
