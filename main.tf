@@ -48,6 +48,18 @@ resource "aws_launch_configuration" "this" {
     }
   }
 
+  dynamic "ebs_block_device" {
+    for_each = var.external_volume_count
+    iterator = "external_volumes"
+
+    content {
+      delete_on_termination = false
+      encrypted             = true
+      volume_size           = element(var.external_volume_sizes, external_volumes.index)
+      volume_type           = element(var.external_volume_types, external_volumes.index)
+    }
+  }
+
   dynamic "ephemeral_block_device" {
     for_each = var.ephemeral_block_devices
 
