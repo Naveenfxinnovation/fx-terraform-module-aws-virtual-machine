@@ -154,7 +154,7 @@ variable "autoscaling_group_default_cooldown" {
 
 variable "autoscaling_group_enabled_metrics" {
   description = "A list of metrics to collect. The allowed values are GroupDesiredCapacity, GroupInServiceCapacity, GroupPendingCapacity, GroupMinSize, GroupMaxSize, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupStandbyCapacity, GroupTerminatingCapacity, GroupTerminatingInstances, GroupTotalCapacity, GroupTotalInstances."
-  type        = string
+  type        = set(string)
   default     = null
 }
 
@@ -208,7 +208,7 @@ variable "autoscaling_group_name" {
 
 variable "autoscaling_group_suspended_processes" {
   description = "A list of processes to suspend for the AutoScaling Group. The allowed values are Launch, Terminate, HealthCheck, ReplaceUnhealthy, AZRebalance, AlarmNotification, ScheduledActions, AddToLoadBalancer. Note that if you suspend either the Launch or Terminate process types, it can prevent your autoscaling group from functioning properly."
-  type        = string
+  type        = set(string)
   default     = null
 }
 
@@ -220,7 +220,7 @@ variable "autoscaling_group_target_group_arns" {
 
 variable "autoscaling_group_termination_policies" {
   description = "A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, OldestLaunchTemplate, AllocationStrategy, Default."
-  type        = string
+  type        = list(string)
   default     = null
 }
 
