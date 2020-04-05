@@ -49,14 +49,15 @@ resource "aws_launch_configuration" "this" {
   }
 
   dynamic "ebs_block_device" {
-    for_each = var.external_volume_count
-    iterator = "external_volumes"
+    for_each = data.null_data_source.ebs_block_device
+    iterator = "ebs_block_device"
 
     content {
       delete_on_termination = false
       encrypted             = true
-      volume_size           = element(var.external_volume_sizes, external_volumes.index)
-      volume_type           = element(var.external_volume_types, external_volumes.index)
+      device_name           = ebs_block_device.value.outputs.device_name
+      volume_size           = ebs_block_device.value.outputs.size
+      volume_type           = ebs_block_device.value.outputs.type
     }
   }
 

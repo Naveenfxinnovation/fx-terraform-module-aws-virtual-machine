@@ -18,3 +18,13 @@ data "aws_security_group" "default" {
   vpc_id = local.vpc_id
   name   = "default"
 }
+
+data "null_data_source" "ebs_block_device" {
+  count = var.external_volume_count
+
+  inputs = {
+    device_name = element(var.external_volume_device_names, count.index)
+    type        = element(var.external_volume_types, count.index)
+    size        = element(var.external_volume_sizes, count.index)
+  }
+}
