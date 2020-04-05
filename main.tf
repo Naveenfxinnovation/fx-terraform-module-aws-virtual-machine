@@ -53,7 +53,6 @@ resource "aws_launch_configuration" "this" {
 
     content {
       device_name  = ephemeral_block_device.value.device_name
-      no_device    = lookup(ephemeral_block_device.value, "no_device", null)
       virtual_name = lookup(ephemeral_block_device.value, "virtual_name", null)
     }
   }

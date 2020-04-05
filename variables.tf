@@ -39,7 +39,7 @@ variable "ebs_optimized" {
 
 variable "ephemeral_block_devices" {
   description = "Customize Ephemeral (also known as Instance Store) volumes on the instance."
-  type        = list(object({ device_name = string, virtual_name = string, no_device = string }))
+  type        = list(object({ device_name = string, virtual_name = string }))
   default     = []
 }
 
