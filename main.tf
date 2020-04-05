@@ -6,7 +6,7 @@ locals {
   is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
 
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != null
-  use_incremental_names     = var.instance_count > 1 || var.use_num_suffix
+  use_incremental_names     = var.instance_count > 1 || (var.use_num_suffix && var.num_suffix_digits > 0)
   use_default_subnets       = var.subnet_ids_count == 0
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
@@ -17,7 +17,7 @@ locals {
 }
 
 resource "aws_instance" "this" {
-  count = var.instance_count * (1 - local.is_t_instance_type)
+  count = var.use_autoscaling_group ? 0 : var.instance_count * (1 - local.is_t_instance_type)
 
   ami           = var.ami
   instance_type = var.instance_type
@@ -91,7 +91,7 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_instance" "this_t" {
-  count = var.instance_count * local.is_t_instance_type
+  count = var.use_autoscaling_group ? 0 : var.instance_count * local.is_t_instance_type
 
   ami           = var.ami
   instance_type = var.instance_type
