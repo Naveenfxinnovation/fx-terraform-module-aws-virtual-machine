@@ -1,3 +1,11 @@
+1.1.0
+=======
+
+* feat: handle AutoScaling group and Launch Configuration resources
+* feat: handle volume types for external volumes
+* refactor: better handling of numeric suffix, toggleable by setting it to 0 and using numeric value instead of string
+* refactor: reorganizes variables to separate EC2-specific, ASG-specific and common
+
 1.0.0
 =======
 
