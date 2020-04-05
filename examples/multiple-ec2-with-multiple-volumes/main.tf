@@ -70,7 +70,7 @@ module "multiple_ec2_with_multiple_volumes" {
 
   volume_kms_key_create = true
 
-  volume_tags = {
+  ec2_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 

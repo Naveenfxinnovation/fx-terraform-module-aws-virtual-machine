@@ -80,13 +80,13 @@ module "advanced_ec2_with_multiple_volumes" {
   ebs_optimized               = true
   monitoring                  = true
   associate_public_ip_address = true
-  source_dest_check           = false
 
   instance_tags = {
     Fullname = "Tftest instance."
   }
 
-  volume_tags = {
+  ec2_source_dest_check = false
+  ec2_volume_tags = {
     Name     = "tftest-advanced_ec2_with_multiple_volumes"
     Fullname = "Root volume for advanced_ec2_with_multiple_volumes"
   }

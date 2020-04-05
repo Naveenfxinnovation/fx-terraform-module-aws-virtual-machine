@@ -55,7 +55,7 @@ module "standard_ec2_with_volume" {
   ami              = data.aws_ami.amazon_linux.image_id
   instance_type    = "t3.micro"
 
-  volume_tags = {
+  ec2_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
