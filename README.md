@@ -66,6 +66,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
 | external\_volume\_sizes | Size of the external volumes. | `list(number)` | `[]` | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
+| external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | `null` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
 | instance\_count | Number of instances to create. Can also be 0. | `number` | `1` | no |
 | instance\_tags | Tags specific to the instances. | `map` | `{}` | no |

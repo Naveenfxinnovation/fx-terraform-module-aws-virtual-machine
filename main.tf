@@ -346,6 +346,10 @@ resource "aws_ebs_volume" "this" {
     var.external_volume_sizes,
     floor(count.index / var.instance_count) % var.external_volume_count,
   )
+  type = element(
+    var.external_volume_types,
+    floor(count.index / var.instance_count) % var.external_volume_count,
+  )
 
   encrypted  = true
   kms_key_id = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn

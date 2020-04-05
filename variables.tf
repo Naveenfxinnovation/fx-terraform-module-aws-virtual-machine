@@ -338,7 +338,6 @@ variable "volume_kms_key_customer_master_key_spec" {
   default     = null
 }
 
-
 variable "volume_kms_key_name" {
   description = "Name prefix for the KMS key to be used for volumes. Will be suffixes with a two-digit count index."
   type        = string
@@ -365,6 +364,12 @@ variable "external_volume_count" {
   default     = 0
 }
 
+variable "external_volume_device_names" {
+  description = "Device names for the external volumes."
+  type        = list(string)
+  default     = [""]
+}
+
 variable "external_volume_name" {
   description = "Prefix of the external volumes to create."
   default     = "extra-volumes"
@@ -381,8 +386,8 @@ variable "external_volume_tags" {
   default     = {}
 }
 
-variable "external_volume_device_names" {
-  description = "Device names for the external volumes."
+variable "external_volume_types" {
+  description = "The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). "
   type        = list(string)
-  default     = [""]
+  default     = null
 }
