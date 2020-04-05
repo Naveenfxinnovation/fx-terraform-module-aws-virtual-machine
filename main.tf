@@ -50,14 +50,13 @@ resource "aws_launch_configuration" "this" {
 
   dynamic "ebs_block_device" {
     for_each = data.null_data_source.ebs_block_device
-    iterator = "ebs_block_device"
 
     content {
-      delete_on_termination = false
+      delete_on_termination = true
       encrypted             = true
       device_name           = ebs_block_device.value.outputs.device_name
-      volume_size           = ebs_block_device.value.outputs.size
-      volume_type           = ebs_block_device.value.outputs.type
+      volume_size           = lookup(ebs_block_device.value.outputs, "size", null)
+      volume_type           = lookup(ebs_block_device.value.outputs, "type", null)
     }
   }
 
@@ -311,7 +310,7 @@ resource "aws_instance" "this_t" {
 ####
 
 locals {
-  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && ! var.use_autoscaling_group
+  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false
 }
 
 resource "aws_kms_key" "this" {
@@ -346,11 +345,12 @@ resource "aws_kms_alias" "this" {
 
 locals {
   external_volume_use_incremental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
+  should_create_extra_volumes           = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
   instance_ids                          = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
 }
 
 resource "aws_volume_attachment" "this_ec2" {
-  count = var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0
+  count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
 
   device_name = element(
     var.external_volume_device_names,
@@ -361,7 +361,7 @@ resource "aws_volume_attachment" "this_ec2" {
 }
 
 resource "aws_ebs_volume" "this" {
-  count = var.instance_count > 0 ? var.external_volume_count * var.instance_count : 0
+  count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
 
   availability_zone = element(data.aws_subnet.subnets.*.availability_zone, count.index % local.used_subnet_count)
   size = element(

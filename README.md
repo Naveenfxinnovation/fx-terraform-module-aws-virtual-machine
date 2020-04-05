@@ -46,7 +46,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | autoscaling\_group\_tags | Tags specific to the AutoScaling Group. Will be merged with var.tags. | `map` | `{}` | no |
 | autoscaling\_group\_target\_group\_arns | A list of aws\_alb\_target\_group ARNs, for use with Application or Network Load Balancing. | `list(string)` | `null` | no |
 | autoscaling\_group\_termination\_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, OldestLaunchTemplate, AllocationStrategy, Default. | `list(string)` | `null` | no |
-| autoscaling\_group\_wait\_for\_capacity\_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. (See also Waiting for Capacity below.) Setting this to '0' causes Terraform to skip all Capacity Waiting behavior. | `number` | `null` | no |
+| autoscaling\_group\_wait\_for\_capacity\_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. (See also Waiting for Capacity below.) Setting this to '0' causes Terraform to skip all Capacity Waiting behavior. | `string` | `null` | no |
 | autoscaling\_group\_wait\_for\_elb\_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances from this autoscaling group in all attached load balancers on both create and update operations. (Takes precedence over min\_elb\_capacity behavior.) | `number` | `null` | no |
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
 | ec2\_cpu\_core\_count | Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API. | `number` | `null` | no |
@@ -65,9 +65,9 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
-| external\_volume\_sizes | Size of the external volumes. | `list(number)` | `[]` | no |
+| external\_volume\_sizes | Size of the external volumes. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
-| external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | `null` | no |
+| external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | <pre>[<br>  null<br>]</pre> | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
 | instance\_count | Number of instances to create. Can also be 0. | `number` | `1` | no |
 | instance\_tags | Tags specific to the instances. | `map` | `{}` | no |

@@ -70,25 +70,24 @@ module "example" {
   name = "tftest-asg"
 
   subnet_ids_count = 2
-  subnet_id        = data.aws_subnet_ids.all.ids
+  subnet_ids       = data.aws_subnet_ids.all.ids
   ami              = data.aws_ami.amazon_linux.image_id
   instance_type    = "t3.micro"
+
+  use_autoscaling_group = true
 
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
   autoscaling_group_name              = "tftestasg${random_string.this.result}"
-  health_check_type                   = "ELB"
+  autoscaling_group_health_check_type = "ELB"
   autoscaling_group_target_group_arns = [aws_lb_target_group.example.arn]
   autoscaling_group_tags = {
     Name = "tftestasg{random_string.this.result}"
   }
-  autoscaling_group_wait_for_capacity_timeout = 15
+  autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1
 
-  autos = {
-    Name = "tftest-multiple_ec2_with_multiple_volumes"
-  }
-
-  external_volume_count = 2
-  external_volume_sizes = [5]
+  external_volume_count        = 2
+  external_volume_sizes        = [5]
+  external_volume_device_names = ["/dev/sdh", "/dev/sdi"]
 }
