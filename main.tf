@@ -289,8 +289,12 @@ resource "aws_instance" "this_t" {
 # KMS
 ####
 
+locals {
+  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && ! var.use_autoscaling_group
+}
+
 resource "aws_kms_key" "this" {
-  count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
+  count = local.should_create_kms_key ? 1 : 0
 
   description              = "KMS key for ${var.name} instance(s) volume(s)."
   customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
@@ -309,7 +313,7 @@ resource "aws_kms_key" "this" {
 }
 
 resource "aws_kms_alias" "this" {
-  count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
+  count = local.should_create_kms_key ? 1 : 0
 
   name          = var.volume_kms_key_alias
   target_key_id = aws_kms_key.this[0].key_id
