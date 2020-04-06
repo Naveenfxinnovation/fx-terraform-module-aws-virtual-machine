@@ -1,3 +1,39 @@
+####
+# AutoScaling Group
+####
+
+output "launch_configuration_id" {
+  value = module.example.launch_configuration_id
+}
+
+output "launch_configuration_arn" {
+  value = module.example.launch_configuration_arn
+}
+
+output "launch_configuration_name" {
+  value = module.example.launch_configuration_name
+}
+
+output "launch_configuration_ebs_block_devices" {
+  value = module.example.launch_configuration_ebs_block_devices
+}
+
+output "autoscaling_group_id" {
+  value = module.example.autoscaling_group_id
+}
+
+output "autoscaling_group_arn" {
+  value = module.example.autoscaling_group_arn
+}
+
+output "autoscaling_group_availability_zones" {
+  value = module.example.autoscaling_group_availability_zones
+}
+
+####
+# EC2
+####
+
 output "availability_zones" {
   value = module.example.availability_zones
 }
