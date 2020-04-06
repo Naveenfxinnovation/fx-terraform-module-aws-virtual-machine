@@ -1,6 +1,4 @@
 locals {
-  is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
-
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != null
   use_incremental_names     = var.instance_count > 1 || (var.use_num_suffix && var.num_suffix_digits > 0)
   use_default_subnets       = var.subnet_ids_count == 0
@@ -156,8 +154,12 @@ resource "aws_autoscaling_attachment" "this" {
 # EC2
 ####
 
+locals {
+  is_t_instance_type = replace(var.instance_type, "/^t[23]{1}\\..*$/", "1") == "1" ? "1" : "0"
+}
+
 resource "aws_instance" "this" {
-  count = var.use_autoscaling_group ? 0 : var.instance_count * (1 - local.is_t_instance_type)
+  count = var.use_autoscaling_group ? 0 : var.instance_count
 
   ami           = var.ami
   instance_type = var.instance_type
@@ -210,79 +212,12 @@ resource "aws_instance" "this" {
   placement_group                      = var.placement_group
   tenancy                              = var.ec2_tenancy
 
-  tags = merge(
-    {
-      "Name" = local.use_incremental_names ? format("%s%-0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
-    },
-    var.tags,
-    var.instance_tags,
-  )
-
-  lifecycle {
-    # Due to several known issues in Terraform AWS provider related to arguments of aws_instance:
-    # (eg, https://github.com/terraform-providers/terraform-provider-aws/issues/2036)
-    # we have to ignore changes in the following arguments
-    ignore_changes = [
-      private_ip,
-      root_block_device,
-      volume_tags,
-    ]
-  }
-}
-
-resource "aws_instance" "this_t" {
-  count = var.use_autoscaling_group ? 0 : var.instance_count * local.is_t_instance_type
-
-  ami           = var.ami
-  instance_type = var.instance_type
-  user_data     = var.user_data
-  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
-  key_name      = var.key_name
-  monitoring    = var.monitoring
-  host_id       = var.ec2_host_id
-
-  vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
-  iam_instance_profile   = var.iam_instance_profile
-
-  associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
-  ipv6_address_count          = var.ec2_ipv6_address_count
-  ipv6_addresses              = var.ec2_ipv6_addresses
-
-  ebs_optimized = var.ebs_optimized
-  volume_tags   = var.ec2_volume_tags
-
-  dynamic "root_block_device" {
-    for_each = local.should_update_root_device ? [1] : [0]
+  dynamic "credit_specification" {
+    for_each = local.is_t_instance_type ? [1] : [0]
 
     content {
-      delete_on_termination = true
-      encrypted             = var.root_block_device_encrypted
-      iops                  = var.root_block_device_iops
-      volume_size           = var.root_block_device_volume_size
-      volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
+      cpu_credits = var.ec2_cpu_credits
     }
-  }
-
-  dynamic "ephemeral_block_device" {
-    for_each = var.ephemeral_block_devices
-
-    content {
-      device_name  = ephemeral_block_device.value.device_name
-      no_device    = lookup(ephemeral_block_device.value, "no_device", null)
-      virtual_name = lookup(ephemeral_block_device.value, "virtual_name", null)
-    }
-  }
-
-  source_dest_check                    = var.ec2_source_dest_check
-  disable_api_termination              = var.ec2_disable_api_termination
-  instance_initiated_shutdown_behavior = var.ec2_instance_initiated_shutdown_behavior
-  placement_group                      = var.placement_group
-  tenancy                              = var.ec2_tenancy
-
-  credit_specification {
-    cpu_credits = var.ec2_cpu_credits
   }
 
   tags = merge(
@@ -346,7 +281,6 @@ resource "aws_kms_alias" "this" {
 locals {
   external_volume_use_incremental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
   should_create_extra_volumes           = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
-  instance_ids                          = compact(concat(aws_instance.this.*.id, aws_instance.this_t.*.id, [""]))
 }
 
 resource "aws_volume_attachment" "this_ec2" {
@@ -357,7 +291,7 @@ resource "aws_volume_attachment" "this_ec2" {
     floor(count.index / var.instance_count) % var.external_volume_count,
   )
   volume_id   = element(aws_ebs_volume.this.*.id, count.index)
-  instance_id = element(local.instance_ids, count.index % var.instance_count)
+  instance_id = element(aws_instance.this.*.id, count.index % var.instance_count)
 }
 
 resource "aws_ebs_volume" "this" {
