@@ -172,7 +172,7 @@ resource "aws_instance" "this_t" {
 resource "aws_kms_key" "this" {
   count = var.instance_count > 0 && var.volume_kms_key_create ? 1 : 0
 
-  description              = "KMS key for ${var.name} instances volumes."
+  description              = "KMS key for ${var.name} instance(s) volume(s)."
   customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
   policy                   = var.volume_kms_key_policy
 
