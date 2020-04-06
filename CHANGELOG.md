@@ -1,3 +1,8 @@
+1.2.0
+=======
+
+* refactor: merge the two `aws_instance` resources (t instance and the other) to one single resource.
+
 1.1.0
 =======
 
