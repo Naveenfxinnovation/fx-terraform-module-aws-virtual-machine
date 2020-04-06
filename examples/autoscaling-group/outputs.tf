@@ -42,10 +42,6 @@ output "arns" {
   value = module.example.arns
 }
 
-output "credit_specifications" {
-  value = module.example.credit_specifications
-}
-
 output "ids" {
   value = module.example.ids
 }

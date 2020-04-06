@@ -44,7 +44,6 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | autoscaling\_group\_availability\_zones | n/a |
 | autoscaling\_group\_id | n/a |
 | availability\_zones | n/a |
-| credit\_specifications | n/a |
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
 | ids | n/a |

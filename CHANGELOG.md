@@ -2,6 +2,7 @@
 =======
 
 * refactor: merge the two `aws_instance` resources (t instance and the other) to one single resource.
+* refactor: removes `credit_specifications` from outputs because it’s also variable.
 
 1.1.0
 =======

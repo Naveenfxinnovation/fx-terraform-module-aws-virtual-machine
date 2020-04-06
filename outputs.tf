@@ -42,10 +42,6 @@ output "arns" {
   value = compact(concat(aws_instance.this.*.arn, [""]))
 }
 
-output "credit_specifications" {
-  value = compact(concat(aws_instance.this.*.credit_specification, [""]))
-}
-
 output "ids" {
   value = compact(concat(aws_instance.this.*.id, [""]))
 }

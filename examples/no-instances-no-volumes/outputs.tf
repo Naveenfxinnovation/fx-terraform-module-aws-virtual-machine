@@ -6,10 +6,6 @@ output "arns" {
   value = module.no_instances_no_volumes.arns
 }
 
-output "credit_specifications" {
-  value = module.no_instances_no_volumes.credit_specifications
-}
-
 output "ids" {
   value = module.no_instances_no_volumes.ids
 }

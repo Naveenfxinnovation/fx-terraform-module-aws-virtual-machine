@@ -37,7 +37,6 @@ No provider.
 |------|-------------|
 | arns | n/a |
 | availability\_zones | n/a |
-| credit\_specifications | n/a |
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
 | ids | n/a |

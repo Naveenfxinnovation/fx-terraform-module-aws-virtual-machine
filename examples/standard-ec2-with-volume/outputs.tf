@@ -6,10 +6,6 @@ output "arns" {
   value = module.standard_ec2_with_volume.arns
 }
 
-output "credit_specifications" {
-  value = module.standard_ec2_with_volume.credit_specifications
-}
-
 output "ids" {
   value = module.standard_ec2_with_volume.ids
 }
