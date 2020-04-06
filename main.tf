@@ -38,7 +38,7 @@ resource "aws_launch_configuration" "this" {
     for_each = local.should_update_root_device ? [1] : [0]
 
     content {
-      // Unlike EC2, launch configuration does not supporton-the-fly ecnryption of root device
+      // Unlike EC2, launch configuration does not supporton-the-fly encryption of root device
       // Only device from encrypted snapshots can be encrypted
       delete_on_termination = true
       encrypted             = var.root_block_device_encrypted
