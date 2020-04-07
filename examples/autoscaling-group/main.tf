@@ -87,7 +87,7 @@ module "example" {
   autoscaling_group_health_check_type = "ELB"
   autoscaling_group_target_group_arns = [aws_lb_target_group.example.arn]
   autoscaling_group_tags = {
-    Name = "tftestasg${random_string.this.result}"
+    ASGName = "tftestasg${random_string.this.result}"
   }
   autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1
