@@ -57,6 +57,10 @@ module "standard_ec2_with_volume" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
+  key_pair_create     = true
+  key_pair_name       = "tftest${random_string.this.result}"
+  key_pair_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohAK41 email@example.com"
+
   volume_kms_key_create = true
   volume_kms_key_name   = "tftest${random_string.this.result}"
   volume_kms_key_alias  = "alias/tftest/${random_string.this.result}"

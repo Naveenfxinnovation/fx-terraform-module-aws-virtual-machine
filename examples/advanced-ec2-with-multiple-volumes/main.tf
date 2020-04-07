@@ -76,7 +76,9 @@ module "advanced_ec2_with_multiple_volumes" {
   num_suffix_digits = "03"
 
   user_data = "#!/bin/bash echo test"
-  key_name  = aws_key_pair.example.key_name
+
+  key_pair_create = false
+  key_pair_name   = aws_key_pair.example.key_name
 
   ebs_optimized               = true
   monitoring                  = true
