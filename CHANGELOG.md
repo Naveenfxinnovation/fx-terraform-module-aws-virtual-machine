@@ -3,6 +3,7 @@
 
 * refactor: merge the two `aws_instance` resources (t instance and the other) to one single resource.
 * refactor: removes `credit_specifications` from outputs because it’s also variable.
+* fix: do not create a KMS key if KMS ARN is given.
 
 1.1.0
 =======
