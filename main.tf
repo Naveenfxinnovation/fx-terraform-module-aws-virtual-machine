@@ -22,7 +22,7 @@ resource "aws_launch_configuration" "this" {
   image_id             = var.ami
   instance_type        = var.instance_type
   iam_instance_profile = var.iam_instance_profile
-  key_name             = var.key_name
+  key_name             = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   enable_monitoring    = var.monitoring
 
   security_groups = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
@@ -149,7 +149,7 @@ resource "aws_instance" "this" {
   instance_type = var.instance_type
   user_data     = var.user_data
   subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
-  key_name      = var.key_name
+  key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   monitoring    = var.monitoring
   host_id       = var.ec2_host_id
 
@@ -222,6 +222,28 @@ resource "aws_instance" "this" {
       volume_tags,
     ]
   }
+}
+
+####
+# Key Pair
+####
+
+locals {
+  should_create_key_pair = var.instance_count > 0 && var.key_pair_create
+}
+
+resource "aws_key_pair" "this" {
+  count = local.should_create_key_pair ? 1 : 0
+
+  key_name   = var.key_pair_name
+  public_key = var.key_pair_public_key
+  tags = merge(
+    var.tags,
+    var.key_pair_tags,
+    {
+      "Terraform" = "true"
+    }
+  )
 }
 
 ####

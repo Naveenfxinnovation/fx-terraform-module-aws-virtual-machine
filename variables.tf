@@ -63,11 +63,6 @@ variable "instance_type" {
   default     = "t3.small"
 }
 
-variable "key_name" {
-  description = "The key name of the Key Pair to use for the instance; which can be managed using the aws_key_pair resource."
-  default     = ""
-}
-
 variable "monitoring" {
   description = "If true, the launched EC2 instances will have detailed monitoring enabled."
   default     = false
@@ -353,6 +348,32 @@ variable "volume_kms_key_policy" {
 
 variable "volume_kms_key_tags" {
   description = "Tags for the KMS key to be used for volumes. Will be merge with var.tags."
+  default     = {}
+}
+
+####
+# Key Pair
+####
+
+variable "key_pair_create" {
+  description = "Wheither or not to create a key pair."
+  default     = false
+}
+
+variable "key_pair_name" {
+  description = "The name for the key pair. If this is not null and key_pair_create = false, this name will be used as a key pair."
+  type        = string
+  default     = null
+}
+
+variable "key_pair_public_key" {
+  description = "The public key material."
+  type        = string
+  default     = null
+}
+
+variable "key_pair_tags" {
+  description = "Tags for the key pair. Will be merged with tags."
   default     = {}
 }
 

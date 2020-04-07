@@ -78,7 +78,10 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | instance\_count | Number of instances to create. Can also be 0. | `number` | `1` | no |
 | instance\_tags | Tags specific to the instances. | `map` | `{}` | no |
 | instance\_type | The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance. | `string` | `"t3.small"` | no |
-| key\_name | The key name of the Key Pair to use for the instance; which can be managed using the aws\_key\_pair resource. | `string` | `""` | no |
+| key\_pair\_create | Wheither or not to create a key pair. | `bool` | `false` | no |
+| key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |
+| key\_pair\_public\_key | The public key material. | `string` | `null` | no |
+| key\_pair\_tags | Tags for the key pair. Will be merged with tags. | `map` | `{}` | no |
 | monitoring | If true, the launched EC2 instances will have detailed monitoring enabled. | `bool` | `false` | no |
 | name | Name prefix of the instances. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to instances name. | `number` | `2` | no |
