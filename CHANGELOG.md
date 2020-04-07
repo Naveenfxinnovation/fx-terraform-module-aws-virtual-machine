@@ -1,3 +1,8 @@
+1.3.0
+=======
+
+* feat: handle `aws_key_pair` resource locally or externally
+
 1.2.0
 =======
 
