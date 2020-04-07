@@ -102,14 +102,8 @@ resource "aws_autoscaling_group" "this" {
 
   placement_group = var.placement_group
 
-  tag {
-    key                 = "Terraform"
-    value               = true
-    propagate_at_launch = true
-  }
-
   dynamic "tag" {
-    for_each = var.tags
+    for_each = merge(var.tags, var.instance_tags, { Terraform = true })
 
     content {
       key                 = tag.key
@@ -125,16 +119,6 @@ resource "aws_autoscaling_group" "this" {
       key                 = tag.key
       value               = tag.value
       propagate_at_launch = false
-    }
-  }
-
-  dynamic "tag" {
-    for_each = var.instance_tags
-
-    content {
-      key                 = tag.key
-      value               = tag.value
-      propagate_at_launch = true
     }
   }
 
@@ -245,7 +229,7 @@ resource "aws_instance" "this" {
 ####
 
 locals {
-  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false && var.instance_count > 0 && var.volume_kms_key_arn == null
+  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false && var.instance_count > 0
 }
 
 resource "aws_kms_key" "this" {

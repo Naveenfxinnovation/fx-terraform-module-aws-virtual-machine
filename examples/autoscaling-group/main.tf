@@ -74,9 +74,13 @@ module "example" {
   ami              = data.aws_ami.amazon_linux.image_id
   instance_type    = "t3.micro"
 
+  tags = {
+    Example = "TFTEST example"
+  }
+
   instance_tags = {
     Name    = "tftest${random_string.this.result}"
-    Example = "example"
+    Example = "TFTEST instance example"
   }
 
   use_autoscaling_group = true
