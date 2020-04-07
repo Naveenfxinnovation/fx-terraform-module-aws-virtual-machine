@@ -97,7 +97,8 @@ module "advanced_ec2_with_multiple_volumes" {
     Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
-  volume_kms_key_arn = aws_kms_key.example.arn
+  volume_kms_key_create = false
+  volume_kms_key_arn    = aws_kms_key.example.arn
 
   external_volume_count        = 3
   external_volume_sizes        = [500, 15]
