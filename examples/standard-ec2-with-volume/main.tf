@@ -39,7 +39,7 @@ resource "random_string" "this" {
   special = false
 }
 
-module "example" {
+module "standard_ec2_with_volume" {
   source = "../../"
 
   name = "tftest-standard_ec2_with_volume"
