@@ -104,7 +104,7 @@ resource "aws_autoscaling_group" "this" {
 
   placement_group = var.placement_group
 
-  tag = {
+  tag {
     key                 = "Terraform"
     value               = true
     propagate_at_launch = true
