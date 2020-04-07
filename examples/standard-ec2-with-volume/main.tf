@@ -7,7 +7,7 @@ data "aws_subnet_ids" "all" {
 
   filter {
     name   = "availability-zone"
-    values = ["us-east-1a", "us-east-1b"] # insert values here
+    values = ["ca-central-1a", "ca-central-1b"]
   }
 }
 
@@ -39,13 +39,7 @@ resource "random_string" "this" {
   special = false
 }
 
-resource "aws_security_group" "standard_ec2_with_volume" {
-  name        = "tftest-standard_ec2_with_volume${random_string.this.result}"
-  description = "Terraform test standard_ec2_with_volume."
-  vpc_id      = data.aws_vpc.default.id
-}
-
-module "standard_ec2_with_volume" {
+module "example" {
   source = "../../"
 
   name = "tftest-standard_ec2_with_volume"
@@ -64,7 +58,8 @@ module "standard_ec2_with_volume" {
   }
 
   volume_kms_key_create = true
-  volume_kms_key_alias  = "alias/tftest/ec2"
+  volume_kms_key_name   = "tftest${random_string.this.result}"
+  volume_kms_key_alias  = "alias/tftest/${random_string.this.result}"
 
   external_volume_count        = 1
   external_volume_sizes        = [10]

@@ -7,7 +7,7 @@ data "aws_subnet_ids" "all" {
 
   filter {
     name   = "availability-zone"
-    values = ["us-east-1a", "us-east-1b"] # insert values here
+    values = ["eu-west-1a", "eu-west-1b"]
   }
 }
 
@@ -69,6 +69,8 @@ module "multiple_ec2_with_multiple_volumes" {
   ]
 
   volume_kms_key_create = true
+  volume_kms_key_name   = "tftest${random_string.this.result}"
+  volume_kms_key_alias  = "alias/tftest/${random_string.this.result}"
 
   ec2_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
