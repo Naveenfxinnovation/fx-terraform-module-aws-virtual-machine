@@ -83,15 +83,15 @@ output "kms_key_id" {
 ####
 
 output "key_pair_name" {
-  value = local.should_create_key_pair ? compact(concat(aws_key_pair.this.*.key_name, [""])) : var.key_pair_name
+  value = local.should_create_key_pair ? concat(aws_key_pair.this.*.key_name, [""])[0] : var.key_pair_name
 }
 
 output "key_pair_id" {
-  value = compact(concat(aws_key_pair.this.*.id, [""]))
+  value = concat(aws_key_pair.this.*.id, [""])[0]
 }
 
 output "key_pair_fingerprint" {
-  value = compact(concat(aws_key_pair.this.*.fingerprint, [""]))
+  value = concat(aws_key_pair.this.*.fingerprint, [""])[0]
 }
 
 ####
