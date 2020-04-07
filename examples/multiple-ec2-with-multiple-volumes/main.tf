@@ -49,7 +49,7 @@ resource "aws_security_group" "example2" {
   vpc_id = data.aws_vpc.default.id
 }
 
-module "multiple_ec2_with_multiple_volumes" {
+module "example" {
   source = "../../"
 
   name = "tftest-multiple_ec2_with_multiple_volumes"

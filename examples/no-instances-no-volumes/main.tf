@@ -1,4 +1,4 @@
-module "no_instances_no_volumes" {
+module "example" {
   source = "../../"
 
   instance_count = 0

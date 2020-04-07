@@ -70,9 +70,33 @@ output "subnet_ids" {
   value = module.example.subnet_ids
 }
 
+####
+# KMS
+####
+
 output "kms_key_id" {
   value = module.example.kms_key_id
 }
+
+####
+# Key Pair
+####
+
+output "key_pair_name" {
+  value = module.example.key_pair_name
+}
+
+output "key_pair_id" {
+  value = module.example.key_pair_id
+}
+
+output "key_pair_fingerprint" {
+  value = module.example.key_pair_fingerprint
+}
+
+####
+# EBS
+####
 
 output "external_volume_ids" {
   value = module.example.external_volume_ids

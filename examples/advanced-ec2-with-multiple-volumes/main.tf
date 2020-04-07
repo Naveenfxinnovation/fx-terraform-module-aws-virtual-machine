@@ -58,7 +58,7 @@ resource "aws_kms_alias" "example" {
   target_key_id = aws_kms_key.example.key_id
 }
 
-module "advanced_ec2_with_multiple_volumes" {
+module "example" {
   source = "../../"
 
   name = "tftest-advanced_ec2_with_multiple_volumes"

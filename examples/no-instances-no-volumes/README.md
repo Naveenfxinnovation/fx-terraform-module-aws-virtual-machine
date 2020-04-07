@@ -36,11 +36,21 @@ No provider.
 | Name | Description |
 |------|-------------|
 | arns | n/a |
+| autoscaling\_group\_arn | n/a |
+| autoscaling\_group\_availability\_zones | n/a |
+| autoscaling\_group\_id | n/a |
 | availability\_zones | n/a |
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
 | ids | n/a |
+| key\_pair\_fingerprint | n/a |
+| key\_pair\_id | n/a |
+| key\_pair\_name | n/a |
 | kms\_key\_id | n/a |
+| launch\_configuration\_arn | n/a |
+| launch\_configuration\_ebs\_block\_devices | n/a |
+| launch\_configuration\_id | n/a |
+| launch\_configuration\_name | n/a |
 | primary\_network\_interface\_ids | n/a |
 | private\_dns | n/a |
 | private\_ips | n/a |

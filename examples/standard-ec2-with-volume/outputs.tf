@@ -1,47 +1,107 @@
+####
+# AutoScaling Group
+####
+
+output "launch_configuration_id" {
+  value = module.example.launch_configuration_id
+}
+
+output "launch_configuration_arn" {
+  value = module.example.launch_configuration_arn
+}
+
+output "launch_configuration_name" {
+  value = module.example.launch_configuration_name
+}
+
+output "launch_configuration_ebs_block_devices" {
+  value = module.example.launch_configuration_ebs_block_devices
+}
+
+output "autoscaling_group_id" {
+  value = module.example.autoscaling_group_id
+}
+
+output "autoscaling_group_arn" {
+  value = module.example.autoscaling_group_arn
+}
+
+output "autoscaling_group_availability_zones" {
+  value = module.example.autoscaling_group_availability_zones
+}
+
+####
+# EC2
+####
+
 output "availability_zones" {
-  value = module.standard_ec2_with_volume.availability_zones
+  value = module.example.availability_zones
 }
 
 output "arns" {
-  value = module.standard_ec2_with_volume.arns
+  value = module.example.arns
 }
 
 output "ids" {
-  value = module.standard_ec2_with_volume.ids
+  value = module.example.ids
 }
 
 output "private_ips" {
-  value = module.standard_ec2_with_volume.private_ips
+  value = module.example.private_ips
 }
 
 output "primary_network_interface_ids" {
-  value = module.standard_ec2_with_volume.primary_network_interface_ids
+  value = module.example.primary_network_interface_ids
 }
 
 output "private_dns" {
-  value = module.standard_ec2_with_volume.private_dns
+  value = module.example.private_dns
 }
 
 output "public_dns" {
-  value = module.standard_ec2_with_volume.public_dns
+  value = module.example.public_dns
 }
 
 output "public_ips" {
-  value = module.standard_ec2_with_volume.public_ips
+  value = module.example.public_ips
 }
 
 output "subnet_ids" {
-  value = module.standard_ec2_with_volume.subnet_ids
+  value = module.example.subnet_ids
 }
+
+####
+# KMS
+####
 
 output "kms_key_id" {
-  value = module.standard_ec2_with_volume.kms_key_id
+  value = module.example.kms_key_id
 }
 
+####
+# Key Pair
+####
+
+output "key_pair_name" {
+  value = module.example.key_pair_name
+}
+
+output "key_pair_id" {
+  value = module.example.key_pair_id
+}
+
+output "key_pair_fingerprint" {
+  value = module.example.key_pair_fingerprint
+}
+
+####
+# EBS
+####
+
 output "external_volume_ids" {
-  value = module.standard_ec2_with_volume.external_volume_ids
+  value = module.example.external_volume_ids
 }
 
 output "external_volume_arns" {
-  value = module.standard_ec2_with_volume.external_volume_arns
+  value = module.example.external_volume_arns
 }

@@ -47,6 +47,9 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
 | ids | n/a |
+| key\_pair\_fingerprint | n/a |
+| key\_pair\_id | n/a |
+| key\_pair\_name | n/a |
 | kms\_key\_id | n/a |
 | launch\_configuration\_arn | n/a |
 | launch\_configuration\_ebs\_block\_devices | n/a |
