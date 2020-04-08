@@ -55,7 +55,7 @@ module "example" {
   name = "tftest-multiple_ec2_with_multiple_volumes"
 
   ami                         = data.aws_ami.amazon_linux.image_id
-  instance_type               = "t3.micro"
+  instance_type               = "m5a.large"
   root_block_device_encrypted = true
 
   subnet_ids_count = 2
@@ -89,7 +89,7 @@ module "example" {
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
 
   extra_network_interface_count                = 2
-  extra_network_interface_private_ips_counts   = [2, 2, 4, 3]
+  extra_network_interface_private_ips_counts   = [2, 1]
   extra_network_interface_security_group_count = 1
   extra_network_interface_security_group_ids   = [[aws_security_group.example2.id]]
   extra_network_interface_source_dest_checks   = [true]

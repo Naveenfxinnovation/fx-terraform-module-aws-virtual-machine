@@ -365,14 +365,17 @@ resource "aws_network_interface" "this" {
 resource "aws_network_interface_attachment" "this" {
   count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
 
-  instance_id          = element(aws_network_interface.this.*.id, count.index / var.instance_count)
+  instance_id          = element(aws_instance.this.*.id, count.index % var.instance_count)
   network_interface_id = element(aws_network_interface.this.*.id, count.index)
-  device_index         = (count.index + 1) % var.instance_count
+  device_index         = (floor(count.index / var.instance_count) % var.extra_network_interface_count) + 1
 }
 
 resource "aws_network_interface_sg_attachment" "this" {
   count = local.should_create_extra_network_interface ? var.extra_network_interface_security_group_count * var.instance_count * var.extra_network_interface_count : 0
 
-  security_group_id    = element(var.extra_network_interface_security_group_ids, count.index % var.extra_network_interface_security_group_count)
+  security_group_id = element(
+    element(local.extra_network_interface_security_group_ids, floor(count.index / var.instance_count) % var.instance_count),
+    count.index % var.extra_network_interface_security_group_count
+  )
   network_interface_id = element(aws_network_interface.this.*.id, count.index % (var.instance_count * var.external_volume_count))
 }
