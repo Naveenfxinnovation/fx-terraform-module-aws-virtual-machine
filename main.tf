@@ -13,6 +13,7 @@ locals {
     Terraform = true
     Provider  = "Terraform"
   }
+  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : tolist([[data.aws_security_group.default.id]])
 }
 
 ####
@@ -30,7 +31,7 @@ resource "aws_launch_configuration" "this" {
   key_name             = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   enable_monitoring    = var.monitoring
 
-  security_groups = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
+  security_groups = element(local.security_group_ids, count.index)
 
   associate_public_ip_address = var.associate_public_ip_address
   user_data                   = var.user_data
@@ -161,7 +162,7 @@ resource "aws_instance" "this" {
   cpu_core_count       = var.ec2_cpu_core_count
   cpu_threads_per_core = var.ec2_cpu_threads_per_core
 
-  vpc_security_group_ids = var.vpc_security_group_ids != null ? element(var.vpc_security_group_ids, count.index) : [data.aws_security_group.default.id]
+  vpc_security_group_ids = element(local.security_group_ids, count.index)
   iam_instance_profile   = var.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
@@ -291,7 +292,7 @@ locals {
   should_create_extra_volumes           = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
 }
 
-resource "aws_volume_attachment" "this_ec2" {
+resource "aws_volume_attachment" "this" {
   count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
 
   device_name = element(
@@ -326,4 +327,52 @@ resource "aws_ebs_volume" "this" {
     var.external_volume_tags,
     local.tags,
   )
+}
+
+####
+# Network Interfaces
+####
+
+locals {
+  should_create_extra_network_interface      = var.extra_network_interface_count > 0 && var.instance_count > 0
+  extra_network_interface_security_group_ids = var.extra_network_interface_security_group_ids == [] ? local.security_group_ids : var.extra_network_interface_security_group_ids
+}
+
+resource "aws_network_interface" "this" {
+  count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
+
+  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.used_subnet_count)
+  private_ips = element(
+    var.extra_network_interface_private_ips,
+    floor(count.index / var.instance_count) % var.extra_network_interface_count,
+  )
+  private_ips_count = element(
+    var.extra_network_interface_private_ips_counts,
+    floor(count.index / var.instance_count) % var.extra_network_interface_count,
+  )
+  source_dest_check = element(
+    var.extra_network_interface_source_dest_checks,
+    floor(count.index / var.instance_count) % var.extra_network_interface_count,
+  )
+
+  tags = merge(
+    var.tags,
+    var.extra_network_interface_tags,
+    local.terraform_tag,
+  )
+}
+
+resource "aws_network_interface_attachment" "this" {
+  count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
+
+  instance_id          = element(aws_network_interface.this.*.id, count.index / var.instance_count)
+  network_interface_id = element(aws_network_interface.this.*.id, count.index)
+  device_index         = (count.index + 1) % var.instance_count
+}
+
+resource "aws_network_interface_sg_attachment" "this" {
+  count = local.should_create_extra_network_interface ? var.extra_network_interface_security_group_count * var.instance_count * var.extra_network_interface_count : 0
+
+  security_group_id    = element(var.extra_network_interface_security_group_ids, count.index % var.extra_network_interface_security_group_count)
+  network_interface_id = element(aws_network_interface.this.*.id, count.index % (var.instance_count * var.external_volume_count))
 }

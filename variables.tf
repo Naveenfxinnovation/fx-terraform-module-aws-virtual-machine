@@ -271,7 +271,8 @@ variable "ec2_host_id" {
 
 variable "ec2_instance_initiated_shutdown_behavior" {
   description = "Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances."
-  default     = ""
+  type        = string
+  default     = null
 }
 
 variable "ec2_ipv6_addresses" {
@@ -412,4 +413,49 @@ variable "external_volume_types" {
   description = "The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). "
   type        = list(string)
   default     = [null]
+}
+
+####
+# Network Interface
+####
+
+variable "extra_network_interface_count" {
+  description = "How many extra network interface to create per instance. This has no influence on the default network interface."
+  type        = number
+  default     = 0
+}
+
+variable "extra_network_interface_private_ips" {
+  description = "List of private IPs to assign to the extra ENIs. Make sure you have as many element in the list as ENIs times the number of instances."
+  type        = list(list(string))
+  default     = [null]
+}
+
+variable "extra_network_interface_private_ips_counts" {
+  description = "Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances."
+  type        = list(number)
+  default     = [null]
+}
+
+variable "extra_network_interface_security_group_count" {
+  description = "How many security groups to attach per extra ENI. This cannot be computed automatically from var.extra_network_interface_security_group_ids in terraform 0.12."
+  type        = number
+  default     = 0
+}
+
+variable "extra_network_interface_security_group_ids" {
+  description = "List of security group IDs to assign to the extra ENIs. All ENIs will have the same security groups."
+  type        = list(string)
+  default     = []
+}
+
+variable "extra_network_interface_source_dest_checks" {
+  description = "Whether to enable source destination checking for the extra ENIs. Default true."
+  type        = list(bool)
+  default     = [null]
+}
+
+variable "extra_network_interface_tags" {
+  description = "Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs."
+  default     = {}
 }
