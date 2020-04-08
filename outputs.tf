@@ -105,3 +105,19 @@ output "external_volume_ids" {
 output "external_volume_arns" {
   value = aws_ebs_volume.this.*.arn
 }
+
+####
+# Network Interfaces
+####
+
+output "extra_network_interface_ids" {
+  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.id, [""])), var.extra_network_interface_count))
+}
+
+output "extra_network_interface_mac_addresses" {
+  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.mac_address, [""])), var.extra_network_interface_count))
+}
+
+output "extra_network_interface_private_ips" {
+  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.private_ips, [""])), var.extra_network_interface_count))
+}

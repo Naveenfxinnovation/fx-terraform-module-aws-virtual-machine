@@ -105,3 +105,19 @@ output "external_volume_ids" {
 output "external_volume_arns" {
   value = module.example.external_volume_arns
 }
+
+####
+# Network Interfaces
+####
+
+output "extra_network_interface_ids" {
+  value = module.example.extra_network_interface_ids
+}
+
+output "extra_network_interface_mac_addresses" {
+  value = module.example.extra_network_interface_mac_addresses
+}
+
+output "extra_network_interface_private_ips" {
+  value = module.example.extra_network_interface_private_ips
+}

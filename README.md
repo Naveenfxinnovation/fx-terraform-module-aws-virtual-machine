@@ -124,6 +124,9 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | availability\_zones | n/a |
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
+| extra\_network\_interface\_ids | n/a |
+| extra\_network\_interface\_mac\_addresses | n/a |
+| extra\_network\_interface\_private\_ips | n/a |
 | ids | n/a |
 | key\_pair\_fingerprint | n/a |
 | key\_pair\_id | n/a |
