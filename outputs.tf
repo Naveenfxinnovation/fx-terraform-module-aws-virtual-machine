@@ -99,11 +99,11 @@ output "key_pair_fingerprint" {
 ####
 
 output "external_volume_ids" {
-  value = aws_ebs_volume.this.*.id
+  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.id, [""])), var.external_volume_count))
 }
 
 output "external_volume_arns" {
-  value = aws_ebs_volume.this.*.arn
+  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.arn, [""])), var.external_volume_count))
 }
 
 ####
