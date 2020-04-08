@@ -81,10 +81,19 @@ module "example" {
   }
 
   // Reason for high number for instance count and external volumes is to
-  // make sure the math is correct under the hood: 4 instances, 3 extra volumes, 2 subnets
+  // make sure the math is correct under the hood: 4 instances, 3 extra volumes, 2 subnets, 2 extra NICs
   instance_count = 4
 
   external_volume_count        = 3
   external_volume_sizes        = [5, 6, 7]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
+
+  extra_network_interface_count                = 2
+  extra_network_interface_private_ips_counts   = [2, 2, 4, 3]
+  extra_network_interface_security_group_count = 1
+  extra_network_interface_security_group_ids   = [[aws_security_group.example2.id]]
+  extra_network_interface_source_dest_checks   = [true]
+  extra_network_interface_tags = {
+    NICName = "tftest${random_string.this.result}"
+  }
 }

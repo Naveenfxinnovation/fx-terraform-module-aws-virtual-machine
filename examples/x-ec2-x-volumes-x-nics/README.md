@@ -1,6 +1,6 @@
-# Multiple EC2 with multiple volumes
+# Multiple EC2, multiple volumes, multiple network interfaces
 
-Configuration in this directory creates multiple EC2 with multiple volumes.
+Configuration in this directory creates multiple EC2 with multiple volumes and multiple extra network interfaces.
 
 ## Usage
 

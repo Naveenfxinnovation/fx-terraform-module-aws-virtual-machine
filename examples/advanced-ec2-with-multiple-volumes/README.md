@@ -2,6 +2,7 @@
 
 Configuration in this directory creates an EC2 with lots of options.
 It also create multiple EBS volumes and attached them to the instance.
+It also create multiple extra network interfaces.
 
 ## Usage
 
