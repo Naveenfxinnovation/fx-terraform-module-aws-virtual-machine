@@ -246,8 +246,9 @@ variable "autoscaling_group_wait_for_elb_capacity" {
 ####
 
 variable "ec2_cpu_credits" {
-  description = "The credit option for CPU usage (unlimited or standard)."
-  default     = "standard"
+  description = "The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. "
+  type        = string
+  default     = null
 }
 
 variable "ec2_cpu_core_count" {

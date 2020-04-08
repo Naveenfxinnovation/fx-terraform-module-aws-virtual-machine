@@ -197,7 +197,7 @@ resource "aws_instance" "this" {
   tenancy                              = var.ec2_tenancy
 
   dynamic "credit_specification" {
-    for_each = local.is_t_instance_type ? [1] : [0]
+    for_each = local.is_t_instance_type && var.ec2_cpu_credits != null ? [1] : [0]
 
     content {
       cpu_credits = var.ec2_cpu_credits
