@@ -8,6 +8,10 @@ locals {
   subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count
   subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
   vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
+
+  terraform_tag = {
+    Terraform = true
+  }
 }
 
 ####
@@ -103,7 +107,7 @@ resource "aws_autoscaling_group" "this" {
   placement_group = var.placement_group
 
   dynamic "tag" {
-    for_each = merge(var.tags, var.instance_tags, { Terraform = true })
+    for_each = merge(var.tags, var.instance_tags, local.terraform_tag)
 
     content {
       key                 = tag.key
@@ -210,6 +214,7 @@ resource "aws_instance" "this" {
     },
     var.tags,
     var.instance_tags,
+    local.terraform_tag,
   )
 
   lifecycle {
@@ -240,9 +245,7 @@ resource "aws_key_pair" "this" {
   tags = merge(
     var.tags,
     var.key_pair_tags,
-    {
-      "Terraform" = "true"
-    }
+    local.terraform_tag,
   )
 }
 
@@ -265,11 +268,9 @@ resource "aws_kms_key" "this" {
     {
       "Name" = var.use_num_suffix == "true" ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + 1) : var.volume_kms_key_name
     },
-    {
-      "Terraform" = "true"
-    },
     var.tags,
     var.volume_kms_key_tags,
+    local.terraform_tag,
   )
 }
 
@@ -320,10 +321,8 @@ resource "aws_ebs_volume" "this" {
     {
       "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name
     },
-    {
-      "Terraform" = "true"
-    },
     var.tags,
     var.external_volume_tags,
+    local.terraform_tag,
   )
 }
