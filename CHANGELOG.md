@@ -1,12 +1,12 @@
-1.3.0
+2.1.0
 =======
 
 * feat: handle `aws_key_pair` resource locally or externally
 
-1.2.0
+2.0.0
 =======
 
-* refactor: merge the two `aws_instance` resources (t instance and the other) to one single resource.
+* refactor (BREAKING): merge the two `aws_instance` resources (t instance and the other) to one single resource.
 * refactor: removes `credit_specifications` from outputs because it’s also variable.
 * fix: do not create a KMS key if KMS ARN is given.
 * fix: lowers the risk of conflicting tags in AutoScaling Group that would break idempotency
