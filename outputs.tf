@@ -83,7 +83,7 @@ output "kms_key_id" {
 ####
 
 output "key_pair_name" {
-  value = local.should_create_key_pair ? concat(aws_key_pair.this.*.key_name, [""])[0] : var.key_pair_name
+  value = local.should_create_key_pair ? concat(aws_key_pair.this.*.key_name, [""])[0] : ""
 }
 
 output "key_pair_id" {
