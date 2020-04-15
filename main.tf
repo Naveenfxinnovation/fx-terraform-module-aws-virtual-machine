@@ -10,8 +10,8 @@ locals {
   vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
 
   tags = {
-    Terraform = true
-    Provider  = "Terraform"
+    Terraform  = true
+    managed-by = "Terraform"
   }
   security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : tolist([[data.aws_security_group.default.id]])
 }
@@ -300,21 +300,15 @@ resource "aws_volume_attachment" "this" {
     floor(count.index / var.instance_count) % var.external_volume_count,
   )
   volume_id   = element(aws_ebs_volume.this.*.id, count.index)
-  instance_id = element(aws_instance.this.*.id, count.index % var.instance_count)
+  instance_id = element(aws_instance.this.*.id, floor(count.index / var.external_volume_count) % var.instance_count)
 }
 
 resource "aws_ebs_volume" "this" {
   count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
 
   availability_zone = element(data.aws_subnet.subnets.*.availability_zone, count.index % local.used_subnet_count)
-  size = element(
-    var.external_volume_sizes,
-    floor(count.index / var.instance_count) % var.external_volume_count,
-  )
-  type = element(
-    var.external_volume_types,
-    floor(count.index / var.instance_count) % var.external_volume_count,
-  )
+  size              = element(var.external_volume_sizes, count.index % var.external_volume_count)
+  type              = element(var.external_volume_types, count.index % var.external_volume_count)
 
   encrypted  = true
   kms_key_id = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
@@ -341,31 +335,22 @@ locals {
 resource "aws_network_interface" "this" {
   count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
 
-  subnet_id = element(data.aws_subnet.subnets.*.id, count.index % local.used_subnet_count)
-  private_ips = element(
-    var.extra_network_interface_private_ips,
-    floor(count.index / var.instance_count) % var.extra_network_interface_count,
-  )
-  private_ips_count = element(
-    var.extra_network_interface_private_ips_counts,
-    floor(count.index / var.instance_count) % var.extra_network_interface_count,
-  )
-  source_dest_check = element(
-    var.extra_network_interface_source_dest_checks,
-    floor(count.index / var.instance_count) % var.extra_network_interface_count,
-  )
+  subnet_id         = element(data.aws_subnet.subnets.*.id, count.index % local.used_subnet_count)
+  private_ips       = element(var.extra_network_interface_private_ips, count.index % var.extra_network_interface_count)
+  private_ips_count = element(var.extra_network_interface_private_ips_counts, count.index % var.extra_network_interface_count)
+  source_dest_check = element(var.extra_network_interface_source_dest_checks, count.index % var.extra_network_interface_count)
 
   tags = merge(
     var.tags,
     var.extra_network_interface_tags,
-    local.terraform_tag,
+    local.tags,
   )
 }
 
 resource "aws_network_interface_attachment" "this" {
   count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
 
-  instance_id          = element(aws_instance.this.*.id, count.index % var.instance_count)
+  instance_id          = element(aws_instance.this.*.id, (count.index / var.extra_network_interface_count) % var.instance_count)
   network_interface_id = element(aws_network_interface.this.*.id, count.index)
   device_index         = (floor(count.index / var.instance_count) % var.extra_network_interface_count) + 1
 }
