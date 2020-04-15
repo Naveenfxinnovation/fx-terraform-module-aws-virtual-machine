@@ -1,4 +1,16 @@
 ####
+# Global
+####
+
+output "availability_zones" {
+  value = compact(concat(aws_instance.this.*.availability_zone, aws_autoscaling_group.this.*.availability_zones, [""]))
+}
+
+output "subnet_ids" {
+  value = compact(concat(aws_instance.this.*.subnet_id, aws_autoscaling_group.this.*.vpc_zone_identifier, [""]))
+}
+
+####
 # AutoScaling Group
 ####
 
@@ -34,40 +46,32 @@ output "autoscaling_group_availability_zones" {
 # EC2
 ####
 
-output "availability_zones" {
-  value = compact(concat(aws_instance.this.*.availability_zone, [""]))
-}
-
-output "arns" {
+output "ec2_arns" {
   value = compact(concat(aws_instance.this.*.arn, [""]))
 }
 
-output "ids" {
+output "ec2_ids" {
   value = compact(concat(aws_instance.this.*.id, [""]))
 }
 
-output "private_ips" {
+output "ec2_private_ips" {
   value = compact(concat(aws_instance.this.*.private_ip, [""]))
 }
 
-output "primary_network_interface_ids" {
+output "ec2_primary_network_interface_ids" {
   value = compact(concat(aws_instance.this.*.primary_network_interface_id, [""]))
 }
 
-output "private_dns" {
+output "ec2_private_dns" {
   value = compact(concat(aws_instance.this.*.private_dns, [""]))
 }
 
-output "public_dns" {
+output "ec2_public_dns" {
   value = compact(concat(aws_instance.this.*.public_dns, [""]))
 }
 
-output "public_ips" {
+output "ec2_public_ips" {
   value = compact(concat(aws_instance.this.*.public_ip, [""]))
-}
-
-output "subnet_ids" {
-  value = compact(concat(aws_instance.this.*.subnet_id, [""]))
 }
 
 ####

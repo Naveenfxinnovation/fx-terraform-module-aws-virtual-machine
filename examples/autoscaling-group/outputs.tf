@@ -1,4 +1,16 @@
 ####
+# Global
+####
+
+output "availability_zones" {
+  value = module.example.availability_zones
+}
+
+output "subnet_ids" {
+  value = module.example.subnet_ids
+}
+
+####
 # AutoScaling Group
 ####
 
@@ -34,40 +46,32 @@ output "autoscaling_group_availability_zones" {
 # EC2
 ####
 
-output "availability_zones" {
-  value = module.example.availability_zones
+output "ec2_arns" {
+  value = module.example.ec2_arns
 }
 
-output "arns" {
-  value = module.example.arns
+output "ec2_ids" {
+  value = module.example.ec2_ids
 }
 
-output "ids" {
-  value = module.example.ids
+output "ec2_private_ips" {
+  value = module.example.ec2_private_ips
 }
 
-output "private_ips" {
-  value = module.example.private_ips
+output "ec2_primary_network_interface_ids" {
+  value = module.example.ec2_primary_network_interface_ids
 }
 
-output "primary_network_interface_ids" {
-  value = module.example.primary_network_interface_ids
+output "ec2_private_dns" {
+  value = module.example.ec2_private_dns
 }
 
-output "private_dns" {
-  value = module.example.private_dns
+output "ec2_public_dns" {
+  value = module.example.ec2_public_dns
 }
 
-output "public_dns" {
-  value = module.example.public_dns
-}
-
-output "public_ips" {
-  value = module.example.public_ips
-}
-
-output "subnet_ids" {
-  value = module.example.subnet_ids
+output "ec2_public_ips" {
+  value = module.example.ec2_public_ips
 }
 
 ####
