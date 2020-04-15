@@ -356,7 +356,7 @@ variable "volume_kms_key_tags" {
 ####
 
 variable "key_pair_create" {
-  description = "Wheither or not to create a key pair."
+  description = "Whether or not to create a key pair."
   default     = false
 }
 
