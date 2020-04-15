@@ -2,6 +2,7 @@
 =======
 
 * feat: handle `aws_key_pair` resource locally or externally
+* feat: adds a tag for all resources: Provider=Terraform
 
 2.0.0
 =======
