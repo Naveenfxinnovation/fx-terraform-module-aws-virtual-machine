@@ -123,5 +123,5 @@ output "extra_network_interface_mac_addresses" {
 }
 
 output "extra_network_interface_private_ips" {
-  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.private_ips, [""])), var.extra_network_interface_count))
+  value = "toto" //zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.private_ips, [""])), var.extra_network_interface_count))
 }
