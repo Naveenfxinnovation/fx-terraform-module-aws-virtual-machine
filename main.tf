@@ -9,8 +9,9 @@ locals {
   subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
   vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
 
-  terraform_tag = {
+  tags = {
     Terraform = true
+    Provider  = "Terraform"
   }
 }
 
@@ -107,7 +108,7 @@ resource "aws_autoscaling_group" "this" {
   placement_group = var.placement_group
 
   dynamic "tag" {
-    for_each = merge(var.tags, var.instance_tags, local.terraform_tag)
+    for_each = merge(var.tags, var.instance_tags, local.tags)
 
     content {
       key                 = tag.key
@@ -214,7 +215,7 @@ resource "aws_instance" "this" {
     },
     var.tags,
     var.instance_tags,
-    local.terraform_tag,
+    local.tags,
   )
 
   lifecycle {
@@ -245,7 +246,7 @@ resource "aws_key_pair" "this" {
   tags = merge(
     var.tags,
     var.key_pair_tags,
-    local.terraform_tag,
+    local.tags,
   )
 }
 
@@ -270,7 +271,7 @@ resource "aws_kms_key" "this" {
     },
     var.tags,
     var.volume_kms_key_tags,
-    local.terraform_tag,
+    local.tags,
   )
 }
 
@@ -323,6 +324,6 @@ resource "aws_ebs_volume" "this" {
     },
     var.tags,
     var.external_volume_tags,
-    local.terraform_tag,
+    local.tags,
   )
 }
