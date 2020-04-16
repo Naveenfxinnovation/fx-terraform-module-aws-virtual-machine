@@ -239,11 +239,11 @@ locals {
   should_create_elastic_ip                              = var.instance_count > 0 && var.eip_create
   should_create_elastic_ip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0
 
-  network_interface_with_eip_ids = [
+  network_interface_with_eip_ids = local.should_create_elastic_ip_for_extra_network_interfaces ? [
     for i, network_interface in aws_network_interface.this :
     network_interface.id
     if element(var.extra_network_interface_eips_enabled, i % var.extra_network_interface_count) == true
-  ]
+  ] : []
 }
 
 resource "aws_eip" "this" {
