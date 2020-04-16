@@ -4,6 +4,7 @@
 * feat: handle multiple `aws_network_interface` resources
 * refactor (BREAKING): makes outputs map of lists for volumes, will change the order of creation of volumes
 * refactor: prefix EC2-specific outputs with `ec2_`
+* tech: adds validation with terraform tflint
 
 3.0.0
 =====
