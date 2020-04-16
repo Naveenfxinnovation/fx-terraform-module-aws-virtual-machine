@@ -103,11 +103,11 @@ output "key_pair_fingerprint" {
 ####
 
 output "external_volume_ids" {
-  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.id, [""])), var.external_volume_count))
+  value = local.should_create_extra_volumes ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.id, [""])), var.external_volume_count)) : []
 }
 
 output "external_volume_arns" {
-  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.arn, [""])), var.external_volume_count))
+  value = local.should_create_extra_volumes ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.arn, [""])), var.external_volume_count)) : []
 }
 
 ####
@@ -115,13 +115,13 @@ output "external_volume_arns" {
 ####
 
 output "extra_network_interface_ids" {
-  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.id, [""])), var.extra_network_interface_count))
+  value = local.should_create_extra_network_interface ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.id, [""])), var.extra_network_interface_count)) : []
 }
 
 output "extra_network_interface_mac_addresses" {
-  value = zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.mac_address, [""])), var.extra_network_interface_count))
+  value = local.should_create_extra_network_interface ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.mac_address, [""])), var.extra_network_interface_count)) : []
 }
 
 output "extra_network_interface_private_ips" {
-  value = "toto" //zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.private_ips, [""])), var.extra_network_interface_count))
+  value = local.should_create_extra_network_interface ? "toto" : "" //zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.private_ips, [""])), var.extra_network_interface_count))
 }
