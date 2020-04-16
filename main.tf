@@ -252,6 +252,26 @@ resource "aws_eip" "this" {
   vpc = true
 }
 
+resource "aws_eip_association" "this" {
+  count = local.should_create_elastic_ip ? var.instance_count : 0
+
+  instance_id   = element(aws_instance.this.*.id, count.index)
+  allocation_id = element(aws_eip.this.*.id, count.index)
+}
+
+resource "aws_eip" "extra" {
+  count = local.should_create_elastic_ip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
+
+  vpc = true
+}
+
+resource "aws_eip_association" "extra" {
+  count = local.should_create_elastic_ip ? var.instance_count * var.extra_network_interface_eips_count : 0
+
+  network_interface_id = element(local.network_interface_with_eip_ids, count.index)
+  allocation_id        = element(aws_eip.extra.*.id, count.index)
+}
+
 ####
 # Key Pair
 ####

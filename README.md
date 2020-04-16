@@ -69,6 +69,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | ec2\_tenancy | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
 | ec2\_volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
+| eip\_create | Whether or not to create an public elastic IP per instance. | `bool` | `false` | no |
 | ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance. | `list(object({ device_name = string, virtual_name = string }))` | `[]` | no |
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
@@ -77,6 +78,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
 | external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_count | How many extra network interface to create per instance. This has no influence on the default network interface. | `number` | `0` | no |
+| extra\_network\_interface\_eips\_count | How many extra network interfaces will have a public elastic IP. Should be the exact number of “true” in the var.extra\_network\_interface\_eips\_enabled list. | `number` | `0` | no |
+| extra\_network\_interface\_eips\_enabled | Respectively, for each instance, a list of boolean that indicates whether or not the extra network interface should have an elastic IP or not. Should have as many “true” as var.extra\_network\_interface\_eips\_count. | `list(bool)` | `null` | no |
 | extra\_network\_interface\_private\_ips | List of private IPs to assign to the extra ENIs. Make sure you have as many element in the list as ENIs times the number of instances. | `list(list(string))` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_private\_ips\_counts | Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private\_ips\_count, as a primary private IP will be assiged to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_security\_group\_count | How many security groups to attach per extra ENI. This cannot be computed automatically from var.extra\_network\_interface\_security\_group\_ids in terraform 0.12. | `number` | `0` | no |

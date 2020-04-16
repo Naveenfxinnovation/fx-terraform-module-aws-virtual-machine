@@ -379,6 +379,26 @@ variable "key_pair_tags" {
 }
 
 ####
+# Elastic IP
+####
+
+variable "eip_create" {
+  description = "Whether or not to create an public elastic IP per instance."
+  default     = false
+}
+
+variable "extra_network_interface_eips_count" {
+  description = "How many extra network interfaces will have a public elastic IP. Should be the exact number of “true” in the var.extra_network_interface_eips_enabled list."
+  default     = 0
+}
+
+variable "extra_network_interface_eips_enabled" {
+  description = "Respectively, for each instance, a list of boolean that indicates whether or not the extra network interface should have an elastic IP or not. Should have as many “true” as var.extra_network_interface_eips_count."
+  type        = list(bool)
+  default     = null
+}
+
+####
 # EBS
 ####
 
