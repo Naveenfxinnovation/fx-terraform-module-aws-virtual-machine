@@ -36,7 +36,6 @@ No provider.
 | Name | Description |
 |------|-------------|
 | autoscaling\_group\_arn | n/a |
-| autoscaling\_group\_availability\_zones | n/a |
 | autoscaling\_group\_id | n/a |
 | availability\_zones | n/a |
 | ec2\_arns | n/a |

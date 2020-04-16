@@ -38,10 +38,6 @@ output "autoscaling_group_arn" {
   value = module.example.autoscaling_group_arn
 }
 
-output "autoscaling_group_availability_zones" {
-  value = module.example.autoscaling_group_availability_zones
-}
-
 ####
 # EC2
 ####

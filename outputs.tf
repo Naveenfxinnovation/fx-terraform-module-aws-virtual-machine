@@ -3,11 +3,11 @@
 ####
 
 output "availability_zones" {
-  value = compact(concat(aws_instance.this.*.availability_zone, concat(aws_autoscaling_group.this.*.availability_zones, [""]), [""]))
+  value = compact(concat(aws_instance.this.*.availability_zone, tolist(element(concat(aws_autoscaling_group.this.*.availability_zones, [""]), 0)), [""]))
 }
 
 output "subnet_ids" {
-  value = compact(concat(aws_instance.this.*.subnet_id, concat(aws_autoscaling_group.this.*.vpc_zone_identifier, [""]), [""]))
+  value = compact(concat(aws_instance.this.*.subnet_id, tolist(element(concat(aws_autoscaling_group.this.*.vpc_zone_identifier, [""]), 0)), [""]))
 }
 
 ####
@@ -36,10 +36,6 @@ output "autoscaling_group_id" {
 
 output "autoscaling_group_arn" {
   value = concat(aws_autoscaling_group.this.*.arn, [""])[0]
-}
-
-output "autoscaling_group_availability_zones" {
-  value = concat(aws_autoscaling_group.this.*.availability_zones, [""])[0]
 }
 
 ####
