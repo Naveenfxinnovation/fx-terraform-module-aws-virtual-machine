@@ -94,6 +94,35 @@ output "key_pair_fingerprint" {
   value = module.example.key_pair_fingerprint
 }
 
+
+####
+# Elastic IP
+####
+
+output "eip_ids" {
+  value = module.example.eip_ids
+}
+
+output "eip_private_ips" {
+  value = module.example.eip_private_ips
+}
+
+output "eip_private_dns" {
+  value = module.example.eip_private_dns
+}
+
+output "eip_public_ips" {
+  value = module.example.eip_public_ips
+}
+
+output "eip_public_dns" {
+  value = module.example.eip_public_dns
+}
+
+output "eip_network_interfaces" {
+  value = module.example.eip_network_interfaces
+}
+
 ####
 # EBS
 ####
@@ -120,4 +149,8 @@ output "extra_network_interface_mac_addresses" {
 
 output "extra_network_interface_private_ips" {
   value = module.example.extra_network_interface_private_ips
+}
+
+output "extra_network_interface_public_ips" {
+  value = module.example.extra_network_interface_public_ips
 }

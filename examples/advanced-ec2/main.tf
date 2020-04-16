@@ -108,4 +108,14 @@ module "example" {
   external_volume_sizes        = [500, 15]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
   external_volume_types        = ["sc1", "gp2"]
+
+  extra_network_interface_count              = 1
+  extra_network_interface_source_dest_checks = [true]
+  extra_network_interface_tags = {
+    NICName = "tftest${random_string.this.result}"
+  }
+
+  eip_create                           = true
+  extra_network_interface_eips_count   = 1
+  extra_network_interface_eips_enabled = [true]
 }
