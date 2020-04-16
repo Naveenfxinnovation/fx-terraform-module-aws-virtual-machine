@@ -95,6 +95,34 @@ output "key_pair_fingerprint" {
 }
 
 ####
+# Elastic IP
+####
+
+output "eip_ids" {
+  value = aws_eip.this.*.id
+}
+
+output "eip_private_ips" {
+  value = aws_eip.this.*.private_ip
+}
+
+output "eip_private_dns" {
+  value = aws_eip.this.*.private_dns
+}
+
+output "eip_public_ips" {
+  value = aws_eip.this.*.public_ip
+}
+
+output "eip_public_dns" {
+  value = aws_eip.this.*.public_dns
+}
+
+output "eip_network_interfaces" {
+  value = aws_eip.this.*.network_interface
+}
+
+####
 # EBS
 ####
 
@@ -120,4 +148,8 @@ output "extra_network_interface_mac_addresses" {
 
 output "extra_network_interface_private_ips" {
   value = local.should_create_extra_network_interface ? zipmap(aws_instance.this.*.id, chunklist(aws_network_interface.this.*.private_ips, var.extra_network_interface_count)) : {}
+}
+
+output "extra_network_interface_public_ips" {
+  value = local.should_create_extra_network_interface && var.extra_network_interface_eips_count > 0 ? zipmap(aws_instance.this.*.id, chunklist(aws_eip.extra.*.public_ip, var.extra_network_interface_eips_count)) : {}
 }

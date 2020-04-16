@@ -1,6 +1,12 @@
 # Terraform module: Virtual Machine (EC2, AutoScaling Group)
 
-Create X EC2/AutoScaling Group instances with X extra volumes, encrypted by default.
+This module have the following features, they are all optional:
+
+- X EC2 instances or one AutoScaling Group with X capacity.
+- X extra volumes attached to each instances, encrypted by default, with optional KMS key (only for EC2).
+- X extra network interfaces attached to each instances (only for EC2).
+- A Key Pair shared with all instances.
+- Elastic IPS for each instances and/or for specific extra network interfaces (only for EC2).
 
 This module creates the same kind of instances.
 They share the same features.
@@ -132,11 +138,18 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | ec2\_private\_ips | n/a |
 | ec2\_public\_dns | n/a |
 | ec2\_public\_ips | n/a |
+| eip\_ids | n/a |
+| eip\_network\_interfaces | n/a |
+| eip\_private\_dns | n/a |
+| eip\_private\_ips | n/a |
+| eip\_public\_dns | n/a |
+| eip\_public\_ips | n/a |
 | external\_volume\_arns | n/a |
 | external\_volume\_ids | n/a |
 | extra\_network\_interface\_ids | n/a |
 | extra\_network\_interface\_mac\_addresses | n/a |
 | extra\_network\_interface\_private\_ips | n/a |
+| extra\_network\_interface\_public\_ips | n/a |
 | key\_pair\_fingerprint | n/a |
 | key\_pair\_id | n/a |
 | key\_pair\_name | n/a |
