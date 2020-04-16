@@ -395,7 +395,7 @@ variable "extra_network_interface_eips_count" {
 variable "extra_network_interface_eips_enabled" {
   description = "Respectively, for each instance, a list of boolean that indicates whether or not the extra network interface should have an elastic IP or not. Should have as many “true” as var.extra_network_interface_eips_count."
   type        = list(bool)
-  default     = null
+  default     = []
 }
 
 ####
