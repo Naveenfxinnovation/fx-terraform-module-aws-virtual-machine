@@ -16,6 +16,7 @@ It will automatically `validate`, `fmt` and update *README.md* for you.
 - AWS does not handle external volumes with AutoScaling Groups.
 Because of this, if an AutoScaling Group with one or more EBS volume is destroy, the EBS volumes would be preserved, resulting in phantom volumes (unseen by Terraform).
 That’s why every extra volumes within an AutoScaling group will always be destroyed by using this module (delete_on_termination = true).
+- Same kind of resources will share the same tags. It’s not possible to assign tag to a specific instance, as specific volume or a specific network interface.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
