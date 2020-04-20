@@ -1,7 +1,8 @@
 2.1.1
 =====
 
-* fix: Required version in greater or equal to 2.54, not 2.54.0
+* fix: required version in greater or equal to 2.54, not 2.54.0
+* fix: suffix name contain spaces instad of number
 
 2.1.0
 =======

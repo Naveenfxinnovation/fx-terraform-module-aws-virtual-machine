@@ -22,7 +22,7 @@ locals {
 resource "aws_launch_configuration" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name_prefix = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s%-0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+  name_prefix = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
 
   image_id             = var.ami
   instance_type        = var.instance_type
@@ -80,7 +80,7 @@ resource "aws_launch_configuration" "this" {
 resource "aws_autoscaling_group" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s%-0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + 1) : var.autoscaling_group_name
+  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + 1) : var.autoscaling_group_name
 
   desired_capacity = var.instance_count
   max_size         = var.autoscaling_group_max_size
@@ -211,7 +211,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s%-0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
     },
     var.tags,
     var.instance_tags,
