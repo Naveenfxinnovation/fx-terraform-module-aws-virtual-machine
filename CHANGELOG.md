@@ -1,3 +1,8 @@
+3.0.0
+=====
+
+* fix: BREAKING Use default KMS key for volume encryption by default
+
 2.1.1
 =====
 

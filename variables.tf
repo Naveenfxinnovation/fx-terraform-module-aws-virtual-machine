@@ -325,7 +325,7 @@ variable "volume_kms_key_arn" {
 variable "volume_kms_key_create" {
   description = "Whether or not to create a KMS key to be used for volumes encryption."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "volume_kms_key_customer_master_key_spec" {
