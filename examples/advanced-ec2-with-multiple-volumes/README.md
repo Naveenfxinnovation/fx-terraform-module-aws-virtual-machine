@@ -22,13 +22,13 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
-| aws | 2.54 |
+| aws | ~> 2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 2.54 |
+| aws | ~> 2 |
 | random | n/a |
 
 ## Inputs
