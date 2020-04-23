@@ -7,7 +7,7 @@ data "aws_subnet_ids" "all" {
 
   filter {
     name   = "availability-zone"
-    values = ["ca-central-1a", "ca-central-1b"]
+    values = ["eu-west-2a", "eu-west-2b"]
   }
 }
 
