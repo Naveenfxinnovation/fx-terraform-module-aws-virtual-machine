@@ -1,3 +1,9 @@
+4.1.0
+=====
+
+feat: handle elastic IPs for EC2 instances
+feat: handle elastic IPs for network interfaces
+
 4.0.1
 =====
 
