@@ -15,7 +15,7 @@ locals {
   }
 
   security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
-  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_arn : (local.should_create_instance_profile ? aws_iam_instance_profile.this.arn : null)
+  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_arn : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.arn[0] : null)
 }
 
 ####
@@ -247,7 +247,7 @@ resource "aws_iam_instance_profile" "this" {
 
   name = var.iam_instance_profile_name
   path = var.iam_instance_profile_path
-  role = aws_iam_role.this_instance_profile.id
+  role = aws_iam_role.this_instance_profile.*.id[0]
 }
 
 resource "aws_iam_role" "this_instance_profile" {
@@ -268,7 +268,7 @@ resource "aws_iam_role" "this_instance_profile" {
 resource "aws_iam_role_policy_attachment" "this_instance_profile" {
   count = local.should_create_instance_profile ? var.iam_instance_profile_iam_role_policy_count : 0
 
-  role       = aws_iam_role.this_instance_profile.id
+  role       = aws_iam_role.this_instance_profile.*.id[0]
   policy_arn = element(var.iam_instance_profile_iam_role_policy_arns, count.index)
 }
 
