@@ -86,7 +86,7 @@ output "iam_instance_profile_id" {
   value = local.should_create_instance_profile ? concat(aws_iam_instance_profile.this.*.id, [""])[0] : ""
 }
 
-output "iam_instance_profile_arn" {
+output "iam_instance_profile_external_name" {
   value = local.should_create_key_pair ? concat(aws_iam_instance_profile.this.*.arn, [""])[0] : ""
 }
 

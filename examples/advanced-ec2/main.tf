@@ -148,5 +148,5 @@ module "example" {
   extra_network_interface_eips_count   = 1
   extra_network_interface_eips_enabled = [true]
 
-  iam_instance_profile_arn = aws_iam_instance_profile.example.arn
+  iam_instance_profile_external_name = aws_iam_instance_profile.example.name
 }

@@ -15,7 +15,7 @@ locals {
   }
 
   security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
-  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_arn : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.arn[0] : null)
+  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_external_name : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.name[0] : null)
 }
 
 ####
@@ -239,7 +239,7 @@ resource "aws_instance" "this" {
 
 locals {
   should_create_instance_profile       = var.instance_count > 0 && var.iam_instance_profile_create
-  should_use_external_instance_profile = var.iam_instance_profile_arn != ""
+  should_use_external_instance_profile = var.iam_instance_profile_external_name != ""
 }
 
 resource "aws_iam_instance_profile" "this" {

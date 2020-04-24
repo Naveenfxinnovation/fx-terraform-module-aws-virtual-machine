@@ -382,8 +382,8 @@ variable "key_pair_tags" {
 # Instance Profile
 ####
 
-variable "iam_instance_profile_arn" {
-  description = "ARN of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile."
+variable "iam_instance_profile_external_name" {
+  description = "Name of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile."
   type        = string
   default     = null
 }

@@ -35,7 +35,7 @@ No provider.
 
 | Name | Description |
 |------|-------------|
-| iam\_instance\_profile\_arn | n/a |
+| iam\_instance\_profile\_external\_name | n/a |
 | iam\_instance\_profile\_iam\_role\_arn | n/a |
 | iam\_instance\_profile\_iam\_role\_id | n/a |
 | iam\_instance\_profile\_iam\_role\_unique\_id | n/a |

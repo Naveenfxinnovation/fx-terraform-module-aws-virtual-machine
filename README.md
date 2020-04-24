@@ -93,8 +93,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs. | `map` | `{}` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
-| iam\_instance\_profile\_arn | ARN of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
 | iam\_instance\_profile\_create | Whether or not to create an instance profile for the virtual machines. | `bool` | `true` | no |
+| iam\_instance\_profile\_external\_name | Name of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
 | iam\_instance\_profile\_iam\_role\_description | The description of the instance profile role. | `string` | `"Instance profile role"` | no |
 | iam\_instance\_profile\_iam\_role\_name | The name of the instance profile role. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
 | iam\_instance\_profile\_iam\_role\_policy\_arns | The ARNs of the policies you want to apply to the instance profile role. | `list(string)` | `[]` | no |
@@ -159,7 +159,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_mac\_addresses | n/a |
 | extra\_network\_interface\_private\_ips | n/a |
 | extra\_network\_interface\_public\_ips | n/a |
-| iam\_instance\_profile\_arn | n/a |
+| iam\_instance\_profile\_external\_name | n/a |
 | iam\_instance\_profile\_iam\_role\_arn | n/a |
 | iam\_instance\_profile\_iam\_role\_id | n/a |
 | iam\_instance\_profile\_iam\_role\_unique\_id | n/a |
