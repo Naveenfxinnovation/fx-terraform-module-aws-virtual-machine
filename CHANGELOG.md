@@ -1,3 +1,8 @@
+5.0.0
+=====
+
+feat (BREAKING): handle IAM instance profile
+
 4.1.0
 =====
 
