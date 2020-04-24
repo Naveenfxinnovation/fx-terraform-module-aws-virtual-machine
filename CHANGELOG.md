@@ -1,3 +1,8 @@
+4.0.1
+=====
+
+* fix: terraform try to fetch some default resources on AWS account even if not needed
+
 4.0.0
 =====
 

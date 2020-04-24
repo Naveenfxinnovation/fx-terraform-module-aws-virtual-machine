@@ -7,7 +7,7 @@ data "aws_vpc" "default" {
 data "aws_subnet_ids" "default" {
   count = local.use_default_subnets ? 1 : 0
 
-  vpc_id = data.aws_vpc.default.id
+  vpc_id = element(data.aws_vpc.default.*.id, 0)
 }
 
 // This is needed to circumvent:
