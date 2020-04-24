@@ -5,15 +5,15 @@ locals {
 
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
 
-  subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.ids) : var.subnet_ids_count
-  subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
+  subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.*.ids) : var.subnet_ids_count
+  subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.*.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
   vpc_id       = element(data.aws_subnet.subnets.*.vpc_id, 0)
 
   tags = {
     Terraform  = true
     managed-by = "Terraform"
   }
-  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : tolist([[data.aws_security_group.default.id]])
+  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : tolist([data.aws_security_group.default.*.id])
 }
 
 ####
