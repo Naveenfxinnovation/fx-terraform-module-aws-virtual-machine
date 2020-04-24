@@ -98,7 +98,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | iam\_instance\_profile\_iam\_role\_description | The description of the instance profile role. | `string` | `"Instance profile role"` | no |
 | iam\_instance\_profile\_iam\_role\_name | The name of the instance profile role. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
 | iam\_instance\_profile\_iam\_role\_policy\_arns | The ARNs of the policies you want to apply to the instance profile role. | `list(string)` | `[]` | no |
-| iam\_instance\_profile\_iam\_role\_policy\_count | How many policy ARNs there are in var.instance\_profile\_iam\_role\_policy\_arns. This value cannot be computed automatically in Terraform 0.12. | `list(bool)` | `[]` | no |
+| iam\_instance\_profile\_iam\_role\_policy\_count | How many policy ARNs there are in var.instance\_profile\_iam\_role\_policy\_arns. This value cannot be computed automatically in Terraform 0.12. | `number` | `0` | no |
 | iam\_instance\_profile\_iam\_role\_tags | Tags to be used for the instance profile role. Will be merged with var.tags. | `map` | `{}` | no |
 | iam\_instance\_profile\_name | The profile's name. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
 | iam\_instance\_profile\_path | Path in which to create the profile. Instance profile role will share the same path. | `string` | `"/"` | no |

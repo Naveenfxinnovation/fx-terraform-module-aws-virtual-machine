@@ -417,8 +417,8 @@ variable "iam_instance_profile_iam_role_policy_arns" {
 
 variable "iam_instance_profile_iam_role_policy_count" {
   description = "How many policy ARNs there are in var.instance_profile_iam_role_policy_arns. This value cannot be computed automatically in Terraform 0.12."
-  type        = list(bool)
-  default     = []
+  type        = number
+  default     = 0
 }
 
 variable "iam_instance_profile_iam_role_description" {
