@@ -79,22 +79,6 @@ output "kms_key_id" {
 }
 
 ####
-# Key Pair
-####
-
-output "key_pair_name" {
-  value = module.example.key_pair_name
-}
-
-output "key_pair_id" {
-  value = module.example.key_pair_id
-}
-
-output "key_pair_fingerprint" {
-  value = module.example.key_pair_fingerprint
-}
-
-####
 # Instance Profile
 ####
 
@@ -102,8 +86,8 @@ output "iam_instance_profile_id" {
   value = module.example.iam_instance_profile_id
 }
 
-output "iam_instance_profile_external_name" {
-  value = module.example.iam_instance_profile_external_name
+output "iam_instance_profile_arn" {
+  value = module.example.iam_instance_profile_arn
 }
 
 output "iam_instance_profile_unique_id" {
@@ -120,6 +104,22 @@ output "iam_instance_profile_iam_role_id" {
 
 output "iam_instance_profile_iam_role_unique_id" {
   value = module.example.iam_instance_profile_iam_role_unique_id
+}
+
+####
+# Key Pair
+####
+
+output "key_pair_name" {
+  value = module.example.key_pair_name
+}
+
+output "key_pair_id" {
+  value = module.example.key_pair_id
+}
+
+output "key_pair_fingerprint" {
+  value = module.example.key_pair_fingerprint
 }
 
 ####

@@ -64,7 +64,7 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | extra\_network\_interface\_mac\_addresses | n/a |
 | extra\_network\_interface\_private\_ips | n/a |
 | extra\_network\_interface\_public\_ips | n/a |
-| iam\_instance\_profile\_external\_name | n/a |
+| iam\_instance\_profile\_arn | n/a |
 | iam\_instance\_profile\_iam\_role\_arn | n/a |
 | iam\_instance\_profile\_iam\_role\_id | n/a |
 | iam\_instance\_profile\_iam\_role\_unique\_id | n/a |
