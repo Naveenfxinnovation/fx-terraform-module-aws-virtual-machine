@@ -1,8 +1,12 @@
 data "aws_vpc" "default" {
+  count = local.use_default_subnets || var.vpc_security_group_ids == null ? 1 : 0
+
   default = true
 }
 
 data "aws_subnet_ids" "default" {
+  count = local.use_default_subnets ? 1 : 0
+
   vpc_id = data.aws_vpc.default.id
 }
 
@@ -15,6 +19,8 @@ data "aws_subnet" "subnets" {
 }
 
 data "aws_security_group" "default" {
+  count = var.vpc_security_group_ids == null ? 1 : 0
+
   vpc_id = local.vpc_id
   name   = "default"
 }
