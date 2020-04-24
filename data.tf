@@ -55,3 +55,16 @@ data "null_data_source" "ebs_block_device" {
     size        = element(var.external_volume_sizes, count.index)
   }
 }
+
+data "aws_iam_policy_document" "sts_instance" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "ec2.amazonaws.com"
+      ]
+    }
+  }
+}

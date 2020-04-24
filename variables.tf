@@ -379,6 +379,61 @@ variable "key_pair_tags" {
 }
 
 ####
+# Instance Profile
+####
+
+variable "iam_instance_profile_arn" {
+  description = "ARN of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile."
+  type        = string
+  default     = null
+}
+
+variable "iam_instance_profile_create" {
+  description = "Whether or not to create an instance profile for the virtual machines."
+  default     = true
+}
+
+variable "iam_instance_profile_name" {
+  description = "The profile's name. If omitted, Terraform will assign a random, unique name."
+  type        = string
+  default     = null
+}
+
+variable "iam_instance_profile_path" {
+  description = "Path in which to create the profile. Instance profile role will share the same path."
+  default     = "/"
+}
+
+variable "iam_instance_profile_iam_role_tags" {
+  description = "Tags to be used for the instance profile role. Will be merged with var.tags."
+  default     = {}
+}
+
+variable "iam_instance_profile_iam_role_policy_arns" {
+  description = "The ARNs of the policies you want to apply to the instance profile role."
+  type        = list(string)
+  default     = []
+}
+
+variable "iam_instance_profile_iam_role_policy_count" {
+  description = "How many policy ARNs there are in var.instance_profile_iam_role_policy_arns. This value cannot be computed automatically in Terraform 0.12."
+  type        = list(bool)
+  default     = []
+}
+
+variable "iam_instance_profile_iam_role_description" {
+  description = "The description of the instance profile role."
+  type        = string
+  default     = "Instance profile role"
+}
+
+variable "iam_instance_profile_iam_role_name" {
+  description = "The name of the instance profile role. If omitted, Terraform will assign a random, unique name."
+  type        = string
+  default     = null
+}
+
+####
 # Elastic IP
 ####
 

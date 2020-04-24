@@ -13,7 +13,9 @@ locals {
     Terraform  = true
     managed-by = "Terraform"
   }
-  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
+
+  security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
+  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_arn : (local.should_create_instance_profile ? aws_iam_instance_profile.this.arn : null)
 }
 
 ####
@@ -27,7 +29,7 @@ resource "aws_launch_configuration" "this" {
 
   image_id             = var.ami
   instance_type        = var.instance_type
-  iam_instance_profile = var.iam_instance_profile
+  iam_instance_profile = local.iam_instance_profile
   key_name             = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   enable_monitoring    = var.monitoring
 
@@ -163,7 +165,7 @@ resource "aws_instance" "this" {
   cpu_threads_per_core = var.ec2_cpu_threads_per_core
 
   vpc_security_group_ids = element(local.security_group_ids, count.index)
-  iam_instance_profile   = var.iam_instance_profile
+  iam_instance_profile   = local.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
   private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
@@ -229,6 +231,45 @@ resource "aws_instance" "this" {
       volume_tags,
     ]
   }
+}
+
+####
+# Instance Profile
+####
+
+locals {
+  should_create_instance_profile       = var.instance_count > 0 && var.iam_instance_profile_create
+  should_use_external_instance_profile = var.iam_instance_profile_arn != ""
+}
+
+resource "aws_iam_instance_profile" "this" {
+  count = local.should_create_instance_profile ? 1 : 0
+
+  name = var.iam_instance_profile_name
+  path = var.iam_instance_profile_path
+  role = aws_iam_role.this_instance_profile.id
+}
+
+resource "aws_iam_role" "this_instance_profile" {
+  count = local.should_create_instance_profile ? 1 : 0
+
+  name               = var.iam_instance_profile_iam_role_name
+  description        = var.iam_instance_profile_iam_role_description
+  path               = var.iam_instance_profile_path
+  assume_role_policy = data.aws_iam_policy_document.sts_instance.json
+
+  tags = merge(
+    var.tags,
+    var.iam_instance_profile_iam_role_tags,
+    local.tags,
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "this_instance_profile" {
+  count = local.should_create_instance_profile ? var.iam_instance_profile_iam_role_policy_count : 0
+
+  role       = aws_iam_role.this_instance_profile.id
+  policy_arn = element(var.iam_instance_profile_iam_role_policy_arns, count.index)
 }
 
 ####

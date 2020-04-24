@@ -93,6 +93,15 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs. | `map` | `{}` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
+| iam\_instance\_profile\_arn | ARN of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
+| iam\_instance\_profile\_create | Whether or not to create an instance profile for the virtual machines. | `bool` | `true` | no |
+| iam\_instance\_profile\_iam\_role\_description | The description of the instance profile role. | `string` | `"Instance profile role"` | no |
+| iam\_instance\_profile\_iam\_role\_name | The name of the instance profile role. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
+| iam\_instance\_profile\_iam\_role\_policy\_arns | The ARNs of the policies you want to apply to the instance profile role. | `list(string)` | `[]` | no |
+| iam\_instance\_profile\_iam\_role\_policy\_count | How many policy ARNs there are in var.instance\_profile\_iam\_role\_policy\_arns. This value cannot be computed automatically in Terraform 0.12. | `list(bool)` | `[]` | no |
+| iam\_instance\_profile\_iam\_role\_tags | Tags to be used for the instance profile role. Will be merged with var.tags. | `map` | `{}` | no |
+| iam\_instance\_profile\_name | The profile's name. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
+| iam\_instance\_profile\_path | Path in which to create the profile. Instance profile role will share the same path. | `string` | `"/"` | no |
 | instance\_count | Number of instances to create. Can also be 0. | `number` | `1` | no |
 | instance\_tags | Tags specific to the instances. | `map` | `{}` | no |
 | instance\_type | The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance. | `string` | `"t3.small"` | no |
