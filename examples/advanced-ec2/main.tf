@@ -52,12 +52,41 @@ resource "aws_key_pair" "example" {
 }
 
 resource "aws_kms_key" "example" {
-
 }
 
 resource "aws_kms_alias" "example" {
   name          = "alias/tftest/${random_string.this.result}/ec2"
   target_key_id = aws_kms_key.example.key_id
+}
+
+data "aws_iam_policy_document" "example" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "ec2.amazonaws.com"
+      ]
+    }
+  }
+}
+
+resource "aws_iam_instance_profile" "example" {
+  name = "tftest${random_string.this.result}"
+  path = "/"
+  role = aws_iam_role.example.id
+}
+
+resource "aws_iam_role" "example" {
+  name               = "tftest${random_string.this.result}"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.example.json
+}
+
+resource "aws_iam_role_policy_attachment" "example" {
+  role       = aws_iam_role.example.id
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 module "example" {
@@ -118,4 +147,6 @@ module "example" {
   eip_create                           = true
   extra_network_interface_eips_count   = 1
   extra_network_interface_eips_enabled = [true]
+
+  iam_instance_profile_arn = aws_iam_instance_profile.example.arn
 }

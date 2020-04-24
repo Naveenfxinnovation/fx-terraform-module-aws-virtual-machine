@@ -101,4 +101,7 @@ module "example" {
   external_volume_count        = 2
   external_volume_sizes        = [5]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi"]
+
+  iam_instance_profile_iam_role_policy_count = 1
+  iam_instance_profile_iam_role_policy_arns  = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
 }

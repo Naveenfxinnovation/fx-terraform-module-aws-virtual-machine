@@ -98,4 +98,6 @@ module "example" {
   extra_network_interface_tags = {
     NICName = "tftest${random_string.this.result}"
   }
+
+  iam_instance_profile_create = false
 }
