@@ -79,6 +79,34 @@ output "kms_key_id" {
 }
 
 ####
+# Instance Profile
+####
+
+output "iam_instance_profile_id" {
+  value = local.should_create_instance_profile ? concat(aws_iam_instance_profile.this.*.id, [""])[0] : ""
+}
+
+output "iam_instance_profile_arn" {
+  value = local.should_create_key_pair ? concat(aws_iam_instance_profile.this.*.arn, [""])[0] : ""
+}
+
+output "iam_instance_profile_unique_id" {
+  value = local.should_create_key_pair ? concat(aws_iam_instance_profile.this.*.unique_id, [""])[0] : ""
+}
+
+output "iam_instance_profile_iam_role_arn" {
+  value = local.should_create_key_pair ? concat(aws_iam_role.this_instance_profile.*.arn, [""])[0] : ""
+}
+
+output "iam_instance_profile_iam_role_id" {
+  value = local.should_create_key_pair ? concat(aws_iam_role.this_instance_profile.*.id, [""])[0] : ""
+}
+
+output "iam_instance_profile_iam_role_unique_id" {
+  value = local.should_create_key_pair ? concat(aws_iam_role.this_instance_profile.*.unique_id, [""])[0] : ""
+}
+
+####
 # Key Pair
 ####
 
