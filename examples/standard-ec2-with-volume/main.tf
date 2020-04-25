@@ -1,18 +1,3 @@
-data "aws_region" "current" {}
-
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnet_ids" "all" {
-  vpc_id = data.aws_vpc.default.id
-
-  filter {
-    name   = "availability-zone"
-    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
-  }
-}
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -46,10 +31,8 @@ module "example" {
 
   name = "tftest-standard_ec2_with_volume"
 
-  subnet_ids_count = 1
-  subnet_id        = element(tolist(data.aws_subnet_ids.all.ids), 0)
-  ami              = data.aws_ami.amazon_linux.image_id
-  instance_type    = "t3.micro"
+  ami           = data.aws_ami.amazon_linux.image_id
+  instance_type = "t3.micro"
 
   ec2_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
