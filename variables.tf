@@ -121,7 +121,7 @@ variable "subnet_ids" {
 }
 
 variable "subnet_ids_count" {
-  description = "How many subnet IDs in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.11.X."
+  description = "How many subnet IDs in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.12.X."
   default     = 0
 }
 

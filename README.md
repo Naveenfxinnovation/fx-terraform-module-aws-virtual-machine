@@ -101,7 +101,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | root\_block\_device\_volume\_type | Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2'). | `string` | `null` | no |
 | subnet\_id | Subnet ID where to provision all the instances. Can be used instead or along with var.subnet\_ids. | `string` | `""` | no |
 | subnet\_ids | Subnet IDs where to provision the instances. Can be used instead or along with var.subnet\_id. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
-| subnet\_ids\_count | How many subnet IDs in subnet\_ids. Cannot be computed automatically from other variables in Terraform 0.11.X. | `number` | `0` | no |
+| subnet\_ids\_count | How many subnet IDs in subnet\_ids. Cannot be computed automatically from other variables in Terraform 0.12.X. | `number` | `0` | no |
 | tags | Tags to be used for all this module resources. Will be merged with specific tags. | `map` | `{}` | no |
 | use\_autoscaling\_group | Weither or not to create an AutoScaling Group instead of EC2 instances. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
