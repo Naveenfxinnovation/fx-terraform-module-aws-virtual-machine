@@ -22,7 +22,7 @@ data "aws_subnet_ids" "default" {
 }
 
 data "aws_security_group" "default" {
-  count = var.vpc_security_group_ids == null ? 1 : 0
+  count = var.instance_count > 0 && var.vpc_security_group_ids == null ? 1 : 0
 
   vpc_id = local.vpc_id
   name   = "default"
