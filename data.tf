@@ -2,6 +2,8 @@
 # Defaults
 ####
 
+data "aws_region" "current" {}
+
 data "aws_vpc" "default" {
   count = local.use_default_subnets ? 1 : 0
 
@@ -12,6 +14,11 @@ data "aws_subnet_ids" "default" {
   count = local.use_default_subnets ? 1 : 0
 
   vpc_id = data.aws_vpc.default.*.id[0]
+
+  filter {
+    name   = "availability-zone"
+    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
+  }
 }
 
 data "aws_security_group" "default" {

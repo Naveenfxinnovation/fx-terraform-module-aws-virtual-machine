@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 data "aws_vpc" "default" {
   default = true
 }
@@ -7,7 +9,7 @@ data "aws_subnet_ids" "all" {
 
   filter {
     name   = "availability-zone"
-    values = ["eu-west-2a", "eu-west-2b"]
+    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
   }
 }
 
