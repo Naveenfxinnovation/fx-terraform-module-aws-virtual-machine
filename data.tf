@@ -1,5 +1,9 @@
+####
+# Defaults
+####
+
 data "aws_vpc" "default" {
-  count = local.use_default_subnets || var.vpc_security_group_ids == null ? 1 : 0
+  count = local.use_default_subnets ? 1 : 0
 
   default = true
 }
@@ -7,15 +11,7 @@ data "aws_vpc" "default" {
 data "aws_subnet_ids" "default" {
   count = local.use_default_subnets ? 1 : 0
 
-  vpc_id = element(data.aws_vpc.default.*.id, 0)
-}
-
-// This is needed to circumvent:
-// https://github.com/terraform-providers/terraform-provider-aws/issues/1352
-data "aws_subnet" "subnets" {
-  count = local.subnet_count
-
-  id = element(local.subnet_ids, count.index)
+  vpc_id = data.aws_vpc.default.*.id[0]
 }
 
 data "aws_security_group" "default" {
@@ -24,6 +20,22 @@ data "aws_security_group" "default" {
   vpc_id = local.vpc_id
   name   = "default"
 }
+
+####
+# Subnets
+####
+// This is needed to circumvent:
+// https://github.com/terraform-providers/terraform-provider-aws/issues/1352
+
+data "aws_subnet" "subnets" {
+  count = local.subnet_count
+
+  id = element(local.subnet_ids, count.index)
+}
+
+####
+# EBS
+####
 
 data "null_data_source" "ebs_block_device" {
   count = var.external_volume_count
