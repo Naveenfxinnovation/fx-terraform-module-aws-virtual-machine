@@ -1,7 +1,7 @@
 4.0.1
 =====
 
-* fix: terraform try to fetch some default resources on AWS account even if not needed
+* fix: do not fetch some default resources on AWS account when not needed
 
 4.0.0
 =====
