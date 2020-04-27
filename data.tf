@@ -2,7 +2,9 @@
 # Defaults
 ####
 
-data "aws_region" "current" {}
+data "aws_region" "current" {
+  count = var.instance_count > 0 ? 1 : 0
+}
 
 data "aws_vpc" "default" {
   count = local.use_default_subnets ? 1 : 0
@@ -17,7 +19,7 @@ data "aws_subnet_ids" "default" {
 
   filter {
     name   = "availability-zone"
-    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
+    values = ["${element(concat(data.aws_region.current.*.name, [""]), 0)}a", "${element(concat(data.aws_region.current.*.name, [""]), 0)}b"]
   }
 }
 
