@@ -6,7 +6,7 @@ locals {
   used_subnet_count = floor(min(local.subnet_count, var.instance_count))
 
   subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.*.ids) : var.subnet_ids_count
-  subnet_ids   = split(",", local.use_default_subnets ? join(",", data.aws_subnet_ids.default.*.ids) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
+  subnet_ids   = split(",", local.use_default_subnets ? join(",", tolist(element(concat(data.aws_subnet_ids.default.*.ids, [""]), 0))) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
   vpc_id       = element(concat(data.aws_subnet.subnets.*.vpc_id, [""]), 0)
 
   tags = {
