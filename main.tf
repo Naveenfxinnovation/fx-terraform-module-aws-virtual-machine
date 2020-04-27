@@ -13,7 +13,7 @@ locals {
     Terraform  = true
     managed-by = "Terraform"
   }
-  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (local.use_default_subnets ? tolist([data.aws_security_group.default.*.id]) : [])
+  security_group_ids = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
 }
 
 ####
