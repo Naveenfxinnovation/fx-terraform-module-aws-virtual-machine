@@ -62,21 +62,17 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | autoscaling\_group\_termination\_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, OldestLaunchTemplate, AllocationStrategy, Default. | `list(string)` | `null` | no |
 | autoscaling\_group\_wait\_for\_capacity\_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. (See also Waiting for Capacity below.) Setting this to '0' causes Terraform to skip all Capacity Waiting behavior. | `string` | `null` | no |
 | autoscaling\_group\_wait\_for\_elb\_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances from this autoscaling group in all attached load balancers on both create and update operations. (Takes precedence over min\_elb\_capacity behavior.) | `number` | `null` | no |
+| cpu\_core\_count | Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API. | `number` | `null` | no |
+| cpu\_credits | The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. | `string` | `null` | no |
+| cpu\_threads\_per\_core | (has no effect unless cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
+| disable\_api\_termination | If true, enables EC2 Instance Termination Protection. | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
-| ec2\_cpu\_core\_count | Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API. | `number` | `null` | no |
-| ec2\_cpu\_credits | The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. | `string` | `null` | no |
-| ec2\_cpu\_threads\_per\_core | (has no effect unless cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
-| ec2\_disable\_api\_termination | If true, enables EC2 Instance Termination Protection. | `bool` | `false` | no |
-| ec2\_host\_id | The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host. | `string` | `null` | no |
-| ec2\_instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances. | `string` | `null` | no |
-| ec2\_ipv6\_address\_count | A number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet. | `number` | `0` | no |
 | ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `null` | no |
 | ec2\_private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance\_count. | `list(string)` | `null` | no |
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
-| ec2\_tenancy | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
 | ec2\_volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
 | eip\_create | Whether or not to create an public elastic IP per instance. | `bool` | `false` | no |
-| ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance. | `list(object({ device_name = string, virtual_name = string }))` | `[]` | no |
+| ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance:<br>  * device\_name (required, string): The name of the block device to mount on the instance.<br>  * virtual\_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").<br>  * no\_device (optional, string): Suppresses the specified device included in the AMI's block device mapping. | `any` | `[]` | no |
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
@@ -92,6 +88,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_security\_group\_ids | List of security group IDs to assign to the extra ENIs. All ENIs will have the same security groups. | `list(list(string))` | `[]` | no |
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs. | `map` | `{}` | no |
+| host\_id | The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host. | `string` | `null` | no |
 | iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
 | iam\_instance\_profile\_create | Whether or not to create an instance profile for the virtual machines. | `bool` | `true` | no |
 | iam\_instance\_profile\_external\_name | Name of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
@@ -103,8 +100,10 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | iam\_instance\_profile\_name | The profile's name. If omitted, Terraform will assign a random, unique name. | `string` | `null` | no |
 | iam\_instance\_profile\_path | Path in which to create the profile. Instance profile role will share the same path. | `string` | `"/"` | no |
 | instance\_count | Number of instances to create. Can also be 0. | `number` | `1` | no |
+| instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances. | `string` | `null` | no |
 | instance\_tags | Tags specific to the instances. | `map` | `{}` | no |
 | instance\_type | The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance. | `string` | `"t3.small"` | no |
+| ipv6\_address\_count | A number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet. | `number` | `0` | no |
 | key\_pair\_create | Whether or not to create a key pair. | `bool` | `false` | no |
 | key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |
 | key\_pair\_public\_key | The public key material. | `string` | `null` | no |
@@ -121,6 +120,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | subnet\_ids | Subnet IDs where to provision the instances. Can be used instead or along with var.subnet\_id. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | subnet\_ids\_count | How many subnet IDs in subnet\_ids. Cannot be computed automatically from other variables in Terraform 0.12.X. | `number` | `0` | no |
 | tags | Tags to be used for all this module resources. Will be merged with specific tags. | `map` | `{}` | no |
+| tenancy | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
 | use\_autoscaling\_group | Weither or not to create an AutoScaling Group instead of EC2 instances. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
 | user\_data | The user data to provide when launching the instance. | `string` | `null` | no |

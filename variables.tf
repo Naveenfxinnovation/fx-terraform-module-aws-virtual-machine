@@ -32,20 +32,60 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
+variable "cpu_credits" {
+  description = "The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. "
+  type        = string
+  default     = null
+}
+
+variable "cpu_core_count" {
+  description = "Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API."
+  type        = number
+  default     = null
+}
+
+variable "cpu_threads_per_core" {
+  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information."
+  type        = number
+  default     = null
+}
+
 variable "ebs_optimized" {
   description = "If true, the launched EC2 instance will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it."
   default     = false
 }
 
+variable "disable_api_termination" {
+  description = "If true, enables EC2 Instance Termination Protection."
+  default     = false
+}
+
 variable "ephemeral_block_devices" {
-  description = "Customize Ephemeral (also known as Instance Store) volumes on the instance."
-  type        = list(object({ device_name = string, virtual_name = string }))
+  description = <<-DOCUMENTATION
+Customize Ephemeral (also known as Instance Store) volumes on the instance:
+  * device_name (required, string): The name of the block device to mount on the instance.
+  * virtual_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").
+  * no_device (optional, string): Suppresses the specified device included in the AMI's block device mapping.
+DOCUMENTATION
+  type        = any
   default     = []
+}
+
+variable "host_id" {
+  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
+  type        = string
+  default     = null
 }
 
 variable "instance_count" {
   description = "Number of instances to create. Can also be 0."
   default     = 1
+}
+
+variable "instance_initiated_shutdown_behavior" {
+  description = "Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances."
+  type        = string
+  default     = null
 }
 
 variable "iam_instance_profile" {
@@ -61,6 +101,11 @@ variable "instance_tags" {
 variable "instance_type" {
   description = "The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance."
   default     = "t3.small"
+}
+
+variable "ipv6_address_count" {
+  description = "A number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
+  default     = 0
 }
 
 variable "monitoring" {
@@ -123,6 +168,11 @@ variable "subnet_ids" {
 variable "subnet_ids_count" {
   description = "How many subnet IDs in subnet_ids. Cannot be computed automatically from other variables in Terraform 0.12.X."
   default     = 0
+}
+
+variable "tenancy" {
+  description = "The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
+  default     = "default"
 }
 
 variable "user_data" {
@@ -240,50 +290,10 @@ variable "autoscaling_group_wait_for_elb_capacity" {
 # EC2
 ####
 
-variable "ec2_cpu_credits" {
-  description = "The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. "
-  type        = string
-  default     = null
-}
-
-variable "ec2_cpu_core_count" {
-  description = "Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API."
-  type        = number
-  default     = null
-}
-
-variable "ec2_cpu_threads_per_core" {
-  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information."
-  type        = number
-  default     = null
-}
-
-variable "ec2_disable_api_termination" {
-  description = "If true, enables EC2 Instance Termination Protection."
-  default     = false
-}
-
-variable "ec2_host_id" {
-  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
-  type        = string
-  default     = null
-}
-
-variable "ec2_instance_initiated_shutdown_behavior" {
-  description = "Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances."
-  type        = string
-  default     = null
-}
-
 variable "ec2_ipv6_addresses" {
   description = "Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface."
   type        = list(string)
   default     = null
-}
-
-variable "ec2_ipv6_address_count" {
-  description = "A number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
-  default     = 0
 }
 
 variable "ec2_private_ips" {
@@ -295,11 +305,6 @@ variable "ec2_private_ips" {
 variable "ec2_source_dest_check" {
   description = "Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs."
   default     = true
-}
-
-variable "ec2_tenancy" {
-  description = "The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
-  default     = "default"
 }
 
 variable "ec2_volume_tags" {

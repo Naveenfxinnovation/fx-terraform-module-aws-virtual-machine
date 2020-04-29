@@ -159,17 +159,17 @@ resource "aws_instance" "this" {
   subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   monitoring    = var.monitoring
-  host_id       = var.ec2_host_id
+  host_id       = var.host_id
 
-  cpu_core_count       = var.ec2_cpu_core_count
-  cpu_threads_per_core = var.ec2_cpu_threads_per_core
+  cpu_core_count       = var.cpu_core_count
+  cpu_threads_per_core = var.cpu_threads_per_core
 
   vpc_security_group_ids = element(local.security_group_ids, count.index)
   iam_instance_profile   = local.iam_instance_profile
 
   associate_public_ip_address = var.associate_public_ip_address
   private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
-  ipv6_address_count          = var.ec2_ipv6_address_count
+  ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ec2_ipv6_addresses
 
   ebs_optimized = var.ebs_optimized
@@ -199,16 +199,16 @@ resource "aws_instance" "this" {
   }
 
   source_dest_check                    = var.ec2_source_dest_check
-  disable_api_termination              = var.ec2_disable_api_termination
-  instance_initiated_shutdown_behavior = var.ec2_instance_initiated_shutdown_behavior
+  disable_api_termination              = var.disable_api_termination
+  instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   placement_group                      = var.placement_group
-  tenancy                              = var.ec2_tenancy
+  tenancy                              = var.tenancy
 
   dynamic "credit_specification" {
-    for_each = local.is_t_instance_type && var.ec2_cpu_credits != null ? [1] : [0]
+    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : [0]
 
     content {
-      cpu_credits = var.ec2_cpu_credits
+      cpu_credits = var.cpu_credits
     }
   }
 
