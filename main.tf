@@ -101,31 +101,39 @@ resource "aws_launch_template" "this" {
   dynamic "iam_instance_profile" {
     for_each = local.iam_instance_profile != null ? [1] : [0]
 
-    name = local.iam_instance_profile
+    content {
+      name = local.iam_instance_profile
+    }
   }
 
   dynamic "monitoring" {
     for_each = var.monitoring == true ? [1] : [0]
 
-    enabled = true
+    content {
+      enabled = true
+    }
   }
 
   dynamic "network_interfaces" {
     for_each = var.associate_public_ip_address == true ? [1] : [0]
 
-    associate_public_ip_address = true
-    delete_on_termination       = true
-    ipv4_address_count          = var.launch_template_ipv4_address_count
-    ipv6_address_count          = var.ipv6_address_count
+    content {
+      associate_public_ip_address = true
+      delete_on_termination       = true
+      ipv4_address_count          = var.launch_template_ipv4_address_count
+      ipv6_address_count          = var.ipv6_address_count
+    }
   }
 
   dynamic "placement" {
     for_each = var.placement_group != null ? [1] : [0]
 
-    availability_zone = data.aws_subnet.subnets.*.availability_zone[0]
-    group_name        = var.placement_group
-    tenancy           = var.tenancy
-    host_id           = var.host_id
+    content {
+      availability_zone = data.aws_subnet.subnets.*.availability_zone[0]
+      group_name        = var.placement_group
+      tenancy           = var.tenancy
+      host_id           = var.host_id
+    }
   }
 
   tag_specifications {
