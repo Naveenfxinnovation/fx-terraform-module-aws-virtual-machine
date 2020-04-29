@@ -245,9 +245,9 @@ locals {
 resource "aws_iam_instance_profile" "this" {
   count = local.should_create_instance_profile ? 1 : 0
 
-  name = var.iam_instance_profile_name
-  path = var.iam_instance_profile_path
-  role = aws_iam_role.this_instance_profile.*.id[0]
+  name  = var.iam_instance_profile_name
+  path  = var.iam_instance_profile_path
+  roles = [aws_iam_role.this_instance_profile.*.id[0]]
 }
 
 resource "aws_iam_role" "this_instance_profile" {
