@@ -14,22 +14,6 @@ output "subnet_ids" {
 # AutoScaling Group
 ####
 
-output "launch_configuration_id" {
-  value = concat(aws_launch_configuration.this.*.id, [""])[0]
-}
-
-output "launch_configuration_arn" {
-  value = concat(aws_launch_configuration.this.*.arn, [""])[0]
-}
-
-output "launch_configuration_name" {
-  value = concat(aws_launch_configuration.this.*.name, [""])[0]
-}
-
-output "launch_configuration_ebs_block_devices" {
-  value = concat(aws_launch_configuration.this.*.ebs_block_device, [""])[0]
-}
-
 output "autoscaling_group_id" {
   value = concat(aws_autoscaling_group.this.*.id, [""])[0]
 }

@@ -74,10 +74,6 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 | key\_pair\_id | n/a |
 | key\_pair\_name | n/a |
 | kms\_key\_id | n/a |
-| launch\_configuration\_arn | n/a |
-| launch\_configuration\_ebs\_block\_devices | n/a |
-| launch\_configuration\_id | n/a |
-| launch\_configuration\_name | n/a |
 | subnet\_ids | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
