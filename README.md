@@ -108,6 +108,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |
 | key\_pair\_public\_key | The public key material. | `string` | `null` | no |
 | key\_pair\_tags | Tags for the key pair. Will be merged with tags. | `map` | `{}` | no |
+| launch\_template\_ipv4\_address\_count | The number of secondary private IPv4 addresses to assign to a network interface. Conflicts with ipv4\_addresses. | `number` | `0` | no |
+| launch\_template\_name | The name of the launch template. If you leave this blank, Terraform will auto-generate a unique name. | `string` | `""` | no |
 | monitoring | If true, the launched EC2 instances will have detailed monitoring enabled. | `bool` | `false` | no |
 | name | Name prefix of the instances. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to instances name. | `number` | `2` | no |

@@ -16,67 +16,129 @@ locals {
 
   security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
   iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_external_name : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.name[0] : null)
+  kms_key_arn          = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
 }
 
 ####
 # AutoScaling Group
 ####
-
-resource "aws_launch_configuration" "this" {
+resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name_prefix = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
-
-  image_id             = var.ami
-  instance_type        = var.instance_type
-  iam_instance_profile = local.iam_instance_profile
-  key_name             = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
-  enable_monitoring    = var.monitoring
+  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + 1) : var.launch_template_name
+  image_id      = var.ami
+  instance_type = var.instance_type
+  key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
 
   security_groups = element(local.security_group_ids, count.index)
 
-  associate_public_ip_address = var.associate_public_ip_address
-  user_data                   = var.user_data
+  user_data = var.user_data
+
+  disable_api_termination = var.disable_api_termination
 
   ebs_optimized = var.ebs_optimized
 
-  dynamic "root_block_device" {
+  dynamic "credit_specification" {
+    for_each = var.cpu_threads_per_core != null || var.cpu_core_count != null ? [1] : [0]
+
+    content {
+      core_count       = var.cpu_core_count
+      threads_per_core = var.cpu_threads_per_core
+    }
+  }
+
+  dynamic "credit_specification" {
+    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : [0]
+
+    content {
+      cpu_credits = var.cpu_credits
+    }
+  }
+
+  dynamic "block_device_mappings" {
     for_each = local.should_update_root_device ? [1] : [0]
 
     content {
-      // Unlike EC2, launch configuration does not supporton-the-fly encryption of root device
-      // Only device from encrypted snapshots can be encrypted
-      delete_on_termination = true
-      encrypted             = var.root_block_device_encrypted
-      iops                  = var.root_block_device_iops
-      volume_size           = var.root_block_device_volume_size
-      volume_type           = var.root_block_device_volume_type
+      device_name = "/dev/sda1"
+
+      ebs {
+        delete_on_termination = true
+        encrypted             = var.root_block_device_encrypted
+        iops                  = var.root_block_device_iops
+        volume_size           = var.root_block_device_volume_size
+        volume_type           = var.root_block_device_volume_type
+        kms_key_id            = local.kms_key_arn
+      }
     }
   }
 
-  dynamic "ebs_block_device" {
+  dynamic "block_device_mappings" {
     for_each = data.null_data_source.ebs_block_device
 
     content {
-      delete_on_termination = true
-      encrypted             = true
-      device_name           = ebs_block_device.value.outputs.device_name
-      volume_size           = lookup(ebs_block_device.value.outputs, "size", null)
-      volume_type           = lookup(ebs_block_device.value.outputs, "type", null)
+      device_name = block_device_mappings.value.outputs.device_name
+
+      ebs {
+        delete_on_termination = true
+        encrypted             = true
+        volume_size           = lookup(block_device_mappings.value.outputs, "size", null)
+        volume_type           = lookup(block_device_mappings.value.outputs, "type", null)
+        kms_key_id            = local.kms_key_arn
+      }
     }
   }
 
-  dynamic "ephemeral_block_device" {
+  dynamic "block_device_mappings" {
     for_each = var.ephemeral_block_devices
 
     content {
-      device_name  = ephemeral_block_device.value.device_name
-      virtual_name = lookup(ephemeral_block_device.value, "virtual_name", null)
+      device_name  = block_device_mappings.value.device_name
+      virtual_name = lookup(block_device_mappings.value, "virtual_name", null)
+      no_device    = lookup(block_device_mappings.value, "no_device", null)
     }
   }
 
-  lifecycle {
-    create_before_destroy = true
+  dynamic "iam_instance_profile" {
+    for_each = local.iam_instance_profile != null ? [1] : [0]
+
+    name = local.iam_instance_profile
+  }
+
+  dynamic "monitoring" {
+    for_each = var.monitoring == true ? [1] : [0]
+
+    enabled = true
+  }
+
+  dynamic "network_interfaces" {
+    for_each = var.associate_public_ip_address == true ? [1] : [0]
+
+    associate_public_ip_address = true
+    delete_on_termination       = true
+    ipv4_address_count          = var.launch_template_ipv4_address_count
+    ipv6_address_count          = var.ipv6_address_count
+  }
+
+  dynamic "placement" {
+    for_each = var.placement_group != null ? [1] : [0]
+
+    availability_zone = data.aws_subnet.subnets.*.availability_zone[0]
+    group_name        = var.placement_group
+    tenancy           = var.tenancy
+    host_id           = var.host_id
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = merge(
+      {
+        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + 1) : var.launch_template_name
+      },
+      var.tags,
+      var.instance_tags,
+      local.tags,
+    )
   }
 }
 
@@ -100,7 +162,10 @@ resource "aws_autoscaling_group" "this" {
 
   vpc_zone_identifier = data.aws_subnet.subnets.*.id
 
-  launch_configuration = aws_launch_configuration.this.*.id[0]
+  launch_template {
+    id      = aws_launch_template.this.id
+    version = aws_launch_template.this.default_version
+  }
 
   termination_policies  = var.autoscaling_group_termination_policies
   suspended_processes   = var.autoscaling_group_suspended_processes
