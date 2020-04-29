@@ -87,6 +87,9 @@ module "example" {
 
   use_autoscaling_group = true
 
+  launch_template_name               = "tftest${random_string.this.result}"
+  launch_template_ipv4_address_count = 1
+
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
   autoscaling_group_name              = "tftestasg${random_string.this.result}"
