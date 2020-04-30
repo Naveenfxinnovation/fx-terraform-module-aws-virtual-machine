@@ -115,7 +115,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | num\_suffix\_digits | Number of significant digits to append to instances name. | `number` | `2` | no |
 | placement\_group | The Placement Group to start the instances in. | `string` | `null` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |
-| root\_block\_device\_iops | Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2'). | `string` | `null` | no |
+| root\_block\_device\_iops | The amount of provisioned IOPS. This must be set with a volume\_type of 'io1'. | `string` | `null` | no |
 | root\_block\_device\_volume\_size | Customize details about the root block device of the instance: The size of the volume in gibibytes (GiB). | `string` | `null` | no |
 | root\_block\_device\_volume\_type | Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2'). | `string` | `null` | no |
 | subnet\_id | Subnet ID where to provision all the instances. Can be used instead or along with var.subnet\_ids. | `string` | `""` | no |

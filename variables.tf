@@ -143,7 +143,7 @@ variable "root_block_device_volume_size" {
 }
 
 variable "root_block_device_iops" {
-  description = "Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
+  description = "The amount of provisioned IOPS. This must be set with a volume_type of 'io1'."
   type        = string
   default     = null
 }

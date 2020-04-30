@@ -87,8 +87,7 @@ module "example" {
 
   use_autoscaling_group = true
 
-  launch_template_name               = "tftest${random_string.this.result}"
-  launch_template_ipv4_address_count = 1
+  launch_template_name = "tftest${random_string.this.result}"
 
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
@@ -100,6 +99,8 @@ module "example" {
   }
   autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1
+
+  root_block_device_volume_size = 8
 
   external_volume_count        = 2
   external_volume_sizes        = [5]

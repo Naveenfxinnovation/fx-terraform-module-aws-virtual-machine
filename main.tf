@@ -1,5 +1,5 @@
 locals {
-  should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != null
+  should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != "gp2"
   use_incremental_names     = var.instance_count > 1 || (var.use_num_suffix && var.num_suffix_digits > 0)
   use_default_subnets       = var.instance_count > 0 && var.subnet_ids_count == 0
 
@@ -22,6 +22,7 @@ locals {
 ####
 # AutoScaling Group
 ####
+
 resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
@@ -30,22 +31,22 @@ resource "aws_launch_template" "this" {
   instance_type = var.instance_type
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
 
-  security_groups = element(local.security_group_ids, count.index)
-
   user_data = var.user_data
 
   disable_api_termination = var.disable_api_termination
 
   ebs_optimized = var.ebs_optimized
 
-  dynamic "credit_specification" {
-    for_each = var.cpu_threads_per_core != null || var.cpu_core_count != null ? [1] : [0]
-
-    content {
-      core_count       = var.cpu_core_count
-      threads_per_core = var.cpu_threads_per_core
-    }
-  }
+  // This should be uncommented but makes Terraform crash (0.12.24 - AWS 2.59.0)
+  // While changing code, test whether or not this works
+  //  cpu_options {
+  //      for_each = (var.cpu_threads_per_core != null || var.cpu_core_count != null) ? [1] : [0]
+  //
+  //      content {
+  //        core_count       = var.cpu_core_count
+  //        threads_per_core = var.cpu_threads_per_core
+  //      }
+  //  }
 
   dynamic "credit_specification" {
     for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : [0]
@@ -59,7 +60,7 @@ resource "aws_launch_template" "this" {
     for_each = local.should_update_root_device ? [1] : [0]
 
     content {
-      device_name = "/dev/sda1"
+      device_name = "/dev/xvda"
 
       ebs {
         delete_on_termination = true
@@ -114,15 +115,10 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  dynamic "network_interfaces" {
-    for_each = var.associate_public_ip_address == true ? [1] : [0]
-
-    content {
-      associate_public_ip_address = true
-      delete_on_termination       = true
-      ipv4_address_count          = var.launch_template_ipv4_address_count
-      ipv6_address_count          = var.ipv6_address_count
-    }
+  network_interfaces {
+    security_groups             = local.security_group_ids[0]
+    associate_public_ip_address = var.associate_public_ip_address
+    delete_on_termination       = true
   }
 
   dynamic "placement" {
@@ -148,6 +144,10 @@ resource "aws_launch_template" "this" {
       local.tags,
     )
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "this" {
@@ -171,8 +171,8 @@ resource "aws_autoscaling_group" "this" {
   vpc_zone_identifier = data.aws_subnet.subnets.*.id
 
   launch_template {
-    id      = aws_launch_template.this.id
-    version = aws_launch_template.this.default_version
+    id      = aws_launch_template.this.*.id[0]
+    version = aws_launch_template.this.*.latest_version[0]
   }
 
   termination_policies  = var.autoscaling_group_termination_policies
