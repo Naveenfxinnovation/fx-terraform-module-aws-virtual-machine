@@ -37,6 +37,15 @@ resource "aws_launch_template" "this" {
 
   ebs_optimized = var.ebs_optimized
 
+  tags = merge(
+    {
+      "Name" = var.launch_template_name
+    },
+    var.tags,
+    var.launch_template_tags,
+    local.tags,
+  )
+
   // This should be uncommented but makes Terraform crash (0.12.24 - AWS 2.59.0)
   // While changing code, test whether or not this works
   //  cpu_options {
@@ -137,10 +146,23 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + 1) : var.launch_template_name
+        "Name" = var.launch_template_name
       },
       var.tags,
       var.instance_tags,
+      local.tags,
+    )
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+
+    tags = merge(
+      {
+        "Name" = var.external_volume_name
+      },
+      var.tags,
+      var.external_volume_tags,
       local.tags,
     )
   }

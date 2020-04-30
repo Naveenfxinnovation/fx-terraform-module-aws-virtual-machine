@@ -203,6 +203,11 @@ variable "launch_template_ipv4_address_count" {
   default     = 0
 }
 
+variable "launch_template_tags" {
+  description = "Tags to be used by the launch template. Will be merge with var.tags."
+  default     = {}
+}
+
 variable "autoscaling_group_default_cooldown" {
   description = "The amount of time, in seconds, after a scaling activity completes before another scaling activity can start."
   type        = number
