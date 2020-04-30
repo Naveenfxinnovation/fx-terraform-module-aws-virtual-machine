@@ -57,6 +57,8 @@ data "null_data_source" "ebs_block_device" {
 }
 
 data "aws_iam_policy_document" "sts_instance" {
+  count = local.should_create_instance_profile ? 1 : 0
+
   statement {
     actions = ["sts:AssumeRole"]
 
