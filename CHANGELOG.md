@@ -1,3 +1,9 @@
+6.0.0
+=====
+
+refactor (BREAKING): replace deprecated `launch_configuration` by `launch_template`
+refactor (BREAKING): renames some EC2-specific variable `ec2_` prefix for what is shared with launch template
+
 5.0.0
 =====
 
