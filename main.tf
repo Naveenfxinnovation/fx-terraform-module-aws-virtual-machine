@@ -245,8 +245,10 @@ locals {
 resource "aws_iam_instance_profile" "this" {
   count = local.should_create_instance_profile ? 1 : 0
 
-  name  = var.iam_instance_profile_name
-  path  = var.iam_instance_profile_path
+  name = var.iam_instance_profile_name
+  path = var.iam_instance_profile_path
+  // “roles” is known to be deprecated over “role”
+  // However, using “role” causes idempotency issue for now (terraform 0.12.24; AWS 2.59.0)
   roles = [aws_iam_role.this_instance_profile.*.id[0]]
 }
 
