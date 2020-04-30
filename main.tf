@@ -239,7 +239,7 @@ resource "aws_instance" "this" {
 
 locals {
   should_create_instance_profile       = var.instance_count > 0 && var.iam_instance_profile_create
-  should_use_external_instance_profile = var.iam_instance_profile_external_name != ""
+  should_use_external_instance_profile = var.instance_count > 0 && var.iam_instance_profile_external_name != null
 }
 
 resource "aws_iam_instance_profile" "this" {
