@@ -258,7 +258,7 @@ resource "aws_iam_role" "this_instance_profile" {
   name               = var.iam_instance_profile_iam_role_name
   description        = var.iam_instance_profile_iam_role_description
   path               = var.iam_instance_profile_path
-  assume_role_policy = data.aws_iam_policy_document.sts_instance.json
+  assume_role_policy = data.aws_iam_policy_document.sts_instance.*.json[0]
 
   tags = merge(
     var.tags,
