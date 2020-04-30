@@ -168,7 +168,10 @@ resource "aws_launch_template" "this" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    // credit_specification breaks idempotency (0.12.24 - AWS 2.59.0)
+    ignore_changes = [
+      credit_specification,
+    ]
   }
 }
 
