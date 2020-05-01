@@ -543,7 +543,7 @@ variable "extra_network_interface_security_group_count" {
 variable "extra_network_interface_security_group_ids" {
   description = "List of security group IDs to assign to the extra ENIs. All ENIs will have the same security groups."
   type        = list(list(string))
-  default     = []
+  default     = null
 }
 
 variable "extra_network_interface_source_dest_checks" {

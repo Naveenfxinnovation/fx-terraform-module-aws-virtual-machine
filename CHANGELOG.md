@@ -3,6 +3,8 @@
 
 refactor (BREAKING): replace deprecated `launch_configuration` by `launch_template`
 refactor (BREAKING): renames some EC2-specific variable `ec2_` prefix for what is shared with launch template
+fix: do not create extra network interfaces when ASG is selected
+fix: do not create EIP when ASG is selected
 
 5.0.0
 =====

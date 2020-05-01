@@ -377,8 +377,8 @@ resource "aws_iam_role_policy_attachment" "this_instance_profile" {
 ####
 
 locals {
-  should_create_elastic_ip                              = var.instance_count > 0 && var.eip_create
-  should_create_elastic_ip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0
+  should_create_elastic_ip                              = var.instance_count > 0 && var.eip_create && var.use_autoscaling_group == false
+  should_create_elastic_ip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0 && var.use_autoscaling_group == false
 
   network_interface_with_eip_ids = local.should_create_elastic_ip_for_extra_network_interfaces ? [
     for i, network_interface in aws_network_interface.this :
@@ -507,8 +507,8 @@ resource "aws_ebs_volume" "this" {
 ####
 
 locals {
-  should_create_extra_network_interface      = var.extra_network_interface_count > 0 && var.instance_count > 0
-  extra_network_interface_security_group_ids = var.extra_network_interface_security_group_ids == [] ? local.security_group_ids : var.extra_network_interface_security_group_ids
+  should_create_extra_network_interface      = var.extra_network_interface_count > 0 && var.use_autoscaling_group == false && var.instance_count > 0
+  extra_network_interface_security_group_ids = var.extra_network_interface_security_group_ids == null ? local.security_group_ids : var.extra_network_interface_security_group_ids
 }
 
 resource "aws_network_interface" "this" {

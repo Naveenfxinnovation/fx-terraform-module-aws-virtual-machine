@@ -47,7 +47,7 @@ data "aws_subnet" "subnets" {
 ####
 
 data "null_data_source" "ebs_block_device" {
-  count = var.external_volume_count
+  count = var.instance_count > 0 ? var.external_volume_count : 0
 
   inputs = {
     device_name = element(var.external_volume_device_names, count.index)
@@ -55,6 +55,10 @@ data "null_data_source" "ebs_block_device" {
     size        = element(var.external_volume_sizes, count.index)
   }
 }
+
+####
+# IAM Instance Profile
+####
 
 data "aws_iam_policy_document" "sts_instance" {
   count = local.should_create_instance_profile ? 1 : 0
