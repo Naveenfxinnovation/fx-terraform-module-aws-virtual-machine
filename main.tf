@@ -1,5 +1,5 @@
 locals {
-  should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != "gp2"
+  should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != null
   use_incremental_names     = var.instance_count > 1 || (var.use_num_suffix && var.num_suffix_digits > 0)
   use_default_subnets       = var.instance_count > 0 && var.subnet_ids_count == 0
 
