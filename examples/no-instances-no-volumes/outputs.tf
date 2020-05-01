@@ -11,6 +11,26 @@ output "subnet_ids" {
 }
 
 ####
+# Launch template
+####
+
+output "launch_template_id" {
+  value = module.example.launch_template_id
+}
+
+output "launch_template_arn" {
+  value = module.example.launch_template_arn
+}
+
+output "launch_template_default_version" {
+  value = module.example.launch_template_default_version
+}
+
+output "launch_template_latest_version" {
+  value = module.example.launch_template_latest_version
+}
+
+####
 # AutoScaling Group
 ####
 

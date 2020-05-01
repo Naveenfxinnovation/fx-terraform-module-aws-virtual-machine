@@ -172,6 +172,10 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | key\_pair\_id | n/a |
 | key\_pair\_name | n/a |
 | kms\_key\_id | n/a |
+| launch\_template\_arn | n/a |
+| launch\_template\_default\_version | n/a |
+| launch\_template\_id | n/a |
+| launch\_template\_latest\_version | n/a |
 | subnet\_ids | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

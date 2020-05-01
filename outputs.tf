@@ -11,6 +11,26 @@ output "subnet_ids" {
 }
 
 ####
+# Launch template
+####
+
+output "launch_template_id" {
+  value = concat(aws_launch_template.this.*.id, [""])[0]
+}
+
+output "launch_template_arn" {
+  value = concat(aws_launch_template.this.*.arn, [""])[0]
+}
+
+output "launch_template_default_version" {
+  value = concat(aws_launch_template.this.*.default_version, [""])[0]
+}
+
+output "launch_template_latest_version" {
+  value = concat(aws_launch_template.this.*.latest_version, [""])[0]
+}
+
+####
 # AutoScaling Group
 ####
 
