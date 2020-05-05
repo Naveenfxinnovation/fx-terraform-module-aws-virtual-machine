@@ -23,46 +23,46 @@ variable "use_num_suffix" {
 ####
 
 variable "ami" {
-  description = "The AMI to use for the instances."
+  description = "The AMI to use for the instances or the launch template."
   default     = ""
 }
 
 variable "associate_public_ip_address" {
-  description = "Associate a public ip address for each instances."
+  description = "Associate a public ip address for each instances (or launch template) main network interface."
   default     = false
 }
 
 variable "cpu_credits" {
-  description = "The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. "
+  description = "The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default."
   type        = string
   default     = null
 }
 
 variable "cpu_core_count" {
-  description = "Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API."
+  description = "Sets the number of CPU cores for an instance (or launch template). This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API."
   type        = number
   default     = null
 }
 
 variable "cpu_threads_per_core" {
-  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance. Defaults to 2 if not set. See Optimizing CPU Options for more information."
+  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information."
   type        = number
   default     = null
 }
 
 variable "ebs_optimized" {
-  description = "If true, the launched EC2 instance will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it."
+  description = "If true, the launched EC2 instance (or launch template) will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it."
   default     = false
 }
 
 variable "disable_api_termination" {
-  description = "If true, enables EC2 Instance Termination Protection."
+  description = "If true, enables EC2 Instance (or launch template) Termination Protection."
   default     = false
 }
 
 variable "ephemeral_block_devices" {
   description = <<-DOCUMENTATION
-Customize Ephemeral (also known as Instance Store) volumes on the instance:
+Customize Ephemeral (also known as Instance Store) volumes on the instance (or launch template):
   * device_name (required, string): The name of the block device to mount on the instance.
   * virtual_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").
   * no_device (optional, string): Suppresses the specified device included in the AMI's block device mapping.
@@ -72,67 +72,67 @@ DOCUMENTATION
 }
 
 variable "host_id" {
-  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
+  description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance (or launch template) is to be launched on a specific dedicated host."
   type        = string
   default     = null
 }
 
 variable "instance_count" {
-  description = "Number of instances to create. Can also be 0."
+  description = "Number of instances to create. For AutoScaling Group, this value will be the desired capacity. Setting this value to 0 will disable the module."
   default     = 1
 }
 
 variable "instance_initiated_shutdown_behavior" {
-  description = "Shutdown behavior for the instance. Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances."
+  description = "Shutdown behavior for the instance (or launch template). Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances."
   type        = string
   default     = null
 }
 
 variable "instance_tags" {
-  description = "Tags specific to the instances."
+  description = "Tags specific to the instances (or launch template)."
   default     = {}
 }
 
 variable "instance_type" {
-  description = "The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance."
+  description = "The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template."
   default     = "t3.small"
 }
 
 variable "ipv6_address_count" {
-  description = "A number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
+  description = "A number of IPv6 addresses to associate with the primary network interface of the instances or launch templlate. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
   default     = 0
 }
 
 variable "monitoring" {
-  description = "If true, the launched EC2 instances will have detailed monitoring enabled."
+  description = "If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled."
   default     = false
 }
 
 variable "name" {
-  description = "Name prefix of the instances. Will be suffixed by a var.num_suffix_digits count index."
+  description = "Name prefix of the instances or launch template. Will be suffixed by a var.num_suffix_digits count index."
   default     = ""
 }
 
 variable "num_suffix_digits" {
-  description = "Number of significant digits to append to instances name."
+  description = "Number of significant digits to append to all resources of the module."
   type        = number
   default     = 2
 }
 
 variable "placement_group" {
-  description = "The Placement Group to start the instances in."
+  description = "The Placement Group to start the instances (or launch template) in."
   type        = string
   default     = null
 }
 
 variable "root_block_device_volume_type" {
-  description = "Customize details about the root block device of the instance: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
+  description = "Customize details about the root block device of the instance or launch template root volume: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
   type        = string
   default     = null
 }
 
 variable "root_block_device_volume_size" {
-  description = "Customize details about the root block device of the instance: The size of the volume in gibibytes (GiB)."
+  description = "Customize details about the root block device of the  instance or launch template root volume: The size of the volume in gibibytes (GiB)."
   type        = string
   default     = null
 }
@@ -144,18 +144,18 @@ variable "root_block_device_iops" {
 }
 
 variable "root_block_device_encrypted" {
-  description = "Customize details about the root block device of the instance: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot_id. Must be configured to perform drift detection."
+  description = "Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot_id. Must be configured to perform drift detection."
   type        = string
   default     = true
 }
 
 variable "subnet_id" {
-  description = "Subnet ID where to provision all the instances. Can be used instead or along with var.subnet_ids."
+  description = "Subnet ID where to provision all the instances (or launch template). Can be used instead or along with var.subnet_ids."
   default     = ""
 }
 
 variable "subnet_ids" {
-  description = "Subnet IDs where to provision the instances. Can be used instead or along with var.subnet_id."
+  description = "Subnet IDs where to provision the instances (or launch template). Can be used instead or along with var.subnet_id."
   type        = list(string)
   default     = [""]
 }
@@ -166,18 +166,18 @@ variable "subnet_ids_count" {
 }
 
 variable "tenancy" {
-  description = "The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
+  description = "The tenancy of the instance (if the instance or launch template will be running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command."
   default     = "default"
 }
 
 variable "user_data" {
-  description = "The user data to provide when launching the instance."
+  description = "The user data to provide when launching the instance (or launch template)."
   type        = string
   default     = null
 }
 
 variable "vpc_security_group_ids" {
-  description = "An object containing the list of security group IDs to associate with each instance."
+  description = "An object containing the list of security group IDs to associate with each instance (or launch template)."
   type        = list(list(string))
   default     = null
 }
