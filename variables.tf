@@ -191,12 +191,6 @@ variable "vpc_security_group_ids" {
 # AutoScaling Group
 ####
 
-variable "launch_template_name" {
-  description = "The name of the launch template. If you leave this blank, Terraform will auto-generate a unique name."
-  type        = string
-  default     = ""
-}
-
 variable "launch_template_ipv4_address_count" {
   description = "The number of secondary private IPv4 addresses to assign to a network interface. Conflicts with ipv4_addresses."
   type        = number

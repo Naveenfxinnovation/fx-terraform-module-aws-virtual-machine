@@ -26,7 +26,7 @@ locals {
 resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + 1) : var.launch_template_name
+  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
   image_id      = var.ami
   instance_type = var.instance_type
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
