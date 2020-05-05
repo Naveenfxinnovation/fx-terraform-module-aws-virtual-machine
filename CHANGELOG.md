@@ -3,7 +3,7 @@
 
 fix: uses var.name for instance name even with launch template
 refactor: removes deprecated variable `iam_instance_profile`
-doc: better describes variables for both instance and launch configuration
+doc: better describes variables for both instance and launch template
 
 6.0.0
 =====
