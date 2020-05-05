@@ -111,7 +111,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | launch\_template\_name | The name of the launch template. If you leave this blank, Terraform will auto-generate a unique name. | `string` | `""` | no |
 | launch\_template\_tags | Tags to be used by the launch template. Will be merge with var.tags. | `map` | `{}` | no |
 | monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled. | `bool` | `false` | no |
-| name | Name prefix of the instances or launch template. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
+| name | Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to all resources of the module. | `number` | `2` | no |
 | placement\_group | The Placement Group to start the instances (or launch template) in. | `string` | `null` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |

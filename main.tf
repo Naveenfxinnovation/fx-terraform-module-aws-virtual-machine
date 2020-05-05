@@ -146,7 +146,7 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = var.launch_template_name
+        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
       },
       var.tags,
       var.instance_tags,

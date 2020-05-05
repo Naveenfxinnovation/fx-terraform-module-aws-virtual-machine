@@ -109,7 +109,7 @@ variable "monitoring" {
 }
 
 variable "name" {
-  description = "Name prefix of the instances or launch template. Will be suffixed by a var.num_suffix_digits count index."
+  description = "Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num_suffix_digits count index."
   default     = ""
 }
 
