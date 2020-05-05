@@ -89,7 +89,6 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs. | `map` | `{}` | no |
 | host\_id | The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host. | `string` | `null` | no |
-| iam\_instance\_profile | The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. | `string` | `""` | no |
 | iam\_instance\_profile\_create | Whether or not to create an instance profile for the virtual machines. | `bool` | `true` | no |
 | iam\_instance\_profile\_external\_name | Name of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
 | iam\_instance\_profile\_iam\_role\_description | The description of the instance profile role. | `string` | `"Instance profile role"` | no |

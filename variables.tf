@@ -88,11 +88,6 @@ variable "instance_initiated_shutdown_behavior" {
   default     = null
 }
 
-variable "iam_instance_profile" {
-  description = "The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile."
-  default     = ""
-}
-
 variable "instance_tags" {
   description = "Tags specific to the instances."
   default     = {}
