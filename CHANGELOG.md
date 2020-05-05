@@ -1,3 +1,10 @@
+7.0.0
+=====
+
+refactor (BREAKING): use `name` for launch template instead of `launch_template_name`
+refactor: removes deprecated variable `iam_instance_profile`
+doc: better describes variables for both instance and launch configuration
+
 6.0.0
 =====
 
