@@ -69,7 +69,7 @@ resource "aws_lb_listener" "example" {
 module "example" {
   source = "../../"
 
-  name = "tftest${random_string.this.result}"
+  name = "tftest-asg"
 
   subnet_ids_count = 2
   subnet_ids       = data.aws_subnet_ids.all.ids
@@ -86,6 +86,8 @@ module "example" {
   }
 
   use_autoscaling_group = true
+
+  launch_template_name = "tftest${random_string.this.result}"
 
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
