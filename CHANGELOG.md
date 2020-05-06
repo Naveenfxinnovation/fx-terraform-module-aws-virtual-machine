@@ -1,28 +1,33 @@
+6.0.2
+=====
+
+* fix: uses /dev/sda1 as root block device
+
 6.0.1
 =====
 
-fix: uses var.name for instance name even with launch template
-refactor: removes deprecated variable `iam_instance_profile`
-doc: better describes variables for both instance and launch template
+* fix: uses var.name for instance name even with launch template
+* refactor: removes deprecated variable `iam_instance_profile`
+* doc: better describes variables for both instance and launch template
 
 6.0.0
 =====
 
-refactor (BREAKING): replace deprecated `launch_configuration` by `launch_template`
-refactor (BREAKING): renames some EC2-specific variable `ec2_` prefix for what is shared with launch template
-fix: do not create extra network interfaces when ASG is selected
-fix: do not create EIP when ASG is selected
+* refactor (BREAKING): replace deprecated `launch_configuration` by `launch_template`
+* refactor (BREAKING): renames some EC2-specific variable `ec2_` prefix for what is shared with launch template
+* fix: do not create extra network interfaces when ASG is selected
+* fix: do not create EIP when ASG is selected
 
 5.0.0
 =====
 
-feat (BREAKING): handle IAM instance profile
+* feat (BREAKING): handle IAM instance profile
 
 4.1.0
 =====
 
-feat: handle elastic IPs for EC2 instances
-feat: handle elastic IPs for network interfaces
+* feat: handle elastic IPs for EC2 instances
+* feat: handle elastic IPs for network interfaces
 
 4.0.1
 =====

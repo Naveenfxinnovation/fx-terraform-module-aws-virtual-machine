@@ -69,7 +69,7 @@ resource "aws_launch_template" "this" {
     for_each = local.should_update_root_device ? [1] : [0]
 
     content {
-      device_name = "/dev/xvda"
+      device_name = "/dev/sda1"
 
       ebs {
         delete_on_termination = true
