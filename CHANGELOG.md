@@ -1,3 +1,9 @@
+6.0.4
+=====
+
+* tech: Add example to test asg without ALB/NLB
+* fix: Changed type of some variables
+
 6.0.3
 =====
 

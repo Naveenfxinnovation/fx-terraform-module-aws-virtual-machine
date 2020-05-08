@@ -1,6 +1,6 @@
 # AutoScaling Group example
 
-Configuration in this directory creates an AutoScaling group with various options.
+Configuration in this directory creates an AutoScaling group with various options, and it creates an autoscaling group without the LB portion.
 
 ## Usage
 
@@ -39,42 +39,7 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 
 | Name | Description |
 |------|-------------|
-| autoscaling\_group\_arn | n/a |
-| autoscaling\_group\_id | n/a |
-| availability\_zones | n/a |
-| ec2\_arns | n/a |
-| ec2\_ids | n/a |
-| ec2\_primary\_network\_interface\_ids | n/a |
-| ec2\_private\_dns | n/a |
-| ec2\_private\_ips | n/a |
-| ec2\_public\_dns | n/a |
-| ec2\_public\_ips | n/a |
-| eip\_ids | n/a |
-| eip\_network\_interfaces | n/a |
-| eip\_private\_dns | n/a |
-| eip\_private\_ips | n/a |
-| eip\_public\_dns | n/a |
-| eip\_public\_ips | n/a |
-| external\_volume\_arns | n/a |
-| external\_volume\_ids | n/a |
-| extra\_network\_interface\_ids | n/a |
-| extra\_network\_interface\_mac\_addresses | n/a |
-| extra\_network\_interface\_private\_ips | n/a |
-| extra\_network\_interface\_public\_ips | n/a |
-| iam\_instance\_profile\_arn | n/a |
-| iam\_instance\_profile\_iam\_role\_arn | n/a |
-| iam\_instance\_profile\_iam\_role\_id | n/a |
-| iam\_instance\_profile\_iam\_role\_unique\_id | n/a |
-| iam\_instance\_profile\_id | n/a |
-| iam\_instance\_profile\_unique\_id | n/a |
-| key\_pair\_fingerprint | n/a |
-| key\_pair\_id | n/a |
-| key\_pair\_name | n/a |
-| kms\_key\_id | n/a |
-| launch\_template\_arn | n/a |
-| launch\_template\_default\_version | n/a |
-| launch\_template\_id | n/a |
-| launch\_template\_latest\_version | n/a |
-| subnet\_ids | n/a |
+| no\_target\_groups\_and\_no\_external\_volumes | n/a |
+| with\_nlb\_and\_external\_volumes | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
