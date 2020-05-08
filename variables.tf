@@ -272,7 +272,7 @@ variable "autoscaling_group_suspended_processes" {
 variable "autoscaling_group_target_group_arns" {
   description = "A list of aws_alb_target_group ARNs, for use with Application or Network Load Balancing."
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 variable "autoscaling_group_termination_policies" {
