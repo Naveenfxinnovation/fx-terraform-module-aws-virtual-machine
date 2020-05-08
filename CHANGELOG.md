@@ -1,3 +1,10 @@
+6.0.3
+=====
+
+* fix: output KMS key ID when it is created by the module
+* fix: makes `ephemeral_block_devices` a list type
+* test: checks idempotency when using `ec2_volume_tags` and `external_volume_tags`
+
 6.0.2
 =====
 
