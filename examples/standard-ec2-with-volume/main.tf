@@ -29,17 +29,20 @@ resource "random_string" "this" {
 module "example" {
   source = "../../"
 
-  name = "tftest-standard_ec2_with_volume"
+  name = "tftest${random_string.this.result}"
 
   ami           = data.aws_ami.amazon_linux.image_id
   instance_type = "t3.micro"
 
   ec2_volume_tags = {
-    Name = "tftest-multiple_ec2_with_multiple_volumes"
+    Name        = "tftest${random_string.this.result}"
+    Description = "Root volume"
   }
 
   external_volume_tags = {
-    Name = "tftest-multiple_ec2_with_multiple_volumes"
+    Name        = "tftest${random_string.this.result}"
+    External    = "true"
+    Description = "External"
   }
 
   key_pair_create     = true
