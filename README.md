@@ -72,7 +72,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | ec2\_volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
 | eip\_create | Whether or not to create an public elastic IP per instance. | `bool` | `false` | no |
-| ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance (or launch template):<br>  * device\_name (required, string): The name of the block device to mount on the instance.<br>  * virtual\_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").<br>  * no\_device (optional, string): Suppresses the specified device included in the AMI's block device mapping. | `any` | `[]` | no |
+| ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance (or launch template):<br>  * device\_name (required, string): The name of the block device to mount on the instance.<br>  * virtual\_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").<br>  * no\_device (optional, string): Suppresses the specified device included in the AMI's block device mapping. | `list` | `[]` | no |
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |

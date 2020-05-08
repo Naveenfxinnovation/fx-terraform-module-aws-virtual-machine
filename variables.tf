@@ -67,7 +67,7 @@ Customize Ephemeral (also known as Instance Store) volumes on the instance (or l
   * virtual_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").
   * no_device (optional, string): Suppresses the specified device included in the AMI's block device mapping.
 DOCUMENTATION
-  type        = any
+  type        = list
   default     = []
 }
 
