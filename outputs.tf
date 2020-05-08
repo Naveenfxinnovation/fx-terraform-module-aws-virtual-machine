@@ -79,7 +79,7 @@ output "ec2_public_ips" {
 ####
 
 output "kms_key_id" {
-  value = element(coalescelist([var.volume_kms_key_arn], aws_kms_key.this.*.arn), 0)
+  value = compact(concat([var.volume_kms_key_arn], aws_kms_key.this.*.arn, [""]))[0]
 }
 
 ####
