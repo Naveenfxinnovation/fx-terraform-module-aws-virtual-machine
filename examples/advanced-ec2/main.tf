@@ -104,7 +104,8 @@ module "example" {
   ]
 
   use_num_suffix    = true
-  num_suffix_digits = "03"
+  num_suffix_offset = 1
+  num_suffix_digits = 3
 
   user_data = "#!/bin/bash echo test"
 
