@@ -17,6 +17,8 @@ locals {
   security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
   iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_external_name : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.name[0] : null)
   kms_key_arn          = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
+
+  num_suffix_starting_index = var.num_suffix_offset + 1
 }
 
 ####
@@ -26,7 +28,7 @@ locals {
 resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + 1) : var.launch_template_name
+  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + local.num_suffix_starting_index) : var.launch_template_name
   image_id      = var.ami
   instance_type = var.instance_type
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
@@ -146,7 +148,7 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name
       },
       var.tags,
       var.instance_tags,
@@ -178,7 +180,7 @@ resource "aws_launch_template" "this" {
 resource "aws_autoscaling_group" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + 1) : var.autoscaling_group_name
+  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + local.num_suffix_starting_index) : var.autoscaling_group_name
 
   desired_capacity = var.instance_count
   max_size         = var.autoscaling_group_max_size
@@ -312,7 +314,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + 1) : var.name
+      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name
     },
     var.tags,
     var.instance_tags,
@@ -450,7 +452,7 @@ resource "aws_kms_key" "this" {
 
   tags = merge(
     {
-      "Name" = var.use_num_suffix == "true" ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + 1) : var.volume_kms_key_name
+      "Name" = var.use_num_suffix == "true" ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name
     },
     var.tags,
     var.volume_kms_key_tags,
@@ -494,7 +496,7 @@ resource "aws_ebs_volume" "this" {
 
   tags = merge(
     {
-      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + 1) : var.external_volume_name
+      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + local.num_suffix_starting_index) : var.external_volume_name
     },
     var.tags,
     var.external_volume_tags,

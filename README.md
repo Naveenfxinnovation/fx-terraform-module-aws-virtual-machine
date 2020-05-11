@@ -113,6 +113,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled. | `bool` | `false` | no |
 | name | Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to all resources of the module. | `number` | `2` | no |
+| num\_suffix\_offset | The starting point of the numerical suffix. An offset of 1 would means resources suffix starts at 2. | `number` | `0` | no |
 | placement\_group | The Placement Group to start the instances (or launch template) in. | `string` | `null` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |
 | root\_block\_device\_iops | The amount of provisioned IOPS. This must be set with a volume\_type of 'io1'. | `string` | `null` | no |

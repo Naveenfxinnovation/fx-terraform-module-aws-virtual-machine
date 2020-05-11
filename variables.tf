@@ -18,6 +18,18 @@ variable "use_num_suffix" {
   default     = false
 }
 
+variable "num_suffix_digits" {
+  description = "Number of significant digits to append to all resources of the module."
+  type        = number
+  default     = 2
+}
+
+variable "num_suffix_offset" {
+  description = "The starting point of the numerical suffix. An offset of 1 would means resources suffix starts at 2."
+  type        = number
+  default     = 0
+}
+
 ####
 # AutoScaling Group & EC2
 ####
@@ -111,12 +123,6 @@ variable "monitoring" {
 variable "name" {
   description = "Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num_suffix_digits count index."
   default     = ""
-}
-
-variable "num_suffix_digits" {
-  description = "Number of significant digits to append to all resources of the module."
-  type        = number
-  default     = 2
 }
 
 variable "placement_group" {
