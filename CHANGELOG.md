@@ -1,3 +1,8 @@
+6.1.0
+=====
+
+feat: allows to specify a numeric suffix offset
+
 6.0.4
 =====
 
