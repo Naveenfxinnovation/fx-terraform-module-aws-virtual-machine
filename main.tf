@@ -48,19 +48,17 @@ resource "aws_launch_template" "this" {
     local.tags,
   )
 
-  // This should be uncommented but makes Terraform crash (0.12.24 - AWS 2.59.0)
-  // While changing code, test whether or not this works
-  //  cpu_options {
-  //      for_each = (var.cpu_threads_per_core != null || var.cpu_core_count != null) ? [1] : [0]
-  //
-  //      content {
-  //        core_count       = var.cpu_core_count
-  //        threads_per_core = var.cpu_threads_per_core
-  //      }
-  //  }
+  dynamic "cpu_options" {
+    for_each = (var.cpu_threads_per_core != null || var.cpu_core_count != null) ? [1] : []
+
+    content {
+      core_count       = var.cpu_core_count
+      threads_per_core = var.cpu_threads_per_core
+    }
+  }
 
   dynamic "credit_specification" {
-    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : [0]
+    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : []
 
     content {
       cpu_credits = var.cpu_credits
@@ -68,7 +66,7 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "block_device_mappings" {
-    for_each = local.should_update_root_device ? [1] : [0]
+    for_each = local.should_update_root_device ? [1] : []
 
     content {
       device_name = "/dev/sda1"
@@ -111,7 +109,7 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "iam_instance_profile" {
-    for_each = local.iam_instance_profile != null ? [1] : [0]
+    for_each = local.iam_instance_profile != null ? [1] : []
 
     content {
       name = local.iam_instance_profile
@@ -119,7 +117,7 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "monitoring" {
-    for_each = var.monitoring == true ? [1] : [0]
+    for_each = var.monitoring == true ? [1] : []
 
     content {
       enabled = true
@@ -133,7 +131,7 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "placement" {
-    for_each = var.placement_group != null ? [1] : [0]
+    for_each = var.placement_group != null ? [1] : []
 
     content {
       availability_zone = data.aws_subnet.subnets.*.availability_zone[0]
@@ -276,7 +274,7 @@ resource "aws_instance" "this" {
   volume_tags   = var.ec2_volume_tags
 
   dynamic "root_block_device" {
-    for_each = local.should_update_root_device ? [1] : [0]
+    for_each = local.should_update_root_device ? [1] : []
 
     content {
       delete_on_termination = true
@@ -305,7 +303,7 @@ resource "aws_instance" "this" {
   tenancy                              = var.tenancy
 
   dynamic "credit_specification" {
-    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : [0]
+    for_each = local.is_t_instance_type && var.cpu_credits != null ? [1] : []
 
     content {
       cpu_credits = var.cpu_credits
