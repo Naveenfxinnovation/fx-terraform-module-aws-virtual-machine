@@ -6,6 +6,7 @@ fix: fix `cpu_options` for ASG
 fix: fix not working dynamic blocks throughout the module
 tech: update possible version for AWS provider to 2.60 and up
 test: rename `no-instances-no-volumes` example to `disabled`
+test: add an example with Windows machine
 
 6.1.0
 =====
