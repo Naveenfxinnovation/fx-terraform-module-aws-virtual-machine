@@ -39,7 +39,6 @@ Note that this example may create resources which can cost money (AWS Elastic IP
 
 | Name | Description |
 |------|-------------|
-| no\_target\_groups\_and\_no\_external\_volumes | n/a |
-| with\_nlb\_and\_external\_volumes | n/a |
+| autoscaling\_group\_windows | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

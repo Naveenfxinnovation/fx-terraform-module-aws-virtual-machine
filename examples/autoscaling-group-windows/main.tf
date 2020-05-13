@@ -34,6 +34,12 @@ resource "random_string" "this" {
   special = false
 }
 
+resource "aws_placement_group" "example" {
+  name     = "tftest{random_string.this.result}"
+  strategy = "cluster"
+}
+
+
 resource "aws_lb" "example" {
   name               = "tftestasg${random_string.this.result}"
   internal           = true
@@ -71,6 +77,7 @@ module "example" {
 
   launch_template_name = "tftest${random_string.this.result}"
 
+  instance_count                      = 2
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
   autoscaling_group_name              = "tftestasg${random_string.this.result}"
@@ -81,6 +88,8 @@ module "example" {
   }
   autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1
+
+  placement_group = "tftest{random_string.this.result}"
 
   root_block_device_volume_size = 8
 }
