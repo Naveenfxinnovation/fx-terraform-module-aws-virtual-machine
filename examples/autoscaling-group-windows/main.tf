@@ -77,5 +77,5 @@ module "example" {
   // Uncomment once Provider 2.62 is out
   //  placement_group = "tftest{random_string.this.result}"
 
-  root_block_device_volume_size = 8
+  root_block_device_volume_size = 30
 }
