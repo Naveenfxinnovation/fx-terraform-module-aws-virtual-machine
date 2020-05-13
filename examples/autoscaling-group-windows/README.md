@@ -1,6 +1,6 @@
-# AutoScaling Group example
+# AutoScaling Group with Windows
 
-Configuration in this directory creates an AutoScaling group with various options, and it creates an autoscaling group without the LB portion.
+Configuration in this directory creates an AutoScaling Group with a Windows VM.
 
 ## Usage
 
