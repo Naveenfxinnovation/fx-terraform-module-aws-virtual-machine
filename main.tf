@@ -277,7 +277,7 @@ resource "aws_instance" "this" {
     for_each = local.should_update_root_device ? [1] : []
 
     content {
-      delete_on_termination = true
+      delete_on_termination = var.root_block_device_delete_on_termination
       encrypted             = var.root_block_device_encrypted
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size

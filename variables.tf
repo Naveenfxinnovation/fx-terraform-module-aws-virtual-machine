@@ -131,6 +131,11 @@ variable "placement_group" {
   default     = null
 }
 
+variable "root_block_device_delete_on_termination" {
+  description = "Whether or not to delete the root block device on termination. **Note: It's is strongly discouraged to set this to false, only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs.**"
+  default     = true
+}
+
 variable "root_block_device_volume_type" {
   description = "Customize details about the root block device of the instance or launch template root volume: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2')."
   type        = string

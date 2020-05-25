@@ -1,3 +1,8 @@
+6.2.0
+=====
+
+feat: Allow for delete on termination on root block device as a variable
+
 6.1.1
 =====
 
