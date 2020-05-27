@@ -121,13 +121,12 @@ module "example" {
   }
 
   ec2_source_dest_check = false
+  ec2_volume_name       = "tftest-advanced_ec2_with_multiple_volumes"
   ec2_volume_tags = {
-    Name     = "tftest-advanced_ec2_with_multiple_volumes"
     Fullname = "Root volume for advanced_ec2_with_multiple_volumes"
   }
 
   external_volume_tags = {
-    Name     = "tftest-advanced_ec2_with_multiple_volumes_external"
     Fullname = "External volumes for advanced_ec2_with_multiple_volumes"
   }
 
@@ -138,6 +137,7 @@ module "example" {
   external_volume_sizes        = [500, 15]
   external_volume_device_names = ["/dev/sdh", "/dev/sdi", "/dev/sdj"]
   external_volume_types        = ["sc1", "gp2"]
+  external_volume_name         = "tftest-advanced_ec2_with_multiple_volumes"
 
   extra_network_interface_count              = 1
   extra_network_interface_source_dest_checks = [true]
