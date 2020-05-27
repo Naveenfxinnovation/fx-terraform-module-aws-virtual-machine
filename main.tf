@@ -273,7 +273,7 @@ resource "aws_instance" "this" {
   ebs_optimized = var.ebs_optimized
   volume_tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + local.num_suffix_starting_index) : var.ec2_volume_name
+      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + (count.index * var.external_volume_count) + local.num_suffix_starting_index) : var.ec2_volume_name
     },
     var.tags,
     var.ec2_volume_tags,
@@ -502,7 +502,11 @@ resource "aws_ebs_volume" "this" {
 
   tags = merge(
     {
-      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + local.external_volume_num_suffix_starting_index) : var.external_volume_name
+      "Name" = local.external_volume_use_incremental_names ? format(
+        "%s-%0${var.num_suffix_digits}d",
+        var.external_volume_name,
+        count.index + (floor(count.index / var.external_volume_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
+      ) : var.external_volume_name
     },
     var.tags,
     var.external_volume_tags,

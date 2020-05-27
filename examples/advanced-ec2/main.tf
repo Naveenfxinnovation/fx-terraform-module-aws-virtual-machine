@@ -94,6 +94,8 @@ module "example" {
 
   name = "tftest-advanced_ec2_with_multiple_volumes"
 
+  instance_count = 2
+
   ami              = data.aws_ami.amazon_linux.image_id
   instance_type    = "m5a.large"
   subnet_ids_count = 2
