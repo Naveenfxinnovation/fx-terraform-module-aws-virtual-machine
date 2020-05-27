@@ -143,7 +143,7 @@ variable "root_block_device_volume_type" {
 }
 
 variable "root_block_device_volume_size" {
-  description = "Customize details about the root block device of the  instance or launch template root volume: The size of the volume in gibibytes (GiB)."
+  description = "Customize details about the root block device of the instance or launch template root volume: The size of the volume in gibibytes (GiB)."
   type        = string
   default     = null
 }
@@ -328,6 +328,12 @@ variable "ec2_private_ips" {
 variable "ec2_source_dest_check" {
   description = "Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs."
   default     = true
+}
+
+variable "ec2_volume_name" {
+  description = "Tag name of the root block device of the instance."
+  type        = string
+  default     = "root-volume"
 }
 
 variable "ec2_volume_tags" {

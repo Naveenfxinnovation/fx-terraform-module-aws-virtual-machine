@@ -271,7 +271,14 @@ resource "aws_instance" "this" {
   ipv6_addresses              = var.ec2_ipv6_addresses
 
   ebs_optimized = var.ebs_optimized
-  volume_tags   = var.ec2_volume_tags
+  volume_tags = merge(
+    {
+      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + local.num_suffix_starting_index) : var.ec2_volume_name
+    },
+    var.tags,
+    var.ec2_volume_tags,
+    local.tags,
+  )
 
   dynamic "root_block_device" {
     for_each = local.should_update_root_device ? [1] : []

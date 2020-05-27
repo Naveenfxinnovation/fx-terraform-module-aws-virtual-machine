@@ -72,6 +72,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `null` | no |
 | ec2\_private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance\_count. | `list(string)` | `null` | no |
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
+| ec2\_volume\_name | Tag name of the root block device of the instance. | `string` | `"root-volume"` | no |
 | ec2\_volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
 | eip\_create | Whether or not to create an public elastic IP per instance. | `bool` | `false` | no |
 | ephemeral\_block\_devices | Customize Ephemeral (also known as Instance Store) volumes on the instance (or launch template):<br>  * device\_name (required, string): The name of the block device to mount on the instance.<br>  * virtual\_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").<br>  * no\_device (optional, string): Suppresses the specified device included in the AMI's block device mapping. | `list` | `[]` | no |
@@ -120,7 +121,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | root\_block\_device\_delete\_on\_termination | Whether or not to delete the root block device on termination. \*\*Note: It's is strongly discouraged to set this to false, only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs.\*\* | `bool` | `true` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |
 | root\_block\_device\_iops | The amount of provisioned IOPS. This must be set with a volume\_type of 'io1'. | `string` | `null` | no |
-| root\_block\_device\_volume\_size | Customize details about the root block device of the  instance or launch template root volume: The size of the volume in gibibytes (GiB). | `string` | `null` | no |
+| root\_block\_device\_volume\_size | Customize details about the root block device of the instance or launch template root volume: The size of the volume in gibibytes (GiB). | `string` | `null` | no |
 | root\_block\_device\_volume\_type | Customize details about the root block device of the instance or launch template root volume: The type of volume. Can be 'standard', 'gp2', or 'io1'. (Default: 'gp2'). | `string` | `null` | no |
 | subnet\_id | Subnet ID where to provision all the instances (or launch template). Can be used instead or along with var.subnet\_ids. | `string` | `""` | no |
 | subnet\_ids | Subnet IDs where to provision the instances (or launch template). Can be used instead or along with var.subnet\_id. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
