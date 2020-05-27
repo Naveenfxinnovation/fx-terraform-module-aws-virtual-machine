@@ -1,22 +1,28 @@
+7.0.0
+=====
+
+* feat: Add a default name for the root block device of EC2 instances
+* feat (BREAKING): start external volume index at 2
+
 6.2.0
 =====
 
-feat: Allow for delete on termination on root block device as a variable
+* feat: Allow for delete on termination on root block device as a variable
 
 6.1.1
 =====
 
-fix: fix AutoScaling group creation with latest AWS provider
-fix: fix `cpu_options` for ASG
-fix: fix not working dynamic blocks throughout the module
-tech: update possible version for AWS provider to 2.60 and up
-test: rename `no-instances-no-volumes` example to `disabled`
-test: add an example with Windows machine
+* fix: fix AutoScaling group creation with latest AWS provider
+* fix: fix `cpu_options` for ASG
+* fix: fix not working dynamic blocks throughout the module
+* tech: update possible version for AWS provider to 2.60 and up
+* test: rename `no-instances-no-volumes` example to `disabled`
+* test: add an example with Windows machine
 
 6.1.0
 =====
 
-feat: allows to specify a numeric suffix offset
+* feat: allows to specify a numeric suffix offset
 
 6.0.4
 =====
