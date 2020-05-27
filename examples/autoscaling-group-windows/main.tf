@@ -35,7 +35,7 @@ resource "random_string" "this" {
 }
 
 resource "aws_placement_group" "example" {
-  name     = "tftest{random_string.this.result}"
+  name     = "tftest${random_string.this.result}"
   strategy = "cluster"
 }
 
