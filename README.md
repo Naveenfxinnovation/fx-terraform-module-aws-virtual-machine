@@ -79,6 +79,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
+| external\_volume\_num\_suffix\_offset | The starting point of the numerical suffix for external volume. Will combine with var.num\_suffix\_offset. An offset of 1 here, and num\_suffix\_offset of 2, would means external volumes resources suffix starts at 4. | `number` | `1` | no |
 | external\_volume\_sizes | Size of the external volumes. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
 | external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | <pre>[<br>  null<br>]</pre> | no |

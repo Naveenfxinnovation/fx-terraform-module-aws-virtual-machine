@@ -507,6 +507,12 @@ variable "external_volume_name" {
   default     = "extra-volumes"
 }
 
+variable "external_volume_num_suffix_offset" {
+  description = "The starting point of the numerical suffix for external volume. Will combine with var.num_suffix_offset. An offset of 1 here, and num_suffix_offset of 2, would means external volumes resources suffix starts at 4."
+  type        = number
+  default     = 1
+}
+
 variable "external_volume_sizes" {
   description = "Size of the external volumes."
   type        = list(number)

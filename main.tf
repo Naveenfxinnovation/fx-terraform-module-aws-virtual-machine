@@ -477,8 +477,9 @@ resource "aws_kms_alias" "this" {
 ####
 
 locals {
-  external_volume_use_incremental_names = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
-  should_create_extra_volumes           = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
+  external_volume_use_incremental_names     = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
+  should_create_extra_volumes               = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
+  external_volume_num_suffix_starting_index = local.num_suffix_starting_index + var.external_volume_num_suffix_offset
 }
 
 resource "aws_volume_attachment" "this" {
@@ -501,7 +502,7 @@ resource "aws_ebs_volume" "this" {
 
   tags = merge(
     {
-      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + local.num_suffix_starting_index) : var.external_volume_name
+      "Name" = local.external_volume_use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.external_volume_name, count.index + local.external_volume_num_suffix_starting_index) : var.external_volume_name
     },
     var.tags,
     var.external_volume_tags,
