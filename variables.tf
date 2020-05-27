@@ -25,7 +25,7 @@ variable "num_suffix_digits" {
 }
 
 variable "num_suffix_offset" {
-  description = "The starting point of the numerical suffix. An offset of 1 would means resources suffix starts at 2."
+  description = "The starting point of the numerical suffix. An offset of 1 would mean resources suffix starts at 2."
   type        = number
   default     = 0
 }
@@ -508,7 +508,7 @@ variable "external_volume_name" {
 }
 
 variable "external_volume_num_suffix_offset" {
-  description = "The starting point of the numerical suffix for external volume. Will combine with var.num_suffix_offset. An offset of 1 here, and num_suffix_offset of 2, would means external volumes resources suffix starts at 4."
+  description = "The starting point of the numerical suffix for external volumes. Will combine with var.num_suffix_offset. An offset of 1 here and num_suffix_offset of 2 would mean external volumes resources suffix starts at 4."
   type        = number
   default     = 1
 }

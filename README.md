@@ -79,7 +79,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | external\_volume\_count | Number of external volumes to create. | `number` | `0` | no |
 | external\_volume\_device\_names | Device names for the external volumes. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | external\_volume\_name | Prefix of the external volumes to create. | `string` | `"extra-volumes"` | no |
-| external\_volume\_num\_suffix\_offset | The starting point of the numerical suffix for external volume. Will combine with var.num\_suffix\_offset. An offset of 1 here, and num\_suffix\_offset of 2, would means external volumes resources suffix starts at 4. | `number` | `1` | no |
+| external\_volume\_num\_suffix\_offset | The starting point of the numerical suffix for external volumes. Will combine with var.num\_suffix\_offset. An offset of 1 here and num\_suffix\_offset of 2 would mean external volumes resources suffix starts at 4. | `number` | `1` | no |
 | external\_volume\_sizes | Size of the external volumes. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | external\_volume\_tags | Tags for the external volumes. Will be merged with tags. Tags will be shared among all external volumes. | `map` | `{}` | no |
 | external\_volume\_types | The type of EBS volume. Can be 'standard', 'gp2', 'io1', 'sc1' or 'st1' (Default: 'gp2'). | `list(string)` | <pre>[<br>  null<br>]</pre> | no |
@@ -117,7 +117,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled. | `bool` | `false` | no |
 | name | Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to all resources of the module. | `number` | `2` | no |
-| num\_suffix\_offset | The starting point of the numerical suffix. An offset of 1 would means resources suffix starts at 2. | `number` | `0` | no |
+| num\_suffix\_offset | The starting point of the numerical suffix. An offset of 1 would mean resources suffix starts at 2. | `number` | `0` | no |
 | placement\_group | The Placement Group to start the instances (or launch template) in. | `string` | `null` | no |
 | root\_block\_device\_delete\_on\_termination | Whether or not to delete the root block device on termination. \*\*Note: It's is strongly discouraged to set this to false, only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs.\*\* | `bool` | `true` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |
