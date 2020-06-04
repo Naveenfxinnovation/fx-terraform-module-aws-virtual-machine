@@ -150,7 +150,6 @@ resource "aws_launch_template" "this" {
       },
       var.tags,
       var.instance_tags,
-      local.tags,
     )
   }
 

@@ -1,3 +1,8 @@
+7.1.0
+=====
+
+* feat: removes managed-by=Terraform tags for ASG instances
+
 7.0.0
 =====
 
