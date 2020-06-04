@@ -179,7 +179,7 @@ output "extra_network_interface_mac_addresses" {
 }
 
 output "extra_network_interface_private_ips" {
-  value = local.should_create_extra_network_interface && lconcat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(aws_network_interface.this.*.private_ips, var.extra_network_interface_count)) : {}
+  value = local.should_create_extra_network_interface && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(aws_network_interface.this.*.private_ips, var.extra_network_interface_count)) : {}
 }
 
 output "extra_network_interface_public_ips" {
