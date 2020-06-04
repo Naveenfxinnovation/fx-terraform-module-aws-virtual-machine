@@ -2,6 +2,7 @@
 =====
 
 * feat: removes managed-by=Terraform tags for ASG instances
+* fix: makes sure zipmap don’t makes error when a resources is destroyed with target
 
 7.0.0
 =====
