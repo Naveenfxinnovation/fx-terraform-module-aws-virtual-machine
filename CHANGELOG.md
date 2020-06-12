@@ -1,3 +1,8 @@
+7.1.1
+=====
+
+* fix: typo in versions.tf to be usable with terraform 0.13
+
 7.1.0
 =====
 
