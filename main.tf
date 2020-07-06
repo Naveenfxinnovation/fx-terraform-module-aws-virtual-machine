@@ -456,7 +456,7 @@ resource "aws_kms_key" "this" {
 
   tags = merge(
     {
-      "Name" = var.use_num_suffix == "true" ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name
+      "Name" = var.use_num_suffix == true ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name
     },
     var.tags,
     var.volume_kms_key_tags,
@@ -476,7 +476,7 @@ resource "aws_kms_alias" "this" {
 ####
 
 locals {
-  external_volume_use_incremental_names     = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == "true"
+  external_volume_use_incremental_names     = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == true
   should_create_extra_volumes               = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
   external_volume_num_suffix_starting_index = local.num_suffix_starting_index + var.external_volume_num_suffix_offset
 }

@@ -1,3 +1,8 @@
+7.1.2
+=====
+
+* fix: adds suffixes for external volumes and KMS keys when us_num_suffix=true
+
 7.1.1
 =====
 
