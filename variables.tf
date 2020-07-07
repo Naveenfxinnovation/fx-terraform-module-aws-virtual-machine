@@ -203,12 +203,6 @@ variable "launch_template_name" {
   default     = ""
 }
 
-variable "launch_template_ipv4_address_count" {
-  description = "The number of secondary private IPv4 addresses to assign to a network interface. Conflicts with ipv4_addresses."
-  type        = number
-  default     = 0
-}
-
 variable "launch_template_tags" {
   description = "Tags to be used by the launch template. Will be merge with var.tags."
   default     = {}
