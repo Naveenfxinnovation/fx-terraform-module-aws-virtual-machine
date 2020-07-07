@@ -1,3 +1,15 @@
+8.0.0
+=====
+
+* feat(BREAKING): uses external resource to create primary network interface for EC2
+* feat(BREAKING): uses external resource to create primary EIP when needed
+* feat(BREAKING): removes eip_create as it now equals associate_public_ip_address
+* feat: adds ipv4_address_count to set primary netint IPv4 addresses
+* feat: adds description to primary network interface
+* feat: adds generic description to extra network interfaces
+* feat: adds names to the network interface and extra network interfaces
+* refactor: removes unused launch_template_ipv4_address_count
+
 7.1.2
 =====
 
