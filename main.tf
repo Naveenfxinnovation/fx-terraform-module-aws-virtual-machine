@@ -531,6 +531,13 @@ resource "aws_network_interface" "this" {
   source_dest_check = element(var.extra_network_interface_source_dest_checks, count.index % var.extra_network_interface_count)
 
   tags = merge(
+    {
+      "Name" = local.use_incremental_names ? format(
+        "%s-%0${var.num_suffix_digits}d",
+        var.extra_network_interface_name,
+        count.index + (floor(count.index / var.extra_network_interface_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
+      ) : var.extra_network_interface_name
+    },
     var.tags,
     var.extra_network_interface_tags,
     local.tags,

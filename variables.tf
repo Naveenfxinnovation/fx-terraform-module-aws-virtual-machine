@@ -335,6 +335,11 @@ variable "ec2_volume_tags" {
   default     = {}
 }
 
+variable "ec2_network_interface_name" {
+  description = "Name of the primary network interfaces."
+  default     = "nic"
+}
+
 ####
 # KMS
 ####
@@ -532,6 +537,11 @@ variable "extra_network_interface_count" {
   description = "How many extra network interface to create per instance. This has no influence on the default network interface."
   type        = number
   default     = 0
+}
+
+variable "extra_network_interface_name" {
+  description = "Name of the extra network interfaces."
+  default     = "nic"
 }
 
 variable "extra_network_interface_private_ips" {

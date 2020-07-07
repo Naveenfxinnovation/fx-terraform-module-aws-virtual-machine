@@ -70,6 +70,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | disable\_api\_termination | If true, enables EC2 Instance (or launch template) Termination Protection. | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance (or launch template) will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
 | ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `null` | no |
+| ec2\_network\_interface\_name | Name of the primary network interfaces. | `string` | `"nic"` | no |
 | ec2\_private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance\_count. | `list(string)` | `null` | no |
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | ec2\_volume\_name | Tag name of the root block device of the instance. | `string` | `"root-volume"` | no |
@@ -86,6 +87,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_count | How many extra network interface to create per instance. This has no influence on the default network interface. | `number` | `0` | no |
 | extra\_network\_interface\_eips\_count | How many extra network interfaces will have a public elastic IP. Should be the exact number of “true” in the var.extra\_network\_interface\_eips\_enabled list. | `number` | `0` | no |
 | extra\_network\_interface\_eips\_enabled | Respectively, for each instance, a list of boolean that indicates whether or not the extra network interface should have an elastic IP or not. Should have as many “true” as var.extra\_network\_interface\_eips\_count. | `list(bool)` | `[]` | no |
+| extra\_network\_interface\_name | Name of the extra network interfaces. | `string` | `"nic"` | no |
 | extra\_network\_interface\_private\_ips | List of private IPs to assign to the extra ENIs. Make sure you have as many element in the list as ENIs times the number of instances. | `list(list(string))` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_private\_ips\_counts | Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private\_ips\_count, as a primary private IP will be assiged to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_security\_group\_count | How many security groups to attach per extra ENI. This cannot be computed automatically from var.extra\_network\_interface\_security\_group\_ids in terraform 0.12. | `number` | `0` | no |
