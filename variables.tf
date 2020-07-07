@@ -470,11 +470,6 @@ variable "iam_instance_profile_iam_role_name" {
 # Elastic IP
 ####
 
-variable "eip_create" {
-  description = "Whether or not to create an public elastic IP per instance."
-  default     = false
-}
-
 variable "extra_network_interface_eips_count" {
   description = "How many extra network interfaces will have a public elastic IP. Should be the exact number of “true” in the var.extra_network_interface_eips_enabled list."
   default     = 0
@@ -542,6 +537,12 @@ variable "extra_network_interface_count" {
 variable "extra_network_interface_name" {
   description = "Name of the extra network interfaces."
   default     = "nic"
+}
+
+variable "extra_network_interface_num_suffix_offset" {
+  description = "The starting point of the numerical suffix for extra network interfaces. Will combine with var.num_suffix_offset. An offset of 1 here and num_suffix_offset of 2 would mean extra nic resources suffix starts at 4."
+  type        = number
+  default     = 1
 }
 
 variable "extra_network_interface_private_ips" {

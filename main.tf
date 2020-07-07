@@ -518,12 +518,14 @@ resource "aws_ebs_volume" "this" {
 ####
 
 locals {
-  should_create_extra_network_interface      = var.extra_network_interface_count > 0 && var.use_autoscaling_group == false && var.instance_count > 0
-  extra_network_interface_security_group_ids = var.extra_network_interface_security_group_ids == null ? local.security_group_ids : var.extra_network_interface_security_group_ids
+  should_create_extra_network_interface             = var.extra_network_interface_count > 0 && var.use_autoscaling_group == false && var.instance_count > 0
+  extra_network_interface_security_group_ids        = var.extra_network_interface_security_group_ids == null ? local.security_group_ids : var.extra_network_interface_security_group_ids
+  extra_network_interface_num_suffix_starting_index = local.num_suffix_starting_index + var.extra_network_interface_num_suffix_offset
 }
 
 resource "aws_network_interface" "this" {
-  count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
+  count       = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
+  description = "Extra network interface"
 
   subnet_id         = element(data.aws_subnet.subnets.*.id, (floor(count.index / var.extra_network_interface_count) % var.instance_count) % local.used_subnet_count)
   private_ips       = element(var.extra_network_interface_private_ips, count.index % var.extra_network_interface_count)

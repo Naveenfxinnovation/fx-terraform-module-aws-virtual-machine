@@ -117,6 +117,7 @@ module "example" {
   ebs_optimized               = true
   monitoring                  = true
   associate_public_ip_address = true
+  ipv4_address_count          = 1
 
   instance_tags = {
     Fullname = "Tftest instance."
@@ -147,7 +148,6 @@ module "example" {
     NICName = "tftest${random_string.this.result}"
   }
 
-  eip_create                           = true
   extra_network_interface_eips_count   = 1
   extra_network_interface_eips_enabled = [true]
 
