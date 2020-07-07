@@ -125,8 +125,12 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
+    description = local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface"
+
     security_groups             = local.security_group_ids[0]
     associate_public_ip_address = var.associate_public_ip_address
+    ipv6_address_count          = var.launch_template_ipv6_address_count
+    ipv4_address_count          = var.ipv4_address_count
     delete_on_termination       = true
   }
 
@@ -253,7 +257,6 @@ resource "aws_instance" "this" {
   ami           = var.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  subnet_id     = element(data.aws_subnet.subnets.*.id, count.index)
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
   monitoring    = var.monitoring
   host_id       = var.host_id
@@ -261,13 +264,12 @@ resource "aws_instance" "this" {
   cpu_core_count       = var.cpu_core_count
   cpu_threads_per_core = var.cpu_threads_per_core
 
-  vpc_security_group_ids = element(local.security_group_ids, count.index)
-  iam_instance_profile   = local.iam_instance_profile
+  network_interface {
+    device_index         = 0
+    network_interface_id = element(aws_network_interface.this_primary.*.id, count.index)
+  }
 
-  associate_public_ip_address = var.associate_public_ip_address
-  private_ip                  = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
-  ipv6_address_count          = var.ipv6_address_count
-  ipv6_addresses              = var.ec2_ipv6_addresses
+  iam_instance_profile = local.iam_instance_profile
 
   ebs_optimized = var.ebs_optimized
   volume_tags = merge(
@@ -302,7 +304,6 @@ resource "aws_instance" "this" {
     }
   }
 
-  source_dest_check                    = var.ec2_source_dest_check
   disable_api_termination              = var.disable_api_termination
   instance_initiated_shutdown_behavior = var.instance_initiated_shutdown_behavior
   placement_group                      = var.placement_group
@@ -333,6 +334,43 @@ resource "aws_instance" "this" {
       private_ip,
       root_block_device,
       volume_tags,
+    ]
+  }
+}
+
+locals {
+  should_create_primary_eni = var.instance_count > 0 && var.use_autoscaling_group == false
+}
+
+resource "aws_network_interface" "this_primary" {
+  count = local.should_create_primary_eni ? var.instance_count : 0
+
+  description     = local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface"
+  subnet_id       = element(data.aws_subnet.subnets.*.id, count.index)
+  security_groups = element(local.security_group_ids, count.index)
+
+  private_ip        = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
+  private_ips_count = var.ipv4_address_count
+  private_ips       = concat(var.ec2_ipv6_addresses, var.ec2_ipv4_addresses)
+
+  source_dest_check = var.ec2_source_dest_check
+
+  tags = merge(
+    {
+      "Name" = local.use_incremental_names ? format(
+        "%s-%0${var.num_suffix_digits}d",
+        var.ec2_network_interface_name,
+        count.index + (count.index * var.extra_network_interface_count) + local.num_suffix_starting_index
+      ) : var.ec2_network_interface_name
+    },
+    var.tags,
+    var.ec2_network_interface_tags,
+    local.tags,
+  )
+
+  lifecycle {
+    ignore_changes = [
+      private_ips,
     ]
   }
 }
@@ -383,10 +421,10 @@ resource "aws_iam_role_policy_attachment" "this_instance_profile" {
 ####
 
 locals {
-  should_create_elastic_ip                              = var.instance_count > 0 && var.eip_create && var.use_autoscaling_group == false
-  should_create_elastic_ip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0 && var.use_autoscaling_group == false
+  should_create_primary_eip                      = var.instance_count > 0 && var.associate_public_ip_address == true && var.use_autoscaling_group == false
+  should_create_eip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0 && var.use_autoscaling_group == false
 
-  network_interface_with_eip_ids = local.should_create_elastic_ip_for_extra_network_interfaces ? [
+  network_interface_with_eip_ids = local.should_create_eip_for_extra_network_interfaces ? [
     for i, network_interface in aws_network_interface.this :
     network_interface.id
     if element(var.extra_network_interface_eips_enabled, i % var.extra_network_interface_count) == true
@@ -394,26 +432,26 @@ locals {
 }
 
 resource "aws_eip" "this" {
-  count = local.should_create_elastic_ip ? var.instance_count : 0
+  count = local.should_create_primary_eip ? var.instance_count : 0
 
   vpc = true
 }
 
 resource "aws_eip_association" "this" {
-  count = local.should_create_elastic_ip ? var.instance_count : 0
+  count = local.should_create_primary_eip ? var.instance_count : 0
 
-  instance_id   = element(aws_instance.this.*.id, count.index)
-  allocation_id = element(aws_eip.this.*.id, count.index)
+  network_interface_id = element(aws_network_interface.this_primary.*.id, count.index)
+  allocation_id        = element(aws_eip.this.*.id, count.index)
 }
 
 resource "aws_eip" "extra" {
-  count = local.should_create_elastic_ip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
+  count = local.should_create_eip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
 
   vpc = true
 }
 
 resource "aws_eip_association" "extra" {
-  count = local.should_create_elastic_ip ? var.instance_count * var.extra_network_interface_eips_count : 0
+  count = local.should_create_eip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
 
   network_interface_id = element(local.network_interface_with_eip_ids, count.index)
   allocation_id        = element(aws_eip.extra.*.id, count.index)

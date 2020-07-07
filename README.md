@@ -69,9 +69,11 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | cpu\_threads\_per\_core | (has no effect unless cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
 | disable\_api\_termination | If true, enables EC2 Instance (or launch template) Termination Protection. | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance (or launch template) will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
-| ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `null` | no |
+| ec2\_ipv4\_addresses | Specify one or more IPv4 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `[]` | no |
+| ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `[]` | no |
 | ec2\_network\_interface\_name | Name of the primary network interfaces. | `string` | `"nic"` | no |
-| ec2\_private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance\_count. | `list(string)` | `null` | no |
+| ec2\_network\_interface\_tags | Tags of the primary ENI of the instance. Will be merged with tags. | `map` | `{}` | no |
+| ec2\_private\_ips | Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance\_count. Careful: this list is one IP / instance. See var.ec2\_ipv4\_addresses for multiple IPs / instance. | `list(string)` | `null` | no |
 | ec2\_source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | ec2\_volume\_name | Tag name of the root block device of the instance. | `string` | `"root-volume"` | no |
 | ec2\_volume\_tags | Tags of the root volume of the instance. Will be merged with tags. | `map` | `{}` | no |
@@ -89,7 +91,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_name | Name of the extra network interfaces. | `string` | `"nic"` | no |
 | extra\_network\_interface\_num\_suffix\_offset | The starting point of the numerical suffix for extra network interfaces. Will combine with var.num\_suffix\_offset. An offset of 1 here and num\_suffix\_offset of 2 would mean extra nic resources suffix starts at 4. | `number` | `1` | no |
 | extra\_network\_interface\_private\_ips | List of private IPs to assign to the extra ENIs. Make sure you have as many element in the list as ENIs times the number of instances. | `list(list(string))` | <pre>[<br>  null<br>]</pre> | no |
-| extra\_network\_interface\_private\_ips\_counts | Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private\_ips\_count, as a primary private IP will be assiged to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
+| extra\_network\_interface\_private\_ips\_counts | Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private\_ips\_count, as a primary private IP will be assigned to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances. | `list(number)` | <pre>[<br>  null<br>]</pre> | no |
 | extra\_network\_interface\_security\_group\_count | How many security groups to attach per extra ENI. This cannot be computed automatically from var.extra\_network\_interface\_security\_group\_ids in terraform 0.12. | `number` | `0` | no |
 | extra\_network\_interface\_security\_group\_ids | List of security group IDs to assign to the extra ENIs. All ENIs will have the same security groups. | `list(list(string))` | `null` | no |
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
@@ -108,11 +110,12 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instance (or launch template). Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances. | `string` | `null` | no |
 | instance\_tags | Tags specific to the instances (or launch template). | `map` | `{}` | no |
 | instance\_type | The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template. | `string` | `"t3.small"` | no |
-| ipv6\_address\_count | A number of IPv6 addresses to associate with the primary network interface of the instances or launch templlate. Amazon EC2 chooses the IPv6 addresses from the range of your subnet. | `number` | `0` | no |
+| ipv4\_address\_count | A number of IPv4 addresses to associate with the primary network interface of the instances or launch template. The total number of private IPs will be 1 + ipv4\_address\_count, as a primary private IP will be assigned to an ENI by default. | `number` | `0` | no |
 | key\_pair\_create | Whether or not to create a key pair. | `bool` | `false` | no |
 | key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |
 | key\_pair\_public\_key | The public key material. | `string` | `null` | no |
 | key\_pair\_tags | Tags for the key pair. Will be merged with tags. | `map` | `{}` | no |
+| launch\_template\_ipv6\_address\_count | A number of IPv6 addresses to associate with the primary network interface of the launch template. | `number` | `0` | no |
 | launch\_template\_name | The name of the launch template. If you leave this blank, Terraform will auto-generate a unique name. | `string` | `""` | no |
 | launch\_template\_tags | Tags to be used by the launch template. Will be merge with var.tags. | `map` | `{}` | no |
 | monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled. | `bool` | `false` | no |

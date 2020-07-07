@@ -110,8 +110,9 @@ variable "instance_type" {
   default     = "t3.small"
 }
 
-variable "ipv6_address_count" {
-  description = "A number of IPv6 addresses to associate with the primary network interface of the instances or launch templlate. Amazon EC2 chooses the IPv6 addresses from the range of your subnet."
+variable "ipv4_address_count" {
+  description = "A number of IPv4 addresses to associate with the primary network interface of the instances or launch template. The total number of private IPs will be 1 + ipv4_address_count, as a primary private IP will be assigned to an ENI by default."
+  type        = number
   default     = 0
 }
 
@@ -206,6 +207,11 @@ variable "launch_template_name" {
 variable "launch_template_tags" {
   description = "Tags to be used by the launch template. Will be merge with var.tags."
   default     = {}
+}
+
+variable "launch_template_ipv6_address_count" {
+  description = "A number of IPv6 addresses to associate with the primary network interface of the launch template."
+  default     = 0
 }
 
 variable "autoscaling_group_default_cooldown" {
@@ -310,11 +316,17 @@ variable "autoscaling_group_wait_for_elb_capacity" {
 variable "ec2_ipv6_addresses" {
   description = "Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface."
   type        = list(string)
-  default     = null
+  default     = []
+}
+
+variable "ec2_ipv4_addresses" {
+  description = "Specify one or more IPv4 addresses from the range of the subnet to associate with the primary network interface."
+  type        = list(string)
+  default     = []
 }
 
 variable "ec2_private_ips" {
-  description = "Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance_count."
+  description = "Private IPs of the instances. If set, the list must contain as many IP as the number of var.instance_count. Careful: this list is one IP / instance. See var.ec2_ipv4_addresses for multiple IPs / instance."
   type        = list(string)
   default     = null
 }
@@ -338,6 +350,11 @@ variable "ec2_volume_tags" {
 variable "ec2_network_interface_name" {
   description = "Name of the primary network interfaces."
   default     = "nic"
+}
+
+variable "ec2_network_interface_tags" {
+  description = "Tags of the primary ENI of the instance. Will be merged with tags."
+  default     = {}
 }
 
 ####
@@ -552,7 +569,7 @@ variable "extra_network_interface_private_ips" {
 }
 
 variable "extra_network_interface_private_ips_counts" {
-  description = "Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assiged to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances."
+  description = "Number of secondary private IPs to assign to the ENI. The total number of private IPs will be 1 + private_ips_count, as a primary private IP will be assigned to an ENI by default. Make sure you have as many element in the list as ENIs times the number of instances."
   type        = list(number)
   default     = [null]
 }
