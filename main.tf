@@ -266,7 +266,7 @@ resource "aws_instance" "this" {
 
   network_interface {
     device_index         = 0
-    network_interface_id = element(aws_network_interface.this_primary.*.id, count.index)
+    network_interface_id = var.use_external_primary_network_interface ? element(var.ec2_external_primary_network_insterface_id, count.index) : element(aws_network_interface.this_primary.*.id, count.index)
   }
 
   iam_instance_profile = local.iam_instance_profile
@@ -339,7 +339,7 @@ resource "aws_instance" "this" {
 }
 
 locals {
-  should_create_primary_eni = var.instance_count > 0 && var.use_autoscaling_group == false
+  should_create_primary_eni = var.instance_count > 0 && var.use_autoscaling_group == false && var.use_external_primary_network_interface == false
 }
 
 resource "aws_network_interface" "this_primary" {

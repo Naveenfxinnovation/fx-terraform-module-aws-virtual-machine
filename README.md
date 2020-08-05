@@ -69,6 +69,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | cpu\_threads\_per\_core | (has no effect unless cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
 | disable\_api\_termination | If true, enables EC2 Instance (or launch template) Termination Protection. | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance (or launch template) will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
+| ec2\_external\_primary\_network\_insterface\_id | IDs of the primary network interface to be attached to ec2 instances. | `list` | `[]` | no |
 | ec2\_ipv4\_addresses | Specify one or more IPv4 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `[]` | no |
 | ec2\_ipv6\_addresses | Specify one or more IPv6 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `[]` | no |
 | ec2\_network\_interface\_name | Name of the primary network interfaces. | `string` | `"nic"` | no |
@@ -134,6 +135,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | tags | Tags to be used for all this module resources. Will be merged with specific tags. | `map` | `{}` | no |
 | tenancy | The tenancy of the instance (if the instance or launch template will be running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
 | use\_autoscaling\_group | Weither or not to create an AutoScaling Group instead of EC2 instances. | `bool` | `false` | no |
+| use\_external\_primary\_network\_interface | Use external primary network interface. If this toggle is true, this module will not manage the creation of the primary network interface. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
 | user\_data | The user data to provide when launching the instance (or launch template). | `string` | `null` | no |
 | volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the volumes. | `string` | `"alias/default/ec2"` | no |

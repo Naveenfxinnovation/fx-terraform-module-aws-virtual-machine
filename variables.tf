@@ -347,6 +347,16 @@ variable "ec2_volume_tags" {
   default     = {}
 }
 
+variable "use_external_primary_network_interface" {
+  description = "Use external primary network interface. If this toggle is true, this module will not manage the creation of the primary network interface."
+  default     = false
+}
+
+variable "ec2_external_primary_network_insterface_id" {
+  description = "IDs of the primary network interface to be attached to ec2 instances."
+  default     = []
+}
+
 variable "ec2_network_interface_name" {
   description = "Name of the primary network interfaces."
   default     = "nic"

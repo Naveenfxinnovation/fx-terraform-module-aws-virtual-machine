@@ -1,3 +1,8 @@
+locals {
+  subnet_ids     = [element(tolist(data.aws_subnet_ids.all.ids), 0), element(tolist(data.aws_subnet_ids.all.ids), 1)]
+  instance_count = 4
+}
+
 data "aws_region" "current" {}
 
 data "aws_vpc" "default" {
@@ -51,6 +56,11 @@ resource "aws_security_group" "example2" {
   vpc_id = data.aws_vpc.default.id
 }
 
+resource "aws_network_interface" "example" {
+  count     = local.instance_count
+  subnet_id = element(local.subnet_ids, count.index)
+}
+
 module "example" {
   source = "../../"
 
@@ -61,7 +71,7 @@ module "example" {
   root_block_device_encrypted = true
 
   subnet_ids_count = 2
-  subnet_ids       = [element(tolist(data.aws_subnet_ids.all.ids), 0), element(tolist(data.aws_subnet_ids.all.ids), 1)]
+  subnet_ids       = local.subnet_ids
 
   vpc_security_group_ids = [
     [aws_security_group.example1.id, aws_security_group.example2.id],
@@ -78,13 +88,16 @@ module "example" {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
+  use_external_primary_network_interface     = true
+  ec2_external_primary_network_insterface_id = aws_network_interface.example.*.id
+
   external_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
   }
 
   // Reason for high number for instance count and external volumes is to
   // make sure the math is correct under the hood: 4 instances, 3 extra volumes, 2 subnets, 2 extra NICs
-  instance_count = 4
+  instance_count = local.instance_count
 
   external_volume_count        = 3
   external_volume_sizes        = [5, 6, 7]
