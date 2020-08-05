@@ -77,6 +77,8 @@ resource "aws_lb_listener" "example" {
 module "with_lb_and_external_volumes" {
   source = "../../"
 
+  prefix = random_string.this.result
+
   name = "tftest-asg"
 
   subnet_ids_count = 2
@@ -89,21 +91,21 @@ module "with_lb_and_external_volumes" {
   }
 
   instance_tags = {
-    Name    = "tftest${random_string.this.result}"
+    Name    = "tftest"
     Example = "TFTEST instance example"
   }
 
   use_autoscaling_group = true
 
-  launch_template_name = "tftest${random_string.this.result}"
+  launch_template_name = "tftest"
 
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
-  autoscaling_group_name              = "tftestasg${random_string.this.result}"
+  autoscaling_group_name              = "tftestasg"
   autoscaling_group_health_check_type = "ELB"
   autoscaling_group_target_group_arns = [aws_lb_target_group.example.arn]
   autoscaling_group_tags = {
-    ASGName = "tftestasg${random_string.this.result}"
+    ASGName = "tftestasg"
   }
   autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1
@@ -113,7 +115,7 @@ module "with_lb_and_external_volumes" {
   monitoring = true
 
   key_pair_create     = true
-  key_pair_name       = "tftest${random_string.this.result}"
+  key_pair_name       = "tftest"
   key_pair_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohAK41 email@example.com"
 
   external_volume_count        = 2
@@ -132,6 +134,8 @@ module "with_lb_and_external_volumes" {
 module "no_target_groups_and_no_external_volumes" {
   source = "../../"
 
+  prefix = random_string.this.result
+
   name = "tftest2-asg"
 
   subnet_ids_count = 2
@@ -144,26 +148,26 @@ module "no_target_groups_and_no_external_volumes" {
   }
 
   instance_tags = {
-    Name    = "tftest2${random_string.this.result}"
+    Name    = "tftest2"
     Example = "TFTEST2 instance example"
   }
 
   use_autoscaling_group = true
 
-  launch_template_name = "tftest2${random_string.this.result}"
+  launch_template_name = "tftest2"
 
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
-  autoscaling_group_name              = "tftest2asg${random_string.this.result}"
+  autoscaling_group_name              = "tftest2asg"
   autoscaling_group_health_check_type = "EC2"
   autoscaling_group_tags = {
-    ASGName = "tftest2asg${random_string.this.result}"
+    ASGName = "tftest2asg"
   }
 
   root_block_device_volume_size = 8
 
   key_pair_create     = true
-  key_pair_name       = "tftest2${random_string.this.result}"
+  key_pair_name       = "tftest2"
   key_pair_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohAK41 email@example.com"
 
   iam_instance_profile_iam_role_name         = "tftest2${random_string.this.result}"

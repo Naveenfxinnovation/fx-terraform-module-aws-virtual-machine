@@ -124,6 +124,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | num\_suffix\_digits | Number of significant digits to append to all resources of the module. | `number` | `2` | no |
 | num\_suffix\_offset | The starting point of the numerical suffix. An offset of 1 would mean resources suffix starts at 2. | `number` | `0` | no |
 | placement\_group | The Placement Group to start the instances (or launch template) in. | `string` | `null` | no |
+| prefix | Prefix to be merge with all resources of the module except `iam_instance_profile_name` and `iam_instance_profile_iam_role_name`. | `string` | `""` | no |
 | root\_block\_device\_delete\_on\_termination | Whether or not to delete the root block device on termination. \*\*Note: It's is strongly discouraged to set this to false, only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs.\*\* | `bool` | `true` | no |
 | root\_block\_device\_encrypted | Customize details about the root block device of the instance or launch template root volume: Enables EBS encryption on the volume (Default: true). Cannot be used with snapshot\_id. Must be configured to perform drift detection. | `string` | `true` | no |
 | root\_block\_device\_iops | The amount of provisioned IOPS. This must be set with a volume\_type of 'io1'. | `string` | `null` | no |
@@ -138,7 +139,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | use\_external\_primary\_network\_interface | Use external primary network interface. If this toggle is true, this module will not manage the creation of the primary network interface. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
 | user\_data | The user data to provide when launching the instance (or launch template). | `string` | `null` | no |
-| volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the volumes. | `string` | `"alias/default/ec2"` | no |
+| volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/ | `string` | `"default/ec2"` | no |
 | volume\_kms\_key\_arn | KMS key used to encrypt the volumes. To be used when var.volume\_kms\_key\_create is set to false. | `string` | `null` | no |
 | volume\_kms\_key\_create | Whether or not to create a KMS key to be used for volumes encryption. | `bool` | `false` | no |
 | volume\_kms\_key\_customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports for the KMS key to be used for volumes. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `null` | no |

@@ -42,6 +42,8 @@ resource "aws_placement_group" "example" {
 module "example" {
   source = "../../"
 
+  prefix = random_string.this.result
+
   name = "tftest-asg"
 
   subnet_ids_count = 2
@@ -54,21 +56,21 @@ module "example" {
   }
 
   instance_tags = {
-    Name    = "tftest${random_string.this.result}"
+    Name    = "tftest"
     Example = "TFTEST instance example"
   }
 
   use_autoscaling_group = true
 
-  launch_template_name = "tftest${random_string.this.result}"
+  launch_template_name = "tftest"
 
   instance_count                      = 2
   autoscaling_group_max_size          = 2
   autoscaling_group_min_size          = 1
-  autoscaling_group_name              = "tftestasg${random_string.this.result}"
+  autoscaling_group_name              = "tftestasg"
   autoscaling_group_health_check_type = "EC2"
   autoscaling_group_tags = {
-    ASGName = "tftestasg${random_string.this.result}"
+    ASGName = "tftestasg"
   }
   autoscaling_group_wait_for_capacity_timeout = "15m"
   autoscaling_group_wait_for_elb_capacity     = 1

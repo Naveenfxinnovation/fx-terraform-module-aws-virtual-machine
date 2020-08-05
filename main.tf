@@ -28,7 +28,7 @@ locals {
 resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name          = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + local.num_suffix_starting_index) : var.launch_template_name
+  name          = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + local.num_suffix_starting_index) : var.launch_template_name)
   image_id      = var.ami
   instance_type = var.instance_type
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
@@ -41,7 +41,7 @@ resource "aws_launch_template" "this" {
 
   tags = merge(
     {
-      "Name" = var.launch_template_name
+      "Name" = format("%s%s", var.prefix, var.launch_template_name)
     },
     var.tags,
     var.launch_template_tags,
@@ -125,7 +125,7 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    description = local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface"
+    description = format("%s%s", var.prefix, local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface")
 
     security_groups             = local.security_group_ids[0]
     associate_public_ip_address = var.associate_public_ip_address
@@ -150,7 +150,7 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name
+        "Name" = format("%s%s", local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name)
       },
       var.tags,
       var.instance_tags,
@@ -162,7 +162,7 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = var.external_volume_name
+        "Name" = format("%s%s", var.prefix, var.external_volume_name)
       },
       var.tags,
       var.external_volume_tags,
@@ -181,7 +181,7 @@ resource "aws_launch_template" "this" {
 resource "aws_autoscaling_group" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
-  name = (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + local.num_suffix_starting_index) : var.autoscaling_group_name
+  name = format("%s%s", var.prefix, (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + local.num_suffix_starting_index) : var.autoscaling_group_name)
 
   desired_capacity = var.instance_count
   max_size         = var.autoscaling_group_max_size
@@ -274,7 +274,7 @@ resource "aws_instance" "this" {
   ebs_optimized = var.ebs_optimized
   volume_tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + (count.index * var.external_volume_count) + local.num_suffix_starting_index) : var.ec2_volume_name
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + (count.index * var.external_volume_count) + local.num_suffix_starting_index) : var.ec2_volume_name)
     },
     var.tags,
     var.ec2_volume_tags,
@@ -319,7 +319,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name)
     },
     var.tags,
     var.instance_tags,
@@ -345,7 +345,7 @@ locals {
 resource "aws_network_interface" "this_primary" {
   count = local.should_create_primary_eni ? var.instance_count : 0
 
-  description     = local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface"
+  description     = format("%s%s", var.prefix, local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface")
   subnet_id       = element(data.aws_subnet.subnets.*.id, count.index)
   security_groups = element(local.security_group_ids, count.index)
 
@@ -357,11 +357,11 @@ resource "aws_network_interface" "this_primary" {
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format(
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
         var.ec2_network_interface_name,
         count.index + (count.index * var.extra_network_interface_count) + local.num_suffix_starting_index
-      ) : var.ec2_network_interface_name
+      ) : var.ec2_network_interface_name)
     },
     var.tags,
     var.ec2_network_interface_tags,
@@ -468,7 +468,7 @@ locals {
 resource "aws_key_pair" "this" {
   count = local.should_create_key_pair ? 1 : 0
 
-  key_name   = var.key_pair_name
+  key_name   = format("%s%s", var.prefix, var.key_pair_name)
   public_key = var.key_pair_public_key
   tags = merge(
     var.tags,
@@ -488,13 +488,13 @@ locals {
 resource "aws_kms_key" "this" {
   count = local.should_create_kms_key ? 1 : 0
 
-  description              = "KMS key for ${var.name} instance(s) volume(s)."
+  description              = "KMS key for ${format("%s%s", var.prefix, var.name)} instance(s) volume(s)."
   customer_master_key_spec = var.volume_kms_key_customer_master_key_spec
   policy                   = var.volume_kms_key_policy
 
   tags = merge(
     {
-      "Name" = var.use_num_suffix == true ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name
+      "Name" = format("%s%s", var.prefix, var.use_num_suffix == true ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name)
     },
     var.tags,
     var.volume_kms_key_tags,
@@ -505,7 +505,7 @@ resource "aws_kms_key" "this" {
 resource "aws_kms_alias" "this" {
   count = local.should_create_kms_key ? 1 : 0
 
-  name          = var.volume_kms_key_alias
+  name          = format("alias/%s%s", var.prefix, var.volume_kms_key_alias)
   target_key_id = aws_kms_key.this[0].key_id
 }
 
@@ -539,11 +539,11 @@ resource "aws_ebs_volume" "this" {
 
   tags = merge(
     {
-      "Name" = local.external_volume_use_incremental_names ? format(
+      "Name" = format("%s%s", var.prefix, local.external_volume_use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
         var.external_volume_name,
         count.index + (floor(count.index / var.external_volume_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
-      ) : var.external_volume_name
+      ) : var.external_volume_name)
     },
     var.tags,
     var.external_volume_tags,
@@ -572,11 +572,11 @@ resource "aws_network_interface" "this" {
 
   tags = merge(
     {
-      "Name" = local.use_incremental_names ? format(
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
         var.extra_network_interface_name,
         count.index + (floor(count.index / var.extra_network_interface_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
-      ) : var.extra_network_interface_name
+      ) : var.extra_network_interface_name)
     },
     var.tags,
     var.extra_network_interface_tags,

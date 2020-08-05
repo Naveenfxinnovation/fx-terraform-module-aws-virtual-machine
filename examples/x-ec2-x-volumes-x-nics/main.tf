@@ -64,6 +64,8 @@ resource "aws_network_interface" "example" {
 module "example" {
   source = "../../"
 
+  prefix = random_string.this.result
+
   name = "tftest-multiple_ec2_with_multiple_volumes"
 
   ami                         = data.aws_ami.amazon_linux.image_id
@@ -81,8 +83,8 @@ module "example" {
   ]
 
   volume_kms_key_create = true
-  volume_kms_key_name   = "tftest${random_string.this.result}"
-  volume_kms_key_alias  = "alias/tftest/${random_string.this.result}"
+  volume_kms_key_name   = "tftest"
+  volume_kms_key_alias  = "tftest"
 
   ec2_volume_tags = {
     Name = "tftest-multiple_ec2_with_multiple_volumes"
@@ -109,7 +111,7 @@ module "example" {
   extra_network_interface_security_group_ids   = [[aws_security_group.example2.id]]
   extra_network_interface_source_dest_checks   = [true]
   extra_network_interface_tags = {
-    NICName = "tftest${random_string.this.result}"
+    NICName = "tftest"
   }
 
   iam_instance_profile_create = false

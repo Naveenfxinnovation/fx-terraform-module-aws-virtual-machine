@@ -55,7 +55,7 @@ resource "aws_kms_key" "example" {
 }
 
 resource "aws_kms_alias" "example" {
-  name          = "alias/tftest/${random_string.this.result}/ec2"
+  name          = "tftest/${random_string.this.result}/ec2"
   target_key_id = aws_kms_key.example.key_id
 }
 
@@ -91,6 +91,8 @@ resource "aws_iam_role_policy_attachment" "example" {
 
 module "example" {
   source = "../../"
+
+  prefix = random_string.this.result
 
   name = "tftest-advanced_ec2_with_multiple_volumes"
 
@@ -145,7 +147,7 @@ module "example" {
   extra_network_interface_count              = 1
   extra_network_interface_source_dest_checks = [true]
   extra_network_interface_tags = {
-    NICName = "tftest${random_string.this.result}"
+    NICName = "tftest"
   }
 
   extra_network_interface_eips_count   = 1

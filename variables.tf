@@ -30,6 +30,11 @@ variable "num_suffix_offset" {
   default     = 0
 }
 
+variable "prefix" {
+  description = "Prefix to be merge with all resources of the module except `iam_instance_profile_name` and `iam_instance_profile_iam_role_name`."
+  default     = ""
+}
+
 ####
 # AutoScaling Group & EC2
 ####
@@ -372,9 +377,9 @@ variable "ec2_network_interface_tags" {
 ####
 
 variable "volume_kms_key_alias" {
-  description = "Alias of the KMS key used to encrypt the volumes."
+  description = "Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/"
   type        = string
-  default     = "alias/default/ec2"
+  default     = "default/ec2"
 }
 
 variable "volume_kms_key_arn" {
