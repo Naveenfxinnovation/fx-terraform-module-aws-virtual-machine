@@ -377,7 +377,7 @@ variable "ec2_network_interface_tags" {
 ####
 
 variable "volume_kms_key_alias" {
-  description = "Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/"
+  description = "Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/ neither a /"
   type        = string
   default     = "default/ec2"
 }

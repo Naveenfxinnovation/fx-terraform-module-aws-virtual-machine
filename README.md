@@ -139,7 +139,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | use\_external\_primary\_network\_interface | Use external primary network interface. If this toggle is true, this module will not manage the creation of the primary network interface. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
 | user\_data | The user data to provide when launching the instance (or launch template). | `string` | `null` | no |
-| volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/ | `string` | `"default/ec2"` | no |
+| volume\_kms\_key\_alias | Alias of the KMS key used to encrypt the volumes. DON'T prefix it with alias/ neither a / | `string` | `"default/ec2"` | no |
 | volume\_kms\_key\_arn | KMS key used to encrypt the volumes. To be used when var.volume\_kms\_key\_create is set to false. | `string` | `null` | no |
 | volume\_kms\_key\_create | Whether or not to create a KMS key to be used for volumes encryption. | `bool` | `false` | no |
 | volume\_kms\_key\_customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports for the KMS key to be used for volumes. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `null` | no |
