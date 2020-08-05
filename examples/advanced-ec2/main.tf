@@ -55,7 +55,7 @@ resource "aws_kms_key" "example" {
 }
 
 resource "aws_kms_alias" "example" {
-  name          = "tftest/${random_string.this.result}/ec2"
+  name          = "alias/tftest/${random_string.this.result}/ec2"
   target_key_id = aws_kms_key.example.key_id
 }
 
