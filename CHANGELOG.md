@@ -1,3 +1,10 @@
+9.0.0
+=====
+
+* feat (BREAKING): add prefix (`volume_kms_key_alias` is now automaticaly prefixed by `alias/`)
+* feat: Add external primary network inteface to use an external ENI for EC2 instances
+* chore: fix provider assume role
+
 8.0.0
 =====
 
