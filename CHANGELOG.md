@@ -1,3 +1,12 @@
+10.0.0
+=====
+
+* feat (BREAKING): do not create instance profile by default
+* feat (BREAKING): default instance type is changes to t3.small to cheaper t3.nano
+* feat: if no AMI is specified, now uses the latest amazon linux AMI
+* test: adds a default baby example
+* doc: improves some variables description
+
 9.0.0
 =====
 
