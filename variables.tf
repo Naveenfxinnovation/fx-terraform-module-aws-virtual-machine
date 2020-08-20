@@ -45,7 +45,7 @@ variable "ami" {
 }
 
 variable "associate_public_ip_address" {
-  description = "Associate a public ip address for each instances (or launch template) main network interface."
+  description = "Whether or not to associate a public ip address for each instances (or launch template) main network interface."
   default     = false
 }
 
@@ -62,7 +62,7 @@ variable "cpu_core_count" {
 }
 
 variable "cpu_threads_per_core" {
-  description = "(has no effect unless cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information."
+  description = "(has no effect unless var.cpu_core_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information."
   type        = number
   default     = null
 }
@@ -73,7 +73,7 @@ variable "ebs_optimized" {
 }
 
 variable "disable_api_termination" {
-  description = "If true, enables EC2 Instance (or launch template) Termination Protection."
+  description = "If true, enables EC2 Instance (or launch template) Termination Protection. This is NOT recommended as it will prevent Terraform to destroy and potentially block your pipeline."
   default     = false
 }
 
@@ -106,12 +106,12 @@ variable "instance_initiated_shutdown_behavior" {
 }
 
 variable "instance_tags" {
-  description = "Tags specific to the instances (or launch template)."
+  description = "Tags that will be shared with all the instances (or instances launched by the AutoScaling Group). Will be merged with var.tags."
   default     = {}
 }
 
 variable "instance_type" {
-  description = "The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template."
+  description = "The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance, except with launch template."
   default     = "t3.nano"
 }
 
@@ -122,12 +122,12 @@ variable "ipv4_address_count" {
 }
 
 variable "monitoring" {
-  description = "If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled."
+  description = "If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled: 1 minute granularity instead of 5 minutes. Incurs additional costs."
   default     = false
 }
 
 variable "name" {
-  description = "Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num_suffix_digits count index."
+  description = "Name prefix of the instances themselves (tag:Name) whether or not AutoScaling group is used. If enabled, will be suffixed by a var.num_suffix_digits count index."
   default     = ""
 }
 

@@ -47,7 +47,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | ami | The AMI to use for the instances or the launch template. Default: latest AWS linux AMI (careful: when using the default, the AMI could be updated, thus triggering a destroy/recreate of your instances). | `string` | `""` | no |
-| associate\_public\_ip\_address | Associate a public ip address for each instances (or launch template) main network interface. | `bool` | `false` | no |
+| associate\_public\_ip\_address | Whether or not to associate a public ip address for each instances (or launch template) main network interface. | `bool` | `false` | no |
 | autoscaling\_group\_default\_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start. | `number` | `null` | no |
 | autoscaling\_group\_enabled\_metrics | A list of metrics to collect. The allowed values are GroupDesiredCapacity, GroupInServiceCapacity, GroupPendingCapacity, GroupMinSize, GroupMaxSize, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupStandbyCapacity, GroupTerminatingCapacity, GroupTerminatingInstances, GroupTotalCapacity, GroupTotalInstances. | `set(string)` | `null` | no |
 | autoscaling\_group\_health\_check\_grace\_period | Time (in seconds) after instance comes into service before checking health. | `number` | `null` | no |
@@ -66,8 +66,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | autoscaling\_group\_wait\_for\_elb\_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances from this autoscaling group in all attached load balancers on both create and update operations. (Takes precedence over min\_elb\_capacity behavior.) | `number` | `null` | no |
 | cpu\_core\_count | Sets the number of CPU cores for an instance (or launch template). This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API. | `number` | `null` | no |
 | cpu\_credits | The credit option for CPU usage. Can be 'standard' or 'unlimited'. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. | `string` | `null` | no |
-| cpu\_threads\_per\_core | (has no effect unless cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
-| disable\_api\_termination | If true, enables EC2 Instance (or launch template) Termination Protection. | `bool` | `false` | no |
+| cpu\_threads\_per\_core | (has no effect unless var.cpu\_core\_count is also set) If set to to 1, hyperthreading is disabled on the launched instance (or launch template). Defaults to 2 if not set. See Optimizing CPU Options for more information. | `number` | `null` | no |
+| disable\_api\_termination | If true, enables EC2 Instance (or launch template) Termination Protection. This is NOT recommended as it will prevent Terraform to destroy and potentially block your pipeline. | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance (or launch template) will be EBS-optimized. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it. | `bool` | `false` | no |
 | ec2\_external\_primary\_network\_insterface\_id | IDs of the primary network interface to be attached to ec2 instances. | `list` | `[]` | no |
 | ec2\_ipv4\_addresses | Specify one or more IPv4 addresses from the range of the subnet to associate with the primary network interface. | `list(string)` | `[]` | no |
@@ -109,8 +109,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | iam\_instance\_profile\_path | Path in which to create the profile. Instance profile role will share the same path. | `string` | `"/"` | no |
 | instance\_count | Number of instances to create. For AutoScaling Group, this value will be the desired capacity. Setting this value to 0 will disable the module. | `number` | `1` | no |
 | instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instance (or launch template). Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances. | `string` | `null` | no |
-| instance\_tags | Tags specific to the instances (or launch template). | `map` | `{}` | no |
-| instance\_type | The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template. | `string` | `"t3.nano"` | no |
+| instance\_tags | Tags that will be shared with all the instances (or instances launched by the AutoScaling Group). Will be merged with var.tags. | `map` | `{}` | no |
+| instance\_type | The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance, except with launch template. | `string` | `"t3.nano"` | no |
 | ipv4\_address\_count | A number of IPv4 addresses to associate with the primary network interface of the instances or launch template. The total number of private IPs will be 1 + ipv4\_address\_count, as a primary private IP will be assigned to an ENI by default. | `number` | `0` | no |
 | key\_pair\_create | Whether or not to create a key pair. | `bool` | `false` | no |
 | key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |
@@ -119,8 +119,8 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | launch\_template\_ipv6\_address\_count | A number of IPv6 addresses to associate with the primary network interface of the launch template. | `number` | `0` | no |
 | launch\_template\_name | The name of the launch template. If you leave this blank, Terraform will auto-generate a unique name. | `string` | `""` | no |
 | launch\_template\_tags | Tags to be used by the launch template. Will be merge with var.tags. | `map` | `{}` | no |
-| monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled. | `bool` | `false` | no |
-| name | Name prefix of the instances themselves (tag Name) whether or not ASG is used. Will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
+| monitoring | If true, the launched EC2 instances (or launch template) will have detailed monitoring enabled: 1 minute granularity instead of 5 minutes. Incurs additional costs. | `bool` | `false` | no |
+| name | Name prefix of the instances themselves (tag:Name) whether or not AutoScaling group is used. If enabled, will be suffixed by a var.num\_suffix\_digits count index. | `string` | `""` | no |
 | num\_suffix\_digits | Number of significant digits to append to all resources of the module. | `number` | `2` | no |
 | num\_suffix\_offset | The starting point of the numerical suffix. An offset of 1 would mean resources suffix starts at 2. | `number` | `0` | no |
 | placement\_group | The Placement Group to start the instances (or launch template) in. | `string` | `null` | no |
