@@ -455,7 +455,7 @@ variable "iam_instance_profile_external_name" {
 
 variable "iam_instance_profile_create" {
   description = "Whether or not to create an instance profile for the virtual machines."
-  default     = true
+  default     = false
 }
 
 variable "iam_instance_profile_name" {
