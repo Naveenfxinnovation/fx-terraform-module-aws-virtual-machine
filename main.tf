@@ -19,6 +19,8 @@ locals {
   kms_key_arn          = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
 
   num_suffix_starting_index = var.num_suffix_offset + 1
+
+  ami = var.ami != "" ? var.ami : data.aws_ssm_parameter.default_ami.*.value[0]
 }
 
 ####
@@ -29,7 +31,7 @@ resource "aws_launch_template" "this" {
   count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
 
   name          = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + local.num_suffix_starting_index) : var.launch_template_name)
-  image_id      = var.ami
+  image_id      = local.ami
   instance_type = var.instance_type
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
 
@@ -254,7 +256,7 @@ locals {
 resource "aws_instance" "this" {
   count = var.use_autoscaling_group ? 0 : var.instance_count
 
-  ami           = var.ami
+  ami           = local.ami
   instance_type = var.instance_type
   user_data     = var.user_data
   key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name

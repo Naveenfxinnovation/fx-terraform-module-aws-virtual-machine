@@ -74,3 +74,13 @@ data "aws_iam_policy_document" "sts_instance" {
     }
   }
 }
+
+####
+# SSM Parameter
+####
+
+data "aws_ssm_parameter" "default_ami" {
+  count = var.instance_count > 0 ? 1 : 0
+
+  name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+}
