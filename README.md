@@ -110,7 +110,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | instance\_count | Number of instances to create. For AutoScaling Group, this value will be the desired capacity. Setting this value to 0 will disable the module. | `number` | `1` | no |
 | instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instance (or launch template). Amazon defaults this to stop for EBS-backed instances and terminate for instance-store instances. Cannot be set on instance-store instances. | `string` | `null` | no |
 | instance\_tags | Tags specific to the instances (or launch template). | `map` | `{}` | no |
-| instance\_type | The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template. | `string` | `"t3.small"` | no |
+| instance\_type | The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template. | `string` | `"t3.nano"` | no |
 | ipv4\_address\_count | A number of IPv4 addresses to associate with the primary network interface of the instances or launch template. The total number of private IPs will be 1 + ipv4\_address\_count, as a primary private IP will be assigned to an ENI by default. | `number` | `0` | no |
 | key\_pair\_create | Whether or not to create a key pair. | `bool` | `false` | no |
 | key\_pair\_name | The name for the key pair. If this is not null and key\_pair\_create = false, this name will be used as a key pair. | `string` | `null` | no |

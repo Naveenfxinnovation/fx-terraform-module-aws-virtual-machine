@@ -112,7 +112,7 @@ variable "instance_tags" {
 
 variable "instance_type" {
   description = "The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance though this is not true with launch template."
-  default     = "t3.small"
+  default     = "t3.nano"
 }
 
 variable "ipv4_address_count" {
