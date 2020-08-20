@@ -96,7 +96,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | extra\_network\_interface\_security\_group\_count | How many security groups to attach per extra ENI. This cannot be computed automatically from var.extra\_network\_interface\_security\_group\_ids in terraform 0.12. | `number` | `0` | no |
 | extra\_network\_interface\_security\_group\_ids | List of security group IDs to assign to the extra ENIs. All ENIs will have the same security groups. | `list(list(string))` | `null` | no |
 | extra\_network\_interface\_source\_dest\_checks | Whether to enable source destination checking for the extra ENIs. Default true. | `list(bool)` | <pre>[<br>  null<br>]</pre> | no |
-| extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs. | `map` | `{}` | no |
+| extra\_network\_interface\_tags | Tags for the extra ENIs. Will be merged with var.tags. These tags will be shared among all extra ENIs. | `map` | `{}` | no |
 | host\_id | The Id of a dedicated host that the instance will be assigned to. Use when an instance (or launch template) is to be launched on a specific dedicated host. | `string` | `null` | no |
 | iam\_instance\_profile\_create | Whether or not to create an instance profile for the virtual machines. | `bool` | `false` | no |
 | iam\_instance\_profile\_external\_name | Name of an instance profile to be used by the virtual machines. If this value is given, this will be used instead of creating a new instance profile. | `string` | `null` | no |
@@ -135,7 +135,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | subnet\_ids\_count | How many subnet IDs in subnet\_ids. Cannot be computed automatically from other variables in Terraform 0.12.X. | `number` | `0` | no |
 | tags | Tags to be used for all this module resources. Will be merged with specific tags. | `map` | `{}` | no |
 | tenancy | The tenancy of the instance (if the instance or launch template will be running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
-| use\_autoscaling\_group | Weither or not to create an AutoScaling Group instead of EC2 instances. | `bool` | `false` | no |
+| use\_autoscaling\_group | Whether or not to create an AutoScaling Group instead of EC2 instances. | `bool` | `false` | no |
 | use\_external\_primary\_network\_interface | Use external primary network interface. If this toggle is true, this module will not manage the creation of the primary network interface. | `bool` | `false` | no |
 | use\_num\_suffix | Always append numerical suffix to instance name, even if instance\_count is 1. | `bool` | `false` | no |
 | user\_data | The user data to provide when launching the instance (or launch template). | `string` | `null` | no |
@@ -146,7 +146,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | volume\_kms\_key\_name | Name prefix for the KMS key to be used for volumes. Will be suffixes with a two-digit count index. | `string` | `null` | no |
 | volume\_kms\_key\_policy | A valid policy JSON document for the KMS key to be used for volumes. | `string` | `null` | no |
 | volume\_kms\_key\_tags | Tags for the KMS key to be used for volumes. Will be merge with var.tags. | `map` | `{}` | no |
-| vpc\_security\_group\_ids | An object containing the list of security group IDs to associate with each instance (or launch template). | `list(list(string))` | `null` | no |
+| vpc\_security\_group\_ids | An list containing the list of security group IDs to associate with the main ENI of each instance (or launch template). If not defined, default the VPC security group will be used. | `list(list(string))` | `null` | no |
 
 ## Outputs
 

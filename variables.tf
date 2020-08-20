@@ -8,7 +8,7 @@ variable "tags" {
 }
 
 variable "use_autoscaling_group" {
-  description = "Weither or not to create an AutoScaling Group instead of EC2 instances."
+  description = "Whether or not to create an AutoScaling Group instead of EC2 instances."
   type        = bool
   default     = false
 }
@@ -194,7 +194,7 @@ variable "user_data" {
 }
 
 variable "vpc_security_group_ids" {
-  description = "An object containing the list of security group IDs to associate with each instance (or launch template)."
+  description = "An list containing the list of security group IDs to associate with the main ENI of each instance (or launch template). If not defined, default the VPC security group will be used."
   type        = list(list(string))
   default     = null
 }
@@ -608,6 +608,6 @@ variable "extra_network_interface_source_dest_checks" {
 }
 
 variable "extra_network_interface_tags" {
-  description = "Tags for the extra ENIs. Will be merged with tags. Tags will be shared among all extra ENIs."
+  description = "Tags for the extra ENIs. Will be merged with var.tags. These tags will be shared among all extra ENIs."
   default     = {}
 }
