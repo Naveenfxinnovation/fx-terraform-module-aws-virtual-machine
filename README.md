@@ -46,7 +46,7 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| ami | The AMI to use for the instances or the launch template. | `string` | `""` | no |
+| ami | The AMI to use for the instances or the launch template. Default: latest AWS linux AMI (careful: when using the default, the AMI could be updated, thus triggering a destroy/recreate of your instances). | `string` | `""` | no |
 | associate\_public\_ip\_address | Associate a public ip address for each instances (or launch template) main network interface. | `bool` | `false` | no |
 | autoscaling\_group\_default\_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start. | `number` | `null` | no |
 | autoscaling\_group\_enabled\_metrics | A list of metrics to collect. The allowed values are GroupDesiredCapacity, GroupInServiceCapacity, GroupPendingCapacity, GroupMinSize, GroupMaxSize, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupStandbyCapacity, GroupTerminatingCapacity, GroupTerminatingInstances, GroupTotalCapacity, GroupTotalInstances. | `set(string)` | `null` | no |

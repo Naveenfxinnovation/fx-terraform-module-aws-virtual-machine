@@ -40,7 +40,7 @@ variable "prefix" {
 ####
 
 variable "ami" {
-  description = "The AMI to use for the instances or the launch template."
+  description = "The AMI to use for the instances or the launch template. Default: latest AWS linux AMI (careful: when using the default, the AMI could be updated, thus triggering a destroy/recreate of your instances)."
   default     = ""
 }
 
