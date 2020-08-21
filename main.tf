@@ -20,7 +20,7 @@ locals {
 
   num_suffix_starting_index = var.num_suffix_offset + 1
 
-  ami = var.ami != "" ? var.ami : data.aws_ssm_parameter.default_ami.*.value[0]
+  ami = var.ami != "" ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
 }
 
 ####
