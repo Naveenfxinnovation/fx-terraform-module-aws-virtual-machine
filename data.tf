@@ -2,44 +2,51 @@
 # Defaults
 ####
 
-data "aws_region" "current" {
-  count = var.instance_count > 0 ? 1 : 0
+locals {
+  should_fetch_default_subnet         = local.use_default_subnets
+  should_fetch_default_security_group = var.vpc_security_group_ids == null
+  should_fetch_default_vpc            = local.should_fetch_default_subnet || local.should_fetch_default_security_group
+  should_fetch_default_ami            = var.ami == null
+}
+
+data "aws_availability_zones" "default" {
+  count = local.should_fetch_default_subnet ? 1 : 0
+
+  state = "available"
 }
 
 data "aws_vpc" "default" {
-  count = local.use_default_subnets ? 1 : 0
+  count = local.should_fetch_default_vpc ? 1 : 0
 
   default = true
 }
 
 data "aws_subnet_ids" "default" {
-  count = local.use_default_subnets ? 1 : 0
+  count = local.should_fetch_default_subnet ? length(data.aws_availability_zones.default.*.names[0]) : 0
 
   vpc_id = data.aws_vpc.default.*.id[0]
 
   filter {
     name   = "availability-zone"
-    values = ["${element(concat(data.aws_region.current.*.name, [""]), 0)}a", "${element(concat(data.aws_region.current.*.name, [""]), 0)}b"]
+    values = [element(data.aws_availability_zones.default.*.names[0], count.index)]
   }
 }
 
 data "aws_security_group" "default" {
-  count = var.instance_count > 0 && var.vpc_security_group_ids == null ? 1 : 0
+  count = local.should_fetch_default_security_group ? 1 : 0
 
-  vpc_id = local.vpc_id
+  vpc_id = data.aws_vpc.default.*.id[0]
   name   = "default"
 }
 
 ####
 # Subnets
 ####
-// This is needed to circumvent:
-// https://github.com/terraform-providers/terraform-provider-aws/issues/1352
 
-data "aws_subnet" "subnets" {
-  count = local.subnet_count
+data "aws_subnet" "current" {
+  count = length(local.subnet_ids)
 
-  id = element(local.subnet_ids, count.index)
+  id = local.subnet_ids[count.index]
 }
 
 ####
@@ -47,12 +54,12 @@ data "aws_subnet" "subnets" {
 ####
 
 data "null_data_source" "ebs_block_device" {
-  count = var.instance_count > 0 ? var.external_volume_count : 0
+  count = var.extra_volume_count
 
   inputs = {
-    device_name = element(var.external_volume_device_names, count.index)
-    type        = element(var.external_volume_types, count.index)
-    size        = element(var.external_volume_sizes, count.index)
+    device_name = element(var.extra_volume_device_names, count.index)
+    type        = element(var.extra_volume_types, count.index)
+    size        = element(var.extra_volume_sizes, count.index)
   }
 }
 
@@ -80,7 +87,7 @@ data "aws_iam_policy_document" "sts_instance" {
 ####
 
 data "aws_ssm_parameter" "default_ami" {
-  count = var.instance_count > 0 ? 1 : 0
+  count = local.should_fetch_default_ami ? 1 : 0
 
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }

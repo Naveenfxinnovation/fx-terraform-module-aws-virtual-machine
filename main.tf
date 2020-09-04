@@ -1,39 +1,35 @@
 locals {
   should_update_root_device = var.root_block_device_volume_type != null || var.root_block_device_volume_size != null || var.root_block_device_encrypted == true || var.root_block_device_iops != null
-  use_incremental_names     = var.instance_count > 1 || (var.use_num_suffix && var.num_suffix_digits > 0)
-  use_default_subnets       = var.instance_count > 0 && var.subnet_ids_count == 0
 
-  used_subnet_count = floor(min(local.subnet_count, var.instance_count))
-
-  subnet_count = local.use_default_subnets ? length(data.aws_subnet_ids.default.*.ids) : var.subnet_ids_count
-  subnet_ids   = split(",", local.use_default_subnets ? join(",", tolist(element(concat(data.aws_subnet_ids.default.*.ids, [""]), 0))) : join(",", distinct(compact(concat([var.subnet_id], var.subnet_ids)))))
-  vpc_id       = element(concat(data.aws_subnet.subnets.*.vpc_id, [""]), 0)
-
-  tags = {
-    Terraform  = true
-    managed-by = "Terraform"
-  }
-
-  security_group_ids   = var.vpc_security_group_ids != null ? var.vpc_security_group_ids : (tolist([data.aws_security_group.default.*.id]))
-  iam_instance_profile = local.should_use_external_instance_profile ? var.iam_instance_profile_external_name : (local.should_create_instance_profile ? aws_iam_instance_profile.this.*.name[0] : null)
-  kms_key_arn          = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
-
+  use_incremental_names     = var.use_num_suffix && var.num_suffix_digits > 0
   num_suffix_starting_index = var.num_suffix_offset + 1
 
-  ami = var.ami != "" ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
+  use_default_subnets = var.use_autoscaling_group ? var.autoscaling_group_subnet_ids_count == 0 : var.ec2_use_default_subnet
+
+  subnet_ids         = var.use_autoscaling_group ? (local.use_default_subnets ? flatten(data.aws_subnet_ids.default.*.ids) : var.autoscaling_group_subnet_ids) : (local.use_default_subnets ? [flatten(data.aws_subnet_ids.default.*.ids)[0]] : [var.ec2_subnet_id])
+  availability_zones = data.aws_subnet.current.*.availability_zone
+
+  security_group_ids = local.should_fetch_default_security_group ? data.aws_security_group.default.*.id : var.vpc_security_group_ids
+
+  ami = var.ami != null ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
+
+  tags = {
+    managed-by = "Terraform"
+  }
 }
 
 ####
-# AutoScaling Group
+# Launch Template
 ####
 
 resource "aws_launch_template" "this" {
-  count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
+  count = var.use_autoscaling_group ? 1 : 0
 
-  name          = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.launch_template_name, count.index + local.num_suffix_starting_index) : var.launch_template_name)
+  name = format("%s%s", var.prefix, var.launch_template_name)
+
   image_id      = local.ami
   instance_type = var.instance_type
-  key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
+  key_name      = local.key_pair_name
 
   user_data = var.user_data
 
@@ -71,7 +67,7 @@ resource "aws_launch_template" "this" {
     for_each = local.should_update_root_device ? [1] : []
 
     content {
-      device_name = "/dev/sda1"
+      device_name = var.root_block_device_volume_device
 
       ebs {
         delete_on_termination = true
@@ -79,7 +75,7 @@ resource "aws_launch_template" "this" {
         iops                  = var.root_block_device_iops
         volume_size           = var.root_block_device_volume_size
         volume_type           = var.root_block_device_volume_type
-        kms_key_id            = local.kms_key_arn
+        kms_key_id            = local.volume_kms_key_arn
       }
     }
   }
@@ -95,7 +91,7 @@ resource "aws_launch_template" "this" {
         encrypted             = true
         volume_size           = lookup(block_device_mappings.value.outputs, "size", null)
         volume_type           = lookup(block_device_mappings.value.outputs, "type", null)
-        kms_key_id            = local.kms_key_arn
+        kms_key_id            = local.volume_kms_key_arn
       }
     }
   }
@@ -111,10 +107,10 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "iam_instance_profile" {
-    for_each = local.iam_instance_profile != null ? [1] : []
+    for_each = local.iam_instance_profile_name != null ? [1] : []
 
     content {
-      name = local.iam_instance_profile
+      name = local.iam_instance_profile_name
     }
   }
 
@@ -127,9 +123,9 @@ resource "aws_launch_template" "this" {
   }
 
   network_interfaces {
-    description = format("%s%s", var.prefix, local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface")
+    description = format("%s%s", var.prefix, local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.primary_network_interface_name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.primary_network_interface_name} root network interface")
 
-    security_groups             = local.security_group_ids[0]
+    security_groups             = local.security_group_ids
     associate_public_ip_address = var.associate_public_ip_address
     ipv6_address_count          = var.launch_template_ipv6_address_count
     ipv4_address_count          = var.ipv4_address_count
@@ -140,7 +136,7 @@ resource "aws_launch_template" "this" {
     for_each = var.placement_group != null ? [1] : []
 
     content {
-      availability_zone = data.aws_subnet.subnets.*.availability_zone[0]
+      availability_zone = local.availability_zones[0]
       group_name        = var.placement_group
       tenancy           = var.tenancy
       host_id           = var.host_id
@@ -152,7 +148,7 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name)
+        "Name" = format("%s%s", var.prefix, var.name)
       },
       var.tags,
       var.instance_tags,
@@ -164,41 +160,45 @@ resource "aws_launch_template" "this" {
 
     tags = merge(
       {
-        "Name" = format("%s%s", var.prefix, var.external_volume_name)
+        "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.extra_volume_name, local.num_suffix_starting_index) : var.extra_volume_name)
       },
       var.tags,
-      var.external_volume_tags,
+      var.extra_volume_tags,
       local.tags,
     )
   }
 
-  lifecycle {
-    // credit_specification breaks idempotency (0.12.24 - AWS 2.59.0)
-    ignore_changes = [
-      credit_specification,
-    ]
-  }
+  //  lifecycle {
+  //    // credit_specification breaks idempotency (0.12.24 - AWS 2.59.0)
+  //    ignore_changes = [
+  //      credit_specification,
+  //    ]
+  //  }
 }
 
+####
+# AutoScaling Group
+####
+
 resource "aws_autoscaling_group" "this" {
-  count = var.use_autoscaling_group && var.instance_count > 0 ? 1 : 0
+  count = var.use_autoscaling_group ? 1 : 0
 
-  name = format("%s%s", var.prefix, (var.use_num_suffix && var.num_suffix_digits > 0) ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_group_name, count.index + local.num_suffix_starting_index) : var.autoscaling_group_name)
+  name = format("%s%s", var.prefix, var.autoscaling_group_name)
 
-  desired_capacity = var.instance_count
+  desired_capacity = var.autoscaling_group_desired_capacity
   max_size         = var.autoscaling_group_max_size
   min_size         = var.autoscaling_group_min_size
 
-  health_check_grace_period = var.autoscaling_group_health_check_grace_period
+  health_check_grace_period = var.autoscaling_group_health_check_grace_period == -1 ? null : var.autoscaling_group_health_check_grace_period
   health_check_type         = var.autoscaling_group_health_check_type
-  default_cooldown          = var.autoscaling_group_default_cooldown
+  default_cooldown          = var.autoscaling_group_default_cooldown == -1 ? null : var.autoscaling_group_default_cooldown
 
   force_delete              = false
   wait_for_capacity_timeout = var.autoscaling_group_wait_for_capacity_timeout
   min_elb_capacity          = var.autoscaling_group_min_elb_capacity
   wait_for_elb_capacity     = var.autoscaling_group_wait_for_elb_capacity
 
-  vpc_zone_identifier = data.aws_subnet.subnets.*.id
+  vpc_zone_identifier = local.subnet_ids
 
   launch_template {
     id      = aws_launch_template.this.*.id[0]
@@ -239,10 +239,30 @@ resource "aws_autoscaling_group" "this" {
 }
 
 resource "aws_autoscaling_attachment" "this" {
-  count = var.use_autoscaling_group && var.instance_count > 0 ? length(var.autoscaling_group_target_group_arns) : 0
+  count = var.use_autoscaling_group ? length(var.autoscaling_group_target_group_arns) : 0
 
   autoscaling_group_name = aws_autoscaling_group.this.*.id[0]
   alb_target_group_arn   = element(var.autoscaling_group_target_group_arns, count.index)
+}
+
+resource "aws_autoscaling_schedule" "this" {
+  count = var.use_autoscaling_group ? var.autoscaling_schedule_count : 0
+
+  scheduled_action_name = local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.autoscaling_schedule_name, count.index + local.num_suffix_starting_index) : var.autoscaling_schedule_name
+  min_size              = element(var.autoscaling_schedule_min_sizes, count.index)
+  max_size              = element(var.autoscaling_schedule_max_sizes, count.index)
+  desired_capacity      = element(var.autoscaling_schedule_desired_capacities, count.index)
+  recurrence            = element(var.autoscaling_schedule_recurrences, count.index)
+  start_time            = element(var.autoscaling_schedule_start_times, count.index) != null ? element(var.autoscaling_schedule_start_times, count.index) : timeadd(timestamp(), "1m")
+  end_time              = element(var.autoscaling_schedule_end_times, count.index)
+
+  autoscaling_group_name = aws_autoscaling_group.this.*.name[0]
+
+  lifecycle {
+    ignore_changes = [
+      start_time,
+    ]
+  }
 }
 
 ####
@@ -254,12 +274,12 @@ locals {
 }
 
 resource "aws_instance" "this" {
-  count = var.use_autoscaling_group ? 0 : var.instance_count
+  count = var.use_autoscaling_group ? 0 : 1
 
   ami           = local.ami
   instance_type = var.instance_type
   user_data     = var.user_data
-  key_name      = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
+  key_name      = local.key_pair_name
   monitoring    = var.monitoring
   host_id       = var.host_id
 
@@ -268,15 +288,15 @@ resource "aws_instance" "this" {
 
   network_interface {
     device_index         = 0
-    network_interface_id = var.use_external_primary_network_interface ? element(var.ec2_external_primary_network_insterface_id, count.index) : element(aws_network_interface.this_primary.*.id, count.index)
+    network_interface_id = local.primary_eni_id
   }
 
-  iam_instance_profile = local.iam_instance_profile
+  iam_instance_profile = local.iam_instance_profile_name
 
   ebs_optimized = var.ebs_optimized
   volume_tags = merge(
     {
-      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + (count.index * var.external_volume_count) + local.num_suffix_starting_index) : var.ec2_volume_name)
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.ec2_volume_name, count.index + (count.index * var.extra_volume_count) + local.num_suffix_starting_index) : var.ec2_volume_name)
     },
     var.tags,
     var.ec2_volume_tags,
@@ -292,7 +312,7 @@ resource "aws_instance" "this" {
       iops                  = var.root_block_device_iops
       volume_size           = var.root_block_device_volume_size
       volume_type           = var.root_block_device_volume_type
-      kms_key_id            = var.volume_kms_key_create ? aws_kms_key.this[0].arn : var.volume_kms_key_arn
+      kms_key_id            = local.volume_kms_key_arn
     }
   }
 
@@ -321,7 +341,7 @@ resource "aws_instance" "this" {
 
   tags = merge(
     {
-      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index) : var.name)
+      "Name" = format("%s%s", var.prefix, var.name)
     },
     var.tags,
     var.instance_tags,
@@ -329,9 +349,6 @@ resource "aws_instance" "this" {
   )
 
   lifecycle {
-    # Due to several known issues in Terraform AWS provider related to arguments of aws_instance:
-    # (eg, https://github.com/terraform-providers/terraform-provider-aws/issues/2036)
-    # we have to ignore changes in the following arguments
     ignore_changes = [
       private_ip,
       root_block_device,
@@ -341,17 +358,18 @@ resource "aws_instance" "this" {
 }
 
 locals {
-  should_create_primary_eni = var.instance_count > 0 && var.use_autoscaling_group == false && var.use_external_primary_network_interface == false
+  should_create_primary_eni = var.use_autoscaling_group == false && var.ec2_primary_network_interface_create
+
+  primary_eni_id = local.should_create_primary_eni ? aws_network_interface.this_primary.*.id[0] : var.ec2_external_primary_network_interface_id
 }
 
 resource "aws_network_interface" "this_primary" {
-  count = local.should_create_primary_eni ? var.instance_count : 0
+  count = local.should_create_primary_eni ? 1 : 0
 
   description     = format("%s%s", var.prefix, local.use_incremental_names ? "${format("%s-%0${var.num_suffix_digits}d", var.name, count.index + local.num_suffix_starting_index)} root network interface" : "${var.name} root network interface")
-  subnet_id       = element(data.aws_subnet.subnets.*.id, count.index)
-  security_groups = element(local.security_group_ids, count.index)
+  subnet_id       = local.subnet_ids[0]
+  security_groups = local.security_group_ids
 
-  private_ip        = var.ec2_private_ips != null ? element(concat(var.ec2_private_ips, [""]), count.index) : null
   private_ips_count = var.ipv4_address_count
   private_ips       = concat(var.ec2_ipv6_addresses, var.ec2_ipv4_addresses)
 
@@ -361,9 +379,9 @@ resource "aws_network_interface" "this_primary" {
     {
       "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
-        var.ec2_network_interface_name,
+        var.primary_network_interface_name,
         count.index + (count.index * var.extra_network_interface_count) + local.num_suffix_starting_index
-      ) : var.ec2_network_interface_name)
+      ) : var.primary_network_interface_name)
     },
     var.tags,
     var.ec2_network_interface_tags,
@@ -382,24 +400,24 @@ resource "aws_network_interface" "this_primary" {
 ####
 
 locals {
-  should_create_instance_profile       = var.instance_count > 0 && var.iam_instance_profile_create
-  should_use_external_instance_profile = var.instance_count > 0 && var.iam_instance_profile_external_name != null
+  should_create_instance_profile = var.iam_instance_profile_create == true
+
+  iam_instance_profile_name = local.should_create_instance_profile ? aws_iam_instance_profile.this.*.name[0] : var.iam_instance_profile_name
 }
 
 resource "aws_iam_instance_profile" "this" {
   count = local.should_create_instance_profile ? 1 : 0
 
-  name = var.iam_instance_profile_name
+  name = var.iam_instance_profile_name != null ? format("%s%s", var.prefix, var.iam_instance_profile_name) : null
   path = var.iam_instance_profile_path
-  // “roles” is known to be deprecated over “role”
-  // However, using “role” causes idempotency issue for now (terraform 0.12.24; AWS 2.59.0)
-  roles = [aws_iam_role.this_instance_profile.*.id[0]]
+
+  role = aws_iam_role.this_instance_profile.*.id[0]
 }
 
 resource "aws_iam_role" "this_instance_profile" {
   count = local.should_create_instance_profile ? 1 : 0
 
-  name               = var.iam_instance_profile_iam_role_name
+  name               = var.iam_instance_profile_iam_role_name != null ? format("%s%s", var.prefix, var.iam_instance_profile_iam_role_name) : null
   description        = var.iam_instance_profile_iam_role_description
   path               = var.iam_instance_profile_path
   assume_role_policy = data.aws_iam_policy_document.sts_instance.*.json[0]
@@ -423,40 +441,40 @@ resource "aws_iam_role_policy_attachment" "this_instance_profile" {
 ####
 
 locals {
-  should_create_primary_eip                      = var.instance_count > 0 && var.associate_public_ip_address == true && var.use_autoscaling_group == false
-  should_create_eip_for_extra_network_interfaces = var.instance_count > 0 && var.extra_network_interface_eips_count > 0 && var.use_autoscaling_group == false
+  should_create_primary_eip                      = var.associate_public_ip_address == true && var.use_autoscaling_group == false
+  should_create_eip_for_extra_network_interfaces = var.extra_network_interface_eips_count > 0 && var.use_autoscaling_group == false
 
   network_interface_with_eip_ids = local.should_create_eip_for_extra_network_interfaces ? [
-    for i, network_interface in aws_network_interface.this :
+    for i, network_interface in aws_network_interface.this_extra :
     network_interface.id
     if element(var.extra_network_interface_eips_enabled, i % var.extra_network_interface_count) == true
   ] : []
 }
 
-resource "aws_eip" "this" {
-  count = local.should_create_primary_eip ? var.instance_count : 0
+resource "aws_eip" "this_primary" {
+  count = local.should_create_primary_eip ? 1 : 0
 
   vpc = true
 }
 
-resource "aws_eip_association" "this" {
-  count = local.should_create_primary_eip ? var.instance_count : 0
+resource "aws_eip_association" "this_primary" {
+  count = local.should_create_primary_eip ? 1 : 0
 
-  network_interface_id = element(aws_network_interface.this_primary.*.id, count.index)
-  allocation_id        = element(aws_eip.this.*.id, count.index)
+  network_interface_id = aws_network_interface.this_primary.*.id[0]
+  allocation_id        = aws_eip.this_primary.*.id[0]
 }
 
-resource "aws_eip" "extra" {
-  count = local.should_create_eip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
+resource "aws_eip" "this_extra" {
+  count = local.should_create_eip_for_extra_network_interfaces ? var.extra_network_interface_eips_count : 0
 
   vpc = true
 }
 
-resource "aws_eip_association" "extra" {
-  count = local.should_create_eip_for_extra_network_interfaces ? var.instance_count * var.extra_network_interface_eips_count : 0
+resource "aws_eip_association" "this_extra" {
+  count = local.should_create_eip_for_extra_network_interfaces ? var.extra_network_interface_eips_count : 0
 
   network_interface_id = element(local.network_interface_with_eip_ids, count.index)
-  allocation_id        = element(aws_eip.extra.*.id, count.index)
+  allocation_id        = element(aws_eip.this_extra.*.id, count.index)
 }
 
 ####
@@ -464,7 +482,9 @@ resource "aws_eip_association" "extra" {
 ####
 
 locals {
-  should_create_key_pair = var.instance_count > 0 && var.key_pair_create
+  should_create_key_pair = var.key_pair_create
+
+  key_pair_name = local.should_create_key_pair ? aws_key_pair.this.*.key_name[0] : var.key_pair_name
 }
 
 resource "aws_key_pair" "this" {
@@ -484,10 +504,12 @@ resource "aws_key_pair" "this" {
 ####
 
 locals {
-  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.external_volume_count > 0) && var.use_autoscaling_group == false && var.instance_count > 0
+  should_create_kms_key = var.volume_kms_key_create && (var.root_block_device_encrypted || var.extra_volume_count > 0)
+
+  volume_kms_key_arn = local.should_create_kms_key ? aws_kms_key.this_volume.*.arn[0] : var.volume_kms_key_arn
 }
 
-resource "aws_kms_key" "this" {
+resource "aws_kms_key" "this_volume" {
   count = local.should_create_kms_key ? 1 : 0
 
   description              = "KMS key for ${format("%s%s", var.prefix, var.name)} instance(s) volume(s)."
@@ -496,7 +518,7 @@ resource "aws_kms_key" "this" {
 
   tags = merge(
     {
-      "Name" = format("%s%s", var.prefix, var.use_num_suffix == true ? format("%s-%0${var.num_suffix_digits}d", var.volume_kms_key_name, count.index + local.num_suffix_starting_index) : var.volume_kms_key_name)
+      "Name" = format("%s%s", var.prefix, var.volume_kms_key_name)
     },
     var.tags,
     var.volume_kms_key_tags,
@@ -504,51 +526,49 @@ resource "aws_kms_key" "this" {
   )
 }
 
-resource "aws_kms_alias" "this" {
+resource "aws_kms_alias" "this_extra_volume" {
   count = local.should_create_kms_key ? 1 : 0
 
   name          = format("alias/%s%s", var.prefix, var.volume_kms_key_alias)
-  target_key_id = aws_kms_key.this[0].key_id
+  target_key_id = aws_kms_key.this_volume[0].key_id
 }
 
 ####
-# EBS
+# Extra EBS
 ####
 
 locals {
-  external_volume_use_incremental_names     = var.external_volume_count * var.instance_count > 1 || var.use_num_suffix == true
-  should_create_extra_volumes               = var.external_volume_count > 0 && var.instance_count > 0 && var.use_autoscaling_group == false
-  external_volume_num_suffix_starting_index = local.num_suffix_starting_index + var.external_volume_num_suffix_offset
+  should_create_extra_volumes = var.extra_volume_count > 0 && var.use_autoscaling_group == false
 }
 
-resource "aws_volume_attachment" "this" {
-  count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
+resource "aws_volume_attachment" "this_extra" {
+  count = local.should_create_extra_volumes ? var.extra_volume_count : 0
 
-  device_name = element(var.external_volume_device_names, count.index % var.external_volume_count)
-  volume_id   = element(aws_ebs_volume.this.*.id, count.index)
-  instance_id = element(aws_instance.this.*.id, floor(count.index / var.external_volume_count) % var.instance_count)
+  device_name = element(var.extra_volume_device_names, count.index)
+  volume_id   = element(aws_ebs_volume.this_extra.*.id, count.index)
+  instance_id = aws_instance.this.*.id[0]
 }
 
-resource "aws_ebs_volume" "this" {
-  count = local.should_create_extra_volumes ? var.external_volume_count * var.instance_count : 0
+resource "aws_ebs_volume" "this_extra" {
+  count = local.should_create_extra_volumes ? var.extra_volume_count : 0
 
-  availability_zone = element(data.aws_subnet.subnets.*.availability_zone, (floor(count.index / var.external_volume_count) % var.instance_count) % local.used_subnet_count)
-  size              = element(var.external_volume_sizes, count.index % var.external_volume_count)
-  type              = element(var.external_volume_types, count.index % var.external_volume_count)
+  availability_zone = local.availability_zones[0]
+  size              = element(var.extra_volume_sizes, count.index)
+  type              = element(var.extra_volume_types, count.index)
 
   encrypted  = true
-  kms_key_id = var.volume_kms_key_create ? element(aws_kms_key.this.*.arn, 0) : var.volume_kms_key_arn
+  kms_key_id = local.volume_kms_key_arn
 
   tags = merge(
     {
-      "Name" = format("%s%s", var.prefix, local.external_volume_use_incremental_names ? format(
+      "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
-        var.external_volume_name,
-        count.index + (floor(count.index / var.external_volume_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
-      ) : var.external_volume_name)
+        var.extra_volume_name,
+        count.index + local.num_suffix_starting_index + 1
+      ) : var.extra_volume_name)
     },
     var.tags,
-    var.external_volume_tags,
+    var.extra_volume_tags,
     local.tags,
   )
 }
@@ -558,26 +578,26 @@ resource "aws_ebs_volume" "this" {
 ####
 
 locals {
-  should_create_extra_network_interface             = var.extra_network_interface_count > 0 && var.use_autoscaling_group == false && var.instance_count > 0
+  should_create_extra_network_interface             = var.extra_network_interface_count > 0 && var.use_autoscaling_group == false
   extra_network_interface_security_group_ids        = var.extra_network_interface_security_group_ids == null ? local.security_group_ids : var.extra_network_interface_security_group_ids
   extra_network_interface_num_suffix_starting_index = local.num_suffix_starting_index + var.extra_network_interface_num_suffix_offset
 }
 
-resource "aws_network_interface" "this" {
-  count       = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
-  description = "Extra network interface"
+resource "aws_network_interface" "this_extra" {
+  count       = local.should_create_extra_network_interface ? var.extra_network_interface_count : 0
+  description = "Extra network interface ${count.index} for ${var.name} instance."
 
-  subnet_id         = element(data.aws_subnet.subnets.*.id, (floor(count.index / var.extra_network_interface_count) % var.instance_count) % local.used_subnet_count)
-  private_ips       = element(var.extra_network_interface_private_ips, count.index % var.extra_network_interface_count)
-  private_ips_count = element(var.extra_network_interface_private_ips_counts, count.index % var.extra_network_interface_count)
-  source_dest_check = element(var.extra_network_interface_source_dest_checks, count.index % var.extra_network_interface_count)
+  subnet_id         = local.subnet_ids[0]
+  private_ips       = element(var.extra_network_interface_private_ips, count.index)
+  private_ips_count = element(var.extra_network_interface_private_ips_counts, count.index)
+  source_dest_check = element(var.extra_network_interface_source_dest_checks, count.index)
 
   tags = merge(
     {
       "Name" = format("%s%s", var.prefix, local.use_incremental_names ? format(
         "%s-%0${var.num_suffix_digits}d",
         var.extra_network_interface_name,
-        count.index + (floor(count.index / var.extra_network_interface_count) % var.instance_count) + local.external_volume_num_suffix_starting_index
+        count.index + local.extra_network_interface_num_suffix_starting_index
       ) : var.extra_network_interface_name)
     },
     var.tags,
@@ -586,20 +606,17 @@ resource "aws_network_interface" "this" {
   )
 }
 
-resource "aws_network_interface_attachment" "this" {
-  count = local.should_create_extra_network_interface ? var.extra_network_interface_count * var.instance_count : 0
+resource "aws_network_interface_attachment" "this_extra" {
+  count = local.should_create_extra_network_interface ? var.extra_network_interface_count : 0
 
-  instance_id          = element(aws_instance.this.*.id, floor(count.index / var.extra_network_interface_count) % var.instance_count)
-  network_interface_id = element(aws_network_interface.this.*.id, count.index)
-  device_index         = (count.index % var.extra_network_interface_count) + 1
+  instance_id          = aws_instance.this.*.id[0]
+  network_interface_id = aws_network_interface.this_extra.*.id[count.index]
+  device_index         = count.index + 1
 }
 
-resource "aws_network_interface_sg_attachment" "this" {
-  count = local.should_create_extra_network_interface ? var.extra_network_interface_security_group_count * var.instance_count * var.extra_network_interface_count : 0
+resource "aws_network_interface_sg_attachment" "this_extra" {
+  count = local.should_create_extra_network_interface ? var.extra_network_interface_security_group_count * var.extra_network_interface_count : 0
 
-  security_group_id = element(
-    element(local.extra_network_interface_security_group_ids, floor(count.index / var.instance_count) % var.instance_count),
-    count.index % var.extra_network_interface_security_group_count
-  )
-  network_interface_id = element(aws_network_interface.this.*.id, count.index % (var.instance_count * var.external_volume_count))
+  security_group_id    = element(local.extra_network_interface_security_group_ids, count.index)
+  network_interface_id = element(aws_network_interface.this_extra.*.id, floor(count.index / var.extra_network_interface_security_group_count) % var.extra_network_interface_count)
 }

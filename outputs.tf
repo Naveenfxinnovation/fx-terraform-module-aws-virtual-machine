@@ -46,32 +46,32 @@ output "autoscaling_group_arn" {
 # EC2
 ####
 
-output "ec2_arns" {
-  value = compact(concat(aws_instance.this.*.arn, [""]))
+output "ec2_arn" {
+  value = concat(aws_instance.this.*.arn, [""])[0]
 }
 
-output "ec2_ids" {
-  value = compact(concat(aws_instance.this.*.id, [""]))
+output "ec2_id" {
+  value = concat(aws_instance.this.*.id, [""])[0]
 }
 
-output "ec2_private_ips" {
-  value = compact(concat(aws_instance.this.*.private_ip, [""]))
+output "ec2_private_ip" {
+  value = concat(aws_instance.this.*.private_ip, [""])[0]
 }
 
-output "ec2_primary_network_interface_ids" {
-  value = compact(concat(aws_instance.this.*.primary_network_interface_id, [""]))
+output "ec2_primary_network_interface_id" {
+  value = concat(aws_instance.this.*.primary_network_interface_id, [""])[0]
 }
 
 output "ec2_private_dns" {
-  value = compact(concat(aws_instance.this.*.private_dns, [""]))
+  value = concat(aws_instance.this.*.private_dns, [""])[0]
 }
 
 output "ec2_public_dns" {
-  value = compact(concat(aws_instance.this.*.public_dns, [""]))
+  value = concat(aws_instance.this.*.public_dns, [""])[0]
 }
 
-output "ec2_public_ips" {
-  value = compact(concat(aws_instance.this.*.public_ip, [""]))
+output "ec2_public_ip" {
+  value = concat(aws_instance.this.*.public_ip, [""])[0]
 }
 
 ####
@@ -79,7 +79,7 @@ output "ec2_public_ips" {
 ####
 
 output "kms_key_id" {
-  value = concat([var.volume_kms_key_arn], aws_kms_key.this.*.arn, [""])[0]
+  value = concat([var.volume_kms_key_arn], aws_kms_key.this_volume.*.arn, [""])[0]
 }
 
 ####
@@ -131,57 +131,80 @@ output "key_pair_fingerprint" {
 ####
 
 output "eip_ids" {
-  value = aws_eip.this.*.id
+  value = {
+    primary = aws_eip.this_primary.*.id
+    extra   = aws_eip.this_extra.*.id
+  }
 }
 
 output "eip_private_ips" {
-  value = aws_eip.this.*.private_ip
+  value = {
+    primary = aws_eip.this_primary.*.private_ip
+    extra   = aws_eip.this_extra.*.private_ip
+  }
 }
 
 output "eip_private_dns" {
-  value = aws_eip.this.*.private_dns
+  value = {
+    primary = aws_eip.this_primary.*.private_dns
+    extra   = aws_eip.this_extra.*.private_dns
+  }
 }
 
 output "eip_public_ips" {
-  value = aws_eip.this.*.public_ip
+  value = {
+    primary = aws_eip.this_primary.*.public_ip
+    extra   = aws_eip.this_extra.*.public_ip
+  }
 }
 
 output "eip_public_dns" {
-  value = aws_eip.this.*.public_dns
+  value = {
+    primary = aws_eip.this_primary.*.public_dns
+    extra   = aws_eip.this_extra.*.public_dns
+  }
 }
 
 output "eip_network_interfaces" {
-  value = aws_eip.this.*.network_interface
+  value = {
+    primary = aws_eip.this_primary.*.network_interface
+    extra   = aws_eip.this_extra.*.network_interface
+  }
 }
 
 ####
 # EBS
 ####
 
-output "external_volume_ids" {
-  value = local.should_create_extra_volumes && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_ebs_volume.this.*.id, [""])[0] != "" ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.id, [""])), var.external_volume_count)) : {}
+output "extra_volume_ids" {
+  value = aws_ebs_volume.this_extra.*.id
 }
 
-output "external_volume_arns" {
-  value = local.should_create_extra_volumes && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_ebs_volume.this.*.id, [""])[0] != "" ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_ebs_volume.this.*.arn, [""])), var.external_volume_count)) : {}
+output "extra_volume_arns" {
+  value = aws_ebs_volume.this_extra.*.arn
 }
 
 ####
 # Network Interfaces
 ####
 
-output "extra_network_interface_ids" {
-  value = local.should_create_extra_network_interface && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.id, [""])), var.extra_network_interface_count)) : {}
+output "network_interface_ids" {
+  value = {
+    primary = aws_network_interface.this_primary.*.id
+    extra   = aws_network_interface.this_extra.*.id
+  }
 }
 
-output "extra_network_interface_mac_addresses" {
-  value = local.should_create_extra_network_interface && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(compact(concat(aws_network_interface.this.*.mac_address, [""])), var.extra_network_interface_count)) : {}
+output "network_interface_mac_addresses" {
+  value = {
+    primary = aws_network_interface.this_primary.*.mac_address
+    extra   = aws_network_interface.this_extra.*.mac_address
+  }
 }
 
-output "extra_network_interface_private_ips" {
-  value = local.should_create_extra_network_interface && concat(aws_instance.this.*.id, [""])[0] != "" && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(aws_network_interface.this.*.private_ips, var.extra_network_interface_count)) : {}
-}
-
-output "extra_network_interface_public_ips" {
-  value = local.should_create_extra_network_interface && var.extra_network_interface_eips_count > 0 && length(aws_instance.this.*.id) > 0 && concat(aws_network_interface.this.*.id, [""]) != "" ? zipmap(aws_instance.this.*.id, chunklist(aws_eip.extra.*.public_ip, var.extra_network_interface_eips_count)) : {}
+output "network_interface_private_ips" {
+  value = {
+    primary = aws_network_interface.this_primary.*.private_ips
+    extra   = aws_network_interface.this_extra.*.private_ips
+  }
 }
