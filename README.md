@@ -2,29 +2,32 @@
 
 This module have the following features, they are all optional:
 
-- X EC2 instances or one AutoScaling Group with X capacity.
-- X extra volumes attached to each instances, encrypted by default, with optional KMS key (only for EC2).
-- X extra network interfaces attached to each instances (only for EC2).
-- A Key Pair shared with all instances.
-- Elastic IPS for each instances and/or for specific extra network interfaces (only for EC2).
+- EC2 instance or one AutoScaling Group with X capacity.
+- X extra volumes, encrypted by default, with optional KMS key.
+- X extra network interfaces attached to the EC2 instance.
+- A Key Pair.
+- An Instance Profile.
+- Elastic IPS for the instance and/or for specific extra network interfaces.
 
-This module creates the same kind of instances.
-They share the same features.
-To create different instances, calls this module multiple times.
-
-## Notes
-
-To install pre-commit hooks: `pre-commit install`.
-It will automatically `validate`, `fmt` and update *README.md* for you.
-
-The variable `root_block_device_delete_on_termination` set to false is not tested because it will create resources that will persist a terraform build. Therefore untill we find a more permanent solution for this we do NOT test this feature.
+To create multiple instances, use `count`.
 
 ## Limitations
 
 - AWS does not handle external volumes with AutoScaling Groups.
 Because of this, if an AutoScaling Group with one or more EBS volume is destroy, the EBS volumes would be preserved, resulting in phantom volumes (unseen by Terraform).
 That’s why every extra volumes within an AutoScaling group will always be destroyed by using this module (delete_on_termination = true).
-- Same kind of resources will share the same tags. It’s not possible to assign tag to a specific instance, as specific volume or a specific network interface.
+- Same kind of resources will share the same tags. It’s not possible to assign tag to a specific EIP, as specific volume or a specific network interface.
+- Since Terraform 0.13 and modules `count`, this module will not automatically balance instances in multiple subnets, except when using AutoScaling Group.
+Also, the SSH Key Pair, KMS key and Instance Profile are not managed as before: if you use `count`, these resources will be created multiple times.
+See examples to learn how to reuse them.
+
+## Notes
+
+To install pre-commit hooks: `pre-commit install`.
+It will automatically `validate`, `fmt` and update *README.md* for you.
+
+The variable `root_block_device_delete_on_termination` set to false is not tested because it will create resources that will persist a terraform build.
+Therefore until we find a more permanent solution for this we do NOT test this feature.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
