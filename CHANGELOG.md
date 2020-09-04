@@ -1,3 +1,27 @@
+11.0.0
+=====
+
+* feat (BREAKING): upgrades to support Terraform 0.13 properly
+* feat (BREAKING): adds validation to all the variables
+* refactor (BREAKING): removes convoluted loops to handle module count
+* refactor (BREAKING): renames `ec2_external_primary_network_insterface_id` to `var.ec2_external_primary_network_interface_id`
+* refactor (BREAKING): removes `var.use_external_primary_network_interface`
+* refactor (BREAKING): changes multiple variables types from lists to simple types
+* refactor (BREAKING): rename `external*volumes` to `extra*volumes`
+* refactor (BREAKING): rename `this` extra NICs resources to `this_extra`
+* refactor (BREAKING): remove `iam_instance_profile_external_name` to use `iam_instance_profile_name` directly
+* refactor (BREAKING): all EC2 outputs are now singular instead of plural
+* refactor (BREAKING): `var.use_num_suffix` is now `true` by default
+* refactor (BREAKING): transform EIP outputs in objects with key primary and extra
+* refactor (BREAKING): rename and change in objects `extra_network_interface_XXX` to `network_interface_XXX` containing both primary and extra
+* refactor (BREAKING): removes `extra_network_interface_public_ips` output
+* refactor (BREAKING): most names are now not incremental anymore, except extra volumes and NICs
+* doc: changes most variables descriptions to be more accurate and give more insight
+* doc: updates README: update what the module does and improves `limitations` section
+* maintenance: pins pre-commit dependencies to latest versions
+* fix: fix the ability to inject external primary network interface for EC2
+* fix: also use `var.prefix` for IAM Role and Instance Profile
+
 10.0.0
 =====
 
@@ -79,7 +103,7 @@
 
 * fix: output KMS key ID when it is created by the module
 * fix: makes `ephemeral_block_devices` a list type
-* test: checks idempotency when using `ec2_volume_tags` and `external_volume_tags`
+* test: checks idempotency when using `ec2_volume_tags` and `extra_volume_tags`
 
 6.0.2
 =====
