@@ -1,15 +1,31 @@
 #####
-# with-nlb-and-external-volumes
+# default
 #####
 
-output "with_nlb_and_external_volumes" {
-  value = module.with_lb_and_external_volumes
+output "default" {
+  value = module.default
 }
 
 #####
-# no_target_groups_and_no_external_volumes
+# empty
 #####
 
-output "no_target_groups_and_no_external_volumes" {
-  value = module.no_target_groups_and_no_external_volumes
+output "empty" {
+  value = module.empty
+}
+
+#####
+# options
+#####
+
+output "options" {
+  value = module.options
+}
+
+#####
+# externals
+#####
+
+output "externals" {
+  value = module.externals
 }

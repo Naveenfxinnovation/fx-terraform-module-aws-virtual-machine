@@ -1,10 +1,8 @@
-# AutoScaling Group example
+# Standard EC2 with another data volume
 
-Configuration in this directory contains multiple examples of AutoScaling Group with various options. See the code for more details.
+Configuration in this directory creates a standard EC2 with an additional EBS volume.
 
 ## Usage
-
-To run this example you need to execute:
 
 ```bash
 $ terraform init

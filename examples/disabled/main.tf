@@ -1,5 +1,5 @@
-module "example" {
+module "disable" {
   source = "../../"
 
-  instance_count = 0
+  count = 0
 }
