@@ -1,3 +1,3 @@
-//fxTerraformWithUsernamePassword(
-//  testEnvironmentCredentialId: 'itoa-application-awscollectors-awscred',
-//)
+fxTerraformWithUsernamePassword(
+  testEnvironmentCredentialId: 'itoa-application-awscollectors-awscred',
+)
