@@ -229,6 +229,10 @@ resource "aws_autoscaling_group" "this" {
   timeouts {
     delete = "15m"
   }
+
+  lifecycle {
+    ignore_changes = [target_group_arns]
+  }
 }
 
 resource "aws_autoscaling_attachment" "this" {
