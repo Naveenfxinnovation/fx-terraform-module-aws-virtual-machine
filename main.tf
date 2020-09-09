@@ -11,7 +11,7 @@ locals {
 
   security_group_ids = local.should_fetch_default_security_group ? data.aws_security_group.default.*.id : var.vpc_security_group_ids
 
-  ami = var.ami != null ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
+  ami = local.should_fetch_default_ami ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
 
   tags = {
     managed-by = "Terraform"
@@ -167,13 +167,6 @@ resource "aws_launch_template" "this" {
       local.tags,
     )
   }
-
-  //  lifecycle {
-  //    // credit_specification breaks idempotency (0.12.24 - AWS 2.59.0)
-  //    ignore_changes = [
-  //      credit_specification,
-  //    ]
-  //  }
 }
 
 ####

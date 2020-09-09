@@ -1,6 +1,7 @@
-# Standard EC2 with another data volume
+# EC2 examples
 
-Configuration in this directory creates a standard EC2 with an additional EBS volume.
+Configuration in this directory shows multiple examples of usage of the module using EC2.
+It show multiple options, extra network interfaces, extra volumes, EIPs, external injection of resources, etc.
 
 ## Usage
 

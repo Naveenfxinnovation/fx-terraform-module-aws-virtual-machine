@@ -3,6 +3,7 @@
 
 * feat (BREAKING): upgrades to support Terraform 0.13 properly
 * feat (BREAKING): adds validation to all the variables
+* feat: adds `aws_autoscaling_schedule` to add ASG schedules
 * refactor (BREAKING): removes convoluted loops to handle module count
 * refactor (BREAKING): renames `ec2_external_primary_network_insterface_id` to `var.ec2_external_primary_network_interface_id`
 * refactor (BREAKING): removes `var.use_external_primary_network_interface`
@@ -103,7 +104,7 @@
 
 * fix: output KMS key ID when it is created by the module
 * fix: makes `ephemeral_block_devices` a list type
-* test: checks idempotency when using `ec2_volume_tags` and `extra_volume_tags`
+* test: checks idempotency when using `ec2_volume_tags` and `external_volume_tags`
 
 6.0.2
 =====

@@ -80,7 +80,7 @@ module "default" {
 
   use_autoscaling_group = true
 
-  prefix = format("%s%s", random_string.this.result, "tftstdflt")
+  prefix = format("%s-%s-", random_string.this.result, "dflt")
 }
 
 #####
@@ -94,7 +94,7 @@ module "empty" {
 
   use_autoscaling_group = true
 
-  prefix = format("%s%s", random_string.this.result, "tftstempt")
+  prefix = format("%s-%s-", random_string.this.result, "empt")
 
   autoscaling_group_min_size = 0
 }
@@ -121,7 +121,7 @@ module "options" {
 
   count = 2
 
-  prefix = random_string.this.result
+  prefix = format("%s-%s-", random_string.this.result, "opt")
 
   use_autoscaling_group = true
   name                  = "tftest-asg"
@@ -161,8 +161,8 @@ module "options" {
   }
 
   key_pair_create = count.index == 0 ? true : false
-  // This is because of prefix. Real world usage shouldn't be that complex
-  key_pair_name       = count.index == 0 ? "tftest" : format("%s%s", random_string.this.result, "tftest")
+  // This is because of prefix. Real world usage shouldn't be that complex: "tftest" would be sufficient.
+  key_pair_name       = count.index == 0 ? "tftest" : format("%s-%s-%s", random_string.this.result, "opt", "tftest")
   key_pair_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD3F6tyPEFEzV0LX3X8BsXdMsQz1x2cEikKDEY0aIj41qgxMCP/iteneqXSIFZBp5vizPvaoIR3Um9xK7PGoW8giupGn+EPuxIA4cDM4vzOqOkiMPhz5XK0whEjkVzTo4+S0puvDZuwIsdiW9mxhJc7tgBNL0cYlWSYVkz4G/fslNfRPW5mYAM49f4fhtxPb5ok4Q2Lg9dPKVHO/Bgeu5woMc7RY0p1ej6D4CKFE6lymSDJpW0YHX/wqE9+cfEauh7xZcG0q9t2ta6F6fmX0agvpFyZo8aFbXeUBr7osSCJNgvavWbM/06niWrOvYX2xwWdhXmXSrbX8ZbabVohAK41 email@example.com"
 
   extra_volume_count        = 2
@@ -179,7 +179,7 @@ module "options" {
   autoscaling_schedule_count              = 2
   autoscaling_schedule_recurrences        = ["0 1 * * *", "0 8 * * *"]
   autoscaling_schedule_desired_capacities = [0, 1]
-  autoscaling_schedule_start_times        = [timeadd(timestamp(), "1m"), timeadd(timestamp(), "2m")]
+  autoscaling_schedule_start_times        = [timeadd(timestamp(), "10m"), timeadd(timestamp(), "15m")]
   autoscaling_schedule_max_sizes          = [0, 1]
 }
 
@@ -197,7 +197,7 @@ module "options" {
 module "externals" {
   source = "../../"
 
-  prefix = random_string.this.result
+  prefix = format("%s-%s-", random_string.this.result, "ext")
 
   use_autoscaling_group = true
 
@@ -209,7 +209,7 @@ module "externals" {
 
   launch_template_name = "tftest2"
 
-  autoscaling_group_max_size          = 2
+  autoscaling_group_max_size = 2
   autoscaling_group_min_size          = 0
   autoscaling_group_name              = "tftest-asg-externals"
   autoscaling_group_health_check_type = "EC2"
