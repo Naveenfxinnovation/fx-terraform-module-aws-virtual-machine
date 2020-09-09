@@ -11,7 +11,7 @@ locals {
 
   security_group_ids = local.should_fetch_default_security_group ? data.aws_security_group.default.*.id : var.vpc_security_group_ids
 
-  ami = local.should_fetch_default_ami ? var.ami : concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0]
+  ami = local.should_fetch_default_ami ? concat(data.aws_ssm_parameter.default_ami.*.value, [""])[0] : var.ami
 
   tags = {
     managed-by = "Terraform"
