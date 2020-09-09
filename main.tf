@@ -388,6 +388,7 @@ resource "aws_network_interface" "this_primary" {
   lifecycle {
     ignore_changes = [
       private_ips,
+      private_ips_count
     ]
   }
 }
