@@ -42,7 +42,7 @@ variable "num_suffix_offset" {
 }
 
 variable "prefix" {
-  description = "Prefix to be added to with all resource's names of the module except `iam_instance_profile_name` and `iam_instance_profile_iam_role_name`. Prefix is mainly used for tests and should remain empty in normal circumstances."
+  description = "Prefix to be added to with all resource's names of the module. Prefix is mainly used for tests and should remain empty in normal circumstances."
   default     = ""
 
   validation {
