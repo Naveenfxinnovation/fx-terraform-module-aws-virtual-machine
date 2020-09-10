@@ -56,7 +56,7 @@ variable "prefix" {
 ####
 
 variable "ami" {
-  description = "AMI to use for the instance (or the launch template). Default: latest AWS linux AMI - CAREFUL: when using the default, the AMI ID could get updated, thus triggering a destroy/recreate of your instances. Besides testing, it's recommended to set a value."
+  description = "AMI to use for the EC2 instance (or the launch template). Default: latest AWS linux AMI - CAREFUL: when using the default, the AMI ID could get updated, thus triggering a destroy/recreate of your instances. Besides testing, it's recommended to set a value."
   default     = null
 
   validation {
@@ -66,7 +66,7 @@ variable "ami" {
 }
 
 variable "associate_public_ip_address" {
-  description = "Whether or not to associate a public ip address for the instance (or launch template) main network interface."
+  description = "Whether or not to associate a public ip address for the EC2 instance (or launch template) main network interface."
   type        = bool
   default     = false
 }
@@ -113,7 +113,7 @@ variable "disable_api_termination" {
 
 variable "ephemeral_block_devices" {
   description = <<-DOCUMENTATION
-Customize Ephemeral (also known as Instance Store) volumes on the instance (or launch template):
+Customize Ephemeral (also known as Instance Store) volumes on the EC2 instance (or launch template):
   * device_name (required, string): The name of the block device to mount on the instance.
   * virtual_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").
   * no_device (optional, string): Suppresses the specified device included in the AMI's block device mapping.
@@ -134,7 +134,7 @@ variable "host_id" {
 }
 
 variable "instance_initiated_shutdown_behavior" {
-  description = "Shutdown behavior for the instance (or launch template). Amazon defaults this to `stop` for EBS-backed instances and `terminate` for instance-store instances. Cannot be set on instance-store instances."
+  description = "Shutdown behavior for the EC2 instance (or launch template). Amazon defaults this to `stop` for EBS-backed instances and `terminate` for instance-store instances. Cannot be set on instance-store instances."
   type        = string
   default     = null
 
@@ -160,7 +160,7 @@ variable "instance_type" {
 }
 
 variable "ipv4_address_count" {
-  description = "A number of IPv4 addresses to associate with the primary network interface of the instance (or launch template). The total number of private IPs will be 1 + `var.ipv4_address_count`, as a primary private IP will be assigned to an ENI by default."
+  description = "A number of IPv4 addresses to associate with the primary network interface of the EC2 instance (or launch template). The total number of private IPs will be 1 + `var.ipv4_address_count`, as a primary private IP will be assigned to an ENI by default."
   type        = number
   default     = 0
 
@@ -177,12 +177,12 @@ variable "monitoring" {
 }
 
 variable "name" {
-  description = "Name of the instance(s) themselves (tag:Name) whether or not AutoScaling group is used."
+  description = "Name (tag:Name) of the instance(s) themselves, whether or not AutoScaling group is used."
   default     = "ec2"
 }
 
 variable "placement_group" {
-  description = "ID of the Placement Group to start the instance (or launch template) in."
+  description = "ID of the Placement Group to start the EC2 instance (or launch template) in."
   type        = string
   default     = null
 
@@ -193,12 +193,12 @@ variable "placement_group" {
 }
 
 variable "primary_network_interface_name" {
-  description = "Name (tag:Name) of the primary network interface to be attached to the instance (or launch template)."
+  description = "Name (tag:Name) of the primary network interface to be attached to the EC2 instance (or launch template)."
   default     = "nic"
 }
 
 variable "root_block_device_delete_on_termination" {
-  description = "Whether or not to delete the root block device on termination. **It's is strongly discouraged** to set this to `false`: only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs.**"
+  description = "Whether or not to delete the root block device on termination. **It's is strongly discouraged** to set this to `false`: only change this value if you have no other choice as this will leave a volume that will not be managed by terraform (even if the tag says it does) and you may end up building up costs."
   type        = bool
   default     = true
 }
@@ -248,13 +248,13 @@ variable "root_block_device_iops" {
 }
 
 variable "root_block_device_encrypted" {
-  description = "Customize details about the root block device of the instance (or launch template) root volume: enables EBS encryption on the volume. Cannot be used with snapshot_id. Must be configured to perform drift detection."
+  description = "Customize details about the root block device of the EC2 instance (or launch template) root volume: enables EBS encryption on the volume. Cannot be used with snapshot_id. Must be configured to perform drift detection."
   type        = bool
   default     = true
 }
 
 variable "tenancy" {
-  description = "The tenancy of the instance (if the instance or launch template will be running in a VPC). An instance with a tenancy of `dedicated` runs on single-tenant hardware. The `host` tenancy is not supported for the import-instance command."
+  description = "The tenancy of the EC2 instance (if the instance or launch template will be running in a VPC). An instance with a tenancy of `dedicated` runs on single-tenant hardware. The `host` tenancy is not supported for the import-instance command."
   default     = null
 
   validation {
@@ -264,13 +264,13 @@ variable "tenancy" {
 }
 
 variable "user_data" {
-  description = "The user data to provide when launching the instance (or launch template)."
+  description = "The user data to provide when launching the EC2 instance (or launch template)."
   type        = string
   default     = null
 }
 
 variable "vpc_security_group_ids" {
-  description = "List of security group IDs to associate with the main ENI of the instance (or launch template). If not defined, default the VPC security group will be used."
+  description = "List of security group IDs to associate with the main ENI of the EC2 instance (or launch template). If not defined, default the VPC security group will be used."
   type        = list(string)
   default     = null
 
@@ -326,7 +326,7 @@ variable "autoscaling_group_default_cooldown" {
 }
 
 variable "autoscaling_group_enabled_metrics" {
-  description = "A list of metrics to collect. The allowed values are GroupDesiredCapacity, GroupInServiceCapacity, GroupPendingCapacity, GroupMinSize, GroupMaxSize, GroupInServiceInstances, GroupPendingInstances, GroupStandbyInstances, GroupStandbyCapacity, GroupTerminatingCapacity, GroupTerminatingInstances, GroupTotalCapacity, GroupTotalInstances."
+  description = "A list of metrics to collect. The allowed values are `GroupDesiredCapacity`, `GroupInServiceCapacity`, `GroupPendingCapacity`, `GroupMinSize`, `GroupMaxSize`, `GroupInServiceInstances`, `GroupPendingInstances`, `GroupStandbyInstances`, `GroupStandbyCapacity`, `GroupTerminatingCapacity`, `GroupTerminatingInstances`, `GroupTotalCapacity` and `GroupTotalInstances`."
   type        = set(string)
   default     = []
 
@@ -370,7 +370,7 @@ variable "autoscaling_group_desired_capacity" {
 }
 
 variable "autoscaling_group_max_instance_lifetime" {
-  description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to 0 or between 604800 and 31536000 seconds."
+  description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to `0` or between `604800` and `31536000` seconds."
   type        = number
   default     = 0
 
@@ -687,7 +687,7 @@ variable "ec2_network_interface_tags" {
 ####
 
 variable "volume_kms_key_alias" {
-  description = "Alias of the KMS key used to encrypt the root and extra volumes of the instance (or launch template). Do not prefix this value with `alias/` nor with a `/`."
+  description = "Alias of the KMS key used to encrypt the root and extra volumes of the EC2 instance (or launch template). Do not prefix this value with `alias/` nor with a `/`."
   type        = string
   default     = "default/ec2"
 
@@ -726,7 +726,7 @@ variable "volume_kms_key_customer_master_key_spec" {
 }
 
 variable "volume_kms_key_name" {
-  description = "Name (tag:Name) for the KMS key to be used for root and extra volumes of the instance (or launch template)."
+  description = "Name (tag:Name) for the KMS key to be used for root and extra volumes of the EC2 instance (or launch template)."
   type        = string
   default     = "kms-for-vol"
 
@@ -737,7 +737,7 @@ variable "volume_kms_key_name" {
 }
 
 variable "volume_kms_key_policy" {
-  description = "A valid policy JSON document for the KMS key to be used for root and extra volumes of the instance (or launch template). This document can give or restrict accesses for the key."
+  description = "A valid policy JSON document for the KMS key to be used for root and extra volumes of the EC2 instance (or launch template). This document can give or restrict accesses for the key."
   type        = string
   default     = null
 
@@ -794,13 +794,13 @@ variable "key_pair_tags" {
 ####
 
 variable "iam_instance_profile_create" {
-  description = "Whether or not to create an Instance Profile (with its IAM Role) for the instance (or launch template). If `false`, you can use `var.iam_instance_profile_name` to use an external IAM Instance Profile."
+  description = "Whether or not to create an Instance Profile (with its IAM Role) for the EC2 instance (or launch template). If `false`, you can use `var.iam_instance_profile_name` to use an external IAM Instance Profile."
   type        = bool
   default     = false
 }
 
 variable "iam_instance_profile_name" {
-  description = "The IAM profile's name for the instance (or launch template). If `var.iam_instance_profile_create` is `true` and this is null, Terraform will assign a random, unique name. If `var.iam_instance_profile_create` is `false` this value should be the name of an external IAM Instance Profile (keep it `null` to disable Instance Profile altogether)."
+  description = "The IAM profile's name for the EC2 instance (or launch template). If `var.iam_instance_profile_create` is `true` and this is null, Terraform will assign a random, unique name. If `var.iam_instance_profile_create` is `false` this value should be the name of an external IAM Instance Profile (keep it `null` to disable Instance Profile altogether)."
   type        = string
   default     = null
 
@@ -811,7 +811,7 @@ variable "iam_instance_profile_name" {
 }
 
 variable "iam_instance_profile_path" {
-  description = "Path in which to create the Instance Profile for the instance (or launch template). Instance Profile IAM Role will share the same path. Ignored if `var.iam_instance_profile_create` is `false`."
+  description = "Path in which to create the Instance Profile for the EC2 instance (or launch template). Instance Profile IAM Role will share the same path. Ignored if `var.iam_instance_profile_create` is `false`."
   default     = null
 
   validation {
@@ -900,7 +900,7 @@ variable "extra_network_interface_eips_enabled" {
 ####
 
 variable "extra_volume_count" {
-  description = "Number of extra volumes to create for the instance (or the launch template)."
+  description = "Number of extra volumes to create for the EC2 instance (or the launch template)."
   default     = 0
 
   validation {
@@ -910,7 +910,7 @@ variable "extra_volume_count" {
 }
 
 variable "extra_volume_device_names" {
-  description = "Device names for the extra volumes to attached to the instance (or the launch template)."
+  description = "Device names for the extra volumes to attached to the EC2 instance (or the launch template)."
   type        = list(string)
   default     = ["/dev/xvdf1"]
 
@@ -932,7 +932,7 @@ variable "extra_volume_name" {
 }
 
 variable "extra_volume_sizes" {
-  description = "Size of the extra volumes for the instance (or launch template)."
+  description = "Size of the extra volumes for the EC2 instance (or launch template)."
   type        = list(number)
   default     = [1]
   validation {
@@ -947,7 +947,7 @@ variable "extra_volume_tags" {
 }
 
 variable "extra_volume_types" {
-  description = "The volume types of extra volumes to attach to the instance (or launch template). Can be `standard`, `gp2`, `io1`, `sc1` or `st1` (Default: `standard`)."
+  description = "The volume types of extra volumes to attach to the EC2 instance (or launch template). Can be `standard`, `gp2`, `io1`, `sc1` or `st1` (Default: `standard`)."
   type        = list(string)
   default     = ["gp2"]
 
