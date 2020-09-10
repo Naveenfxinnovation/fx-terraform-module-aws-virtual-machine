@@ -173,9 +173,6 @@ Therefore until we find a more permanent solution for this we do NOT test this f
 | ec2\_public\_dns | n/a |
 | ec2\_public\_ip | n/a |
 | eip\_ids | n/a |
-| eip\_network\_interfaces | n/a |
-| eip\_private\_dns | n/a |
-| eip\_private\_ips | n/a |
 | eip\_public\_dns | n/a |
 | eip\_public\_ips | n/a |
 | extra\_volume\_arns | n/a |
