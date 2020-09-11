@@ -173,6 +173,7 @@ Therefore until we find a more permanent solution for this we do NOT test this f
 | ec2\_public\_dns | n/a |
 | ec2\_public\_ip | n/a |
 | eip\_ids | n/a |
+| eip\_network\_interface\_ids | n/a |
 | eip\_public\_dns | n/a |
 | eip\_public\_ips | n/a |
 | extra\_volume\_arns | n/a |
@@ -191,8 +192,10 @@ Therefore until we find a more permanent solution for this we do NOT test this f
 | launch\_template\_default\_version | n/a |
 | launch\_template\_id | n/a |
 | launch\_template\_latest\_version | n/a |
+| network\_interface\_eips | n/a |
 | network\_interface\_ids | n/a |
 | network\_interface\_mac\_addresses | n/a |
+| network\_interface\_private\_dns\_names | n/a |
 | network\_interface\_private\_ips | n/a |
 | subnet\_ids | n/a |
 

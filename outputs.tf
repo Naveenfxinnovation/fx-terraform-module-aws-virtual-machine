@@ -137,24 +137,6 @@ output "eip_ids" {
   }
 }
 
-// Commented Until this is fixed: https://github.com/terraform-providers/terraform-provider-aws/issues/15093
-// Use ec2_private_ip instead
-//output "eip_private_ips" {
-//  value = {
-//    primary = aws_eip.this_primary.*.private_ip
-//    extra   = aws_eip.this_extra.*.private_ip
-//  }
-//}
-
-// Commented Until this is fixed: https://github.com/terraform-providers/terraform-provider-aws/issues/15093
-// Use ec2_private_dns instead
-//output "eip_private_dns" {
-//  value = {
-//    primary = aws_eip.this_primary.*.private_dns
-//    extra   = aws_eip.this_extra.*.private_dns
-//  }
-//}
-
 output "eip_public_ips" {
   value = {
     primary = aws_eip.this_primary.*.public_ip
@@ -169,14 +151,12 @@ output "eip_public_dns" {
   }
 }
 
-// Commented Until this is fixed: https://github.com/terraform-providers/terraform-provider-aws/issues/15093
-// Use ec2_primary_network_interface_id and network_interface_ids instead
-//output "eip_network_interfaces" {
-//  value = {
-//    primary = aws_eip.this_primary.*.network_interface
-//    extra   = aws_eip.this_extra.*.network_interface
-//  }
-//}
+output "eip_network_interface_ids" {
+  value = {
+    primary = aws_eip_association.this_primary.*.network_interface_id
+    extra   = aws_eip_association.this_extra.*.network_interface_id
+  }
+}
 
 ####
 # EBS
@@ -208,9 +188,23 @@ output "network_interface_mac_addresses" {
   }
 }
 
+output "network_interface_private_dns_names" {
+  value = {
+    primary = aws_network_interface.this_primary.*.private_dns_name
+    extra   = aws_network_interface.this_extra.*.private_dns_name
+  }
+}
+
 output "network_interface_private_ips" {
   value = {
     primary = aws_network_interface.this_primary.*.private_ips
     extra   = aws_network_interface.this_extra.*.private_ips
+  }
+}
+
+output "network_interface_eips" {
+  value = {
+    primary = aws_eip_association.this_primary.*.allocation_id
+    extra   = aws_eip_association.this_extra.*.allocation_id
   }
 }
