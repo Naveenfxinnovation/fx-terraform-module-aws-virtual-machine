@@ -17,6 +17,7 @@
 * refactor (BREAKING): rename and change in objects `extra_network_interface_XXX` to `network_interface_XXX` containing both primary and extra
 * refactor (BREAKING): removes `extra_network_interface_public_ips` output
 * refactor (BREAKING): most names are now not incremental anymore, except extra volumes and NICs
+* refactor: Split resources into more digestable, smaller files
 * doc: changes most variables descriptions to be more accurate and give more insight
 * doc: updates README: update what the module does and improves `limitations` section
 * maintenance: pins pre-commit dependencies to latest versions
