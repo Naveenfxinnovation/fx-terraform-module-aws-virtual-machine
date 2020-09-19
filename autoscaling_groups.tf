@@ -147,6 +147,23 @@ resource "aws_launch_template" "this" {
       local.tags,
     )
   }
+
+  // This hack is necessary as for Terraform 0.13.2+ and AWS Provider 3.7.0+
+  // Because aws_iam_service_linked_role resource returns a result before it's actually available, making ASG creation fail.
+  provisioner "local-exec" {
+    command = "sleep 15"
+  }
+}
+
+####
+# AutoScaling Group
+####
+
+resource "aws_iam_service_linked_role" "asg" {
+  count = var.use_autoscaling_group ? 1 : 0
+
+  aws_service_name = "autoscaling.amazonaws.com"
+  custom_suffix    = format("%s%s", var.prefix, var.autoscaling_group_name)
 }
 
 ####
@@ -186,6 +203,8 @@ resource "aws_autoscaling_group" "this" {
 
   placement_group = var.placement_group
 
+  service_linked_role_arn = aws_iam_service_linked_role.asg.*.arn[0]
+
   dynamic "tag" {
     for_each = merge(var.tags, var.instance_tags, local.tags)
 
@@ -213,6 +232,8 @@ resource "aws_autoscaling_group" "this" {
   lifecycle {
     ignore_changes = [target_group_arns]
   }
+
+  depends_on = [aws_iam_service_linked_role.asg]
 }
 
 resource "aws_autoscaling_attachment" "this" {

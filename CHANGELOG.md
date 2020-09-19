@@ -23,6 +23,7 @@
 * maintenance: pins pre-commit dependencies to latest versions
 * fix: fix the ability to inject external primary network interface for EC2
 * fix: also use `var.prefix` for IAM Role and Instance Profile
+* fix: creates a KMS grant when KMS and ASG is used, to allow ASG to use the key for decrypting volumes
 
 10.0.0
 =====
