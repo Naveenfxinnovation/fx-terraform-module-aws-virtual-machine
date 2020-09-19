@@ -151,7 +151,7 @@ resource "aws_launch_template" "this" {
   // This hack is necessary as for Terraform 0.13.2+ and AWS Provider 3.7.0+
   // Because aws_iam_service_linked_role resource returns a result before it's actually available, making ASG creation fail.
   provisioner "local-exec" {
-    command = "sleep 15"
+    command = "sleep 10"
   }
 }
 

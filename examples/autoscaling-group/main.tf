@@ -213,8 +213,8 @@ module "externals" {
 
   launch_template_name = "tftest2"
 
-  autoscaling_group_max_size = 2
-  autoscaling_group_min_size          = 0
+  autoscaling_group_max_size          = 2
+  autoscaling_group_min_size          = 1
   autoscaling_group_name              = "tftest-asg-externals"
   autoscaling_group_health_check_type = "EC2"
 
