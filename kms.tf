@@ -4,7 +4,7 @@
 
 locals {
   should_create_kms_key          = var.volume_kms_key_create && (var.root_block_device_encrypted || var.extra_volume_count > 0)
-  should_grant_asg_to_access_key = var.root_block_device_encrypted && var.use_autoscaling_group
+  should_grant_asg_to_access_key = var.root_block_device_encrypted && var.use_autoscaling_group && var.volume_kms_key_arn != null
 
   volume_kms_key_arn = local.should_create_kms_key ? aws_kms_key.this_volume.*.arn[0] : var.volume_kms_key_arn
 }
