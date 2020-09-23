@@ -220,8 +220,9 @@ module "externals" {
 
   root_block_device_volume_device = "/dev/sda1"
 
-  vpc_security_group_ids    = [aws_security_group.example.id]
-  key_pair_name             = aws_key_pair.default.key_name
-  volume_kms_key_arn        = aws_kms_key.default.arn
-  iam_instance_profile_name = aws_iam_instance_profile.default.name
+  vpc_security_group_ids        = [aws_security_group.example.id]
+  key_pair_name                 = aws_key_pair.default.key_name
+  volume_kms_key_external_exist = true
+  volume_kms_key_arn            = aws_kms_key.default.arn
+  iam_instance_profile_name     = aws_iam_instance_profile.default.name
 }

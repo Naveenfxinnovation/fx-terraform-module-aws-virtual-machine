@@ -698,7 +698,7 @@ variable "volume_kms_key_alias" {
 }
 
 variable "volume_kms_key_arn" {
-  description = "ARN of an external KMS key used to encrypt the root and extra volumes. To be used when var.volume_kms_key_create is set to “false” (if “true”, this ARN will be ignored)."
+  description = "ARN of an external KMS key used to encrypt the root and extra volumes. To be used when `var.volume_kms_key_create` is set to `false` (if `true`, this ARN will be ignored). If this value is not null, also set `var.volume_kms_key_external_exist` to `true`."
   type        = string
   default     = null
 
@@ -710,6 +710,12 @@ variable "volume_kms_key_arn" {
 
 variable "volume_kms_key_create" {
   description = "Whether or not to create a KMS key to be used for root and extra volumes. If set to `false`, you can specify a `var.volume_kms_key_arn` as an external KMS key to use instead. If this value is `false` and `var.volume_kms_key_arn` empty, the default AWS KMS key for volumes will be used."
+  type        = bool
+  default     = false
+}
+
+variable "volume_kms_key_external_exist" {
+  description = "Whether or not `var.volume_kms_key_arn` is empty`. Cannot be computed automatically in Terraform 0.13."
   type        = bool
   default     = false
 }

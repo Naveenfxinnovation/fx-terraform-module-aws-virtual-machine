@@ -4,6 +4,7 @@
 * feat (BREAKING): upgrades to support Terraform 0.13 properly
 * feat (BREAKING): adds validation to all the variables
 * feat: adds `aws_autoscaling_schedule` to add ASG schedules
+* feat: adds `var.volume_kms_key_external_exist`
 * refactor (BREAKING): removes convoluted loops to handle module count
 * refactor (BREAKING): renames `ec2_external_primary_network_insterface_id` to `var.ec2_external_primary_network_interface_id`
 * refactor (BREAKING): removes `var.use_external_primary_network_interface`
