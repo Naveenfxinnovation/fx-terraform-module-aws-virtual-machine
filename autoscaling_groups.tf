@@ -232,8 +232,6 @@ resource "aws_autoscaling_group" "this" {
   lifecycle {
     ignore_changes = [target_group_arns]
   }
-
-  depends_on = [aws_iam_service_linked_role.asg]
 }
 
 resource "aws_autoscaling_attachment" "this" {
