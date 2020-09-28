@@ -179,11 +179,7 @@ module "options" {
   autoscaling_schedule_count              = 2
   autoscaling_schedule_recurrences        = ["0 1 * * *", "0 8 * * *"]
   autoscaling_schedule_desired_capacities = [0, 1]
-<<<<<<< HEAD
   autoscaling_schedule_start_times        = [timeadd(timestamp(), "30m"), timeadd(timestamp(), "35m")]
-=======
-  autoscaling_schedule_start_times        = [timeadd(timestamp(), "10m"), timeadd(timestamp(), "15m")]
->>>>>>> 7da8348... fix: various fixes after reading
   autoscaling_schedule_max_sizes          = [0, 1]
 }
 
