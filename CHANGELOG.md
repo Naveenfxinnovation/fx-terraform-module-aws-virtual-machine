@@ -1,3 +1,9 @@
+10.0.1
+=====
+
+* fix: in versions.tf change from `~> 2.54` to `>= 2.54, < 4.0`
+* chore: bump pre-commit hooks
+
 10.0.0
 =====
 

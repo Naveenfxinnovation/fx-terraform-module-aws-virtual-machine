@@ -32,14 +32,14 @@ That’s why every extra volumes within an AutoScaling group will always be dest
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
-| aws | ~> 2.54 |
+| aws | >= 2.54, < 4.0 |
 | null | ~> 2.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.54 |
+| aws | >= 2.54, < 4.0 |
 | null | ~> 2.1 |
 
 ## Inputs
