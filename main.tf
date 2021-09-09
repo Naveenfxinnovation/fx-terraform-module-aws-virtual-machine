@@ -18,6 +18,7 @@ locals {
   }
 }
 
+
 ####
 # Instance Profile
 ####
@@ -59,6 +60,7 @@ resource "aws_iam_role_policy_attachment" "this_instance_profile" {
   policy_arn = element(var.iam_instance_profile_iam_role_policy_arns, count.index)
 }
 
+
 ####
 # Elastic IP
 ####
@@ -99,6 +101,7 @@ resource "aws_eip_association" "this_extra" {
   network_interface_id = element(local.network_interface_with_eip_ids, count.index)
   allocation_id        = element(aws_eip.this_extra.*.id, count.index)
 }
+
 
 ####
 # Key Pair

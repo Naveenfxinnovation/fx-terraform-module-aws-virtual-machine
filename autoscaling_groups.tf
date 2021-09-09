@@ -155,6 +155,7 @@ resource "aws_launch_template" "this" {
   }
 }
 
+
 ####
 # AutoScaling Group
 ####
@@ -165,6 +166,7 @@ resource "aws_iam_service_linked_role" "asg" {
   aws_service_name = "autoscaling.amazonaws.com"
   custom_suffix    = format("%s%s", var.prefix, var.autoscaling_group_name)
 }
+
 
 ####
 # AutoScaling Group

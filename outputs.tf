@@ -10,6 +10,7 @@ output "subnet_ids" {
   value = compact(concat(aws_instance.this.*.subnet_id, tolist(element(concat(aws_autoscaling_group.this.*.vpc_zone_identifier, [[""]]), 0)), [""]))
 }
 
+
 ####
 # Launch template
 ####
@@ -30,6 +31,7 @@ output "launch_template_latest_version" {
   value = concat(aws_launch_template.this.*.latest_version, [""])[0]
 }
 
+
 ####
 # AutoScaling Group
 ####
@@ -41,6 +43,7 @@ output "autoscaling_group_id" {
 output "autoscaling_group_arn" {
   value = concat(aws_autoscaling_group.this.*.arn, [""])[0]
 }
+
 
 ####
 # EC2
@@ -74,6 +77,7 @@ output "ec2_public_ip" {
   value = concat(aws_instance.this.*.public_ip, [""])[0]
 }
 
+
 ####
 # KMS
 ####
@@ -81,6 +85,7 @@ output "ec2_public_ip" {
 output "kms_key_id" {
   value = concat([var.volume_kms_key_arn], aws_kms_key.this_volume.*.arn, [""])[0]
 }
+
 
 ####
 # Instance Profile
@@ -110,6 +115,7 @@ output "iam_instance_profile_iam_role_unique_id" {
   value = local.should_create_key_pair ? concat(aws_iam_role.this_instance_profile.*.unique_id, [""])[0] : ""
 }
 
+
 ####
 # Key Pair
 ####
@@ -125,6 +131,7 @@ output "key_pair_id" {
 output "key_pair_fingerprint" {
   value = concat(aws_key_pair.this.*.fingerprint, [""])[0]
 }
+
 
 ####
 # Elastic IP
@@ -158,6 +165,7 @@ output "eip_network_interface_ids" {
   }
 }
 
+
 ####
 # EBS
 ####
@@ -169,6 +177,7 @@ output "extra_volume_ids" {
 output "extra_volume_arns" {
   value = aws_ebs_volume.this_extra.*.arn
 }
+
 
 ####
 # Network Interfaces

@@ -39,6 +39,7 @@ data "aws_security_group" "default" {
   name   = "default"
 }
 
+
 ####
 # Subnets
 ####
@@ -48,6 +49,7 @@ data "aws_subnet" "current" {
 
   id = local.subnet_ids[count.index]
 }
+
 
 ####
 # EBS
@@ -62,6 +64,7 @@ data "null_data_source" "ebs_block_device" {
     size        = element(var.extra_volume_sizes, count.index)
   }
 }
+
 
 ####
 # IAM Instance Profile
@@ -81,6 +84,7 @@ data "aws_iam_policy_document" "sts_instance" {
     }
   }
 }
+
 
 ####
 # SSM Parameter

@@ -51,6 +51,7 @@ variable "prefix" {
   }
 }
 
+
 ####
 # AutoScaling Group & EC2
 ####
@@ -280,6 +281,7 @@ variable "vpc_security_group_ids" {
   }
 }
 
+
 ####
 # Launch Template
 ####
@@ -309,6 +311,7 @@ variable "launch_template_ipv6_address_count" {
     error_message = "The var.launch_template_ipv6_address_count must be between 0 and 50."
   }
 }
+
 
 ####
 # AutoScaling Group
@@ -502,6 +505,7 @@ variable "autoscaling_group_wait_for_elb_capacity" {
   default     = null
 }
 
+
 ####
 # AutoScaling Group Schedule
 ####
@@ -597,6 +601,7 @@ variable "autoscaling_schedule_end_times" {
   }
 }
 
+
 ####
 # EC2
 ####
@@ -682,6 +687,7 @@ variable "ec2_network_interface_tags" {
   default     = {}
 }
 
+
 ####
 # KMS
 ####
@@ -758,6 +764,7 @@ variable "volume_kms_key_tags" {
   default     = {}
 }
 
+
 ####
 # Key Pair
 ####
@@ -794,6 +801,7 @@ variable "key_pair_tags" {
   description = "Tags specific for the key pair. Will be merged with `var.tags`. Ignored if `var.key_pair_create` is `false`."
   default     = {}
 }
+
 
 ####
 # Instance Profile
@@ -875,6 +883,7 @@ variable "iam_instance_profile_iam_role_name" {
   }
 }
 
+
 ####
 # Elastic IP
 ####
@@ -900,6 +909,7 @@ variable "extra_network_interface_eips_enabled" {
     error_message = "The var.extra_network_interface_eips_enabled length must be between 0 and 15."
   }
 }
+
 
 ####
 # Extra EBS
@@ -962,6 +972,8 @@ variable "extra_volume_types" {
     error_message = "One or more of the “var.extra_volume_types” is not 'standard', 'gp2', 'io1', 'sc1' or 'st1'."
   }
 }
+
+
 ####
 # Network Interface
 ####
