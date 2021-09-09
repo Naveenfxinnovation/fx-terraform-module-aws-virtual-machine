@@ -1,7 +1,22 @@
-x.x.x (unreleased)
-==================
+12.0.0 / 2021-09-09
+===================
 
-* chore: bump pre-commit hooks to fix jenkins test
+* chore (BREAKING): pins `pre-commit-hooks` to `v4.0.1`.
+* feat: add `pre-commit-afcmf` (`v0.1.2`).
+* chore: pins `pre-commit-terraform` to `v1.50.0`.
+* chore: pins `terraform` to `>= 0.14`.
+* chore: pins `aws` provider to `>= 3.0`.
+* chore: pins `null` provider to `>= 3.0`.
+* chore: bumps `terraform` + providers versions in example:
+  * pins `terraform` to `>= 0.14`.
+  * pins `aws` provider to `>= 3.0`.
+  * pins `random` provider to `>= 3.0`.
+* refactor: example test cases:
+  * update `README.md` files.
+  * update `providers.tf` files.
+  * update `versions.tf` files with proper version contraints.
+* refactor: lint code in root module.
+* fix: update `LICENSE` file.
 
 11.0.0
 =====
