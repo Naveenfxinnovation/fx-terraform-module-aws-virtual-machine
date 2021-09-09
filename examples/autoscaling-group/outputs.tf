@@ -6,6 +6,7 @@ output "default" {
   value = module.default
 }
 
+
 #####
 # empty
 #####
@@ -13,6 +14,7 @@ output "default" {
 output "empty" {
   value = module.empty
 }
+
 
 #####
 # options
@@ -22,9 +24,11 @@ output "options" {
   value = module.options
 }
 
+
 #####
 # externals
 #####
+
 
 output "externals" {
   value = module.externals

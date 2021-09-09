@@ -68,6 +68,7 @@ resource "aws_lb_listener" "example" {
   }
 }
 
+
 #####
 # ASG default
 # Shows how to:
@@ -82,6 +83,7 @@ module "default" {
 
   prefix = format("%s-%s-", random_string.this.result, "dflt")
 }
+
 
 #####
 # ASG empty
@@ -98,6 +100,7 @@ module "empty" {
 
   autoscaling_group_min_size = 0
 }
+
 
 #####
 # ASG Options
@@ -182,6 +185,7 @@ module "options" {
   autoscaling_schedule_start_times        = [timeadd(timestamp(), "30m"), timeadd(timestamp(), "35m")]
   autoscaling_schedule_max_sizes          = [0, 1]
 }
+
 
 #####
 # ASG Externals
