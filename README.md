@@ -1,4 +1,4 @@
-# Terraform module: Virtual Machine (EC2, AutoScaling Group)
+# terraform-module-aws-virtual-machine
 
 This module have the following features, they are all optional:
 
