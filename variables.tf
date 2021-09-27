@@ -118,7 +118,7 @@ Customize Ephemeral (also known as Instance Store) volumes on the EC2 instance (
   * virtual_name (optional, string): The Instance Store Device Name (e.g. "ephemeral0").
   * no_device (optional, string): Suppresses the specified device included in the AMI's block device mapping.
 DOCUMENTATION
-  type        = list
+  type        = list(any)
   default     = []
 }
 
@@ -204,13 +204,13 @@ variable "root_block_device_delete_on_termination" {
 }
 
 variable "root_block_device_volume_type" {
-  description = "Customize details about the root block device of the instance or launch template root volume: The type of volume. Can be `standard`, `gp2`, `io1`, `sc1` or `st1`. (Default: `gp2`)."
+  description = "Customize details about the root block device of the instance or launch template root volume: The type of volume. Can be `standard`, `gp2`, `gp3`, `io1`, `sc1` or `st1`. (Default: `gp3`)."
   type        = string
-  default     = null
+  default     = "gp3"
 
   validation {
-    condition     = var.root_block_device_volume_type != null ? contains(["standard", "gp2", "io1", "sc1", "st1"], var.root_block_device_volume_type) : true
-    error_message = "The var.root_block_device_volume_type must be “standard”, “gp2”, “io1”, “sc1” or “st1”."
+    condition     = var.root_block_device_volume_type != null ? contains(["standard", "gp2", "gp3", "io1", "sc1", "st1"], var.root_block_device_volume_type) : true
+    error_message = "The var.root_block_device_volume_type must be “standard”, “gp2”, “gp3”, “io1”, “sc1” or “st1”."
   }
 }
 
@@ -275,7 +275,7 @@ variable "vpc_security_group_ids" {
   default     = null
 
   validation {
-    condition     = var.vpc_security_group_ids != null ? ! contains([for i in var.vpc_security_group_ids : can(regex("^sg-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false) : true
+    condition     = var.vpc_security_group_ids != null ? !contains([for i in var.vpc_security_group_ids : can(regex("^sg-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false) : true
     error_message = "One or more of the “var.vpc_security_group_ids” does not match '^sg-([a-z0-9]{8}|[a-z0-9]{17})$'."
   }
 }
@@ -436,7 +436,7 @@ variable "autoscaling_group_subnet_ids" {
   default     = [""]
 
   validation {
-    condition     = length(compact(var.autoscaling_group_subnet_ids)) == 0 || ! contains([for i in var.autoscaling_group_subnet_ids : can(regex("^subnet-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false)
+    condition     = length(compact(var.autoscaling_group_subnet_ids)) == 0 || !contains([for i in var.autoscaling_group_subnet_ids : can(regex("^subnet-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false)
     error_message = "One or more of the “var.autoscaling_group_subnet_ids” does not match “^subnet-([a-z0-9]{8}|[a-z0-9]{17})$”."
   }
 }
@@ -534,7 +534,7 @@ variable "autoscaling_schedule_min_sizes" {
   default     = [0]
 
   validation {
-    condition     = ! contains([for i in var.autoscaling_schedule_min_sizes : (-1 <= i && i <= 250)], false)
+    condition     = !contains([for i in var.autoscaling_schedule_min_sizes : (-1 <= i && i <= 250)], false)
     error_message = "One or more var.autoscaling_schedule_min_sizes aren't between -1 and 250."
   }
 }
@@ -545,7 +545,7 @@ variable "autoscaling_schedule_max_sizes" {
   default     = [0]
 
   validation {
-    condition     = ! contains([for i in var.autoscaling_schedule_max_sizes : (-1 <= i && i <= 250)], false)
+    condition     = !contains([for i in var.autoscaling_schedule_max_sizes : (-1 <= i && i <= 250)], false)
     error_message = "One or more var.autoscaling_schedule_max_sizes aren't between -1 and 250."
   }
 }
@@ -556,7 +556,7 @@ variable "autoscaling_schedule_desired_capacities" {
   default     = [0]
 
   validation {
-    condition     = ! contains([for i in var.autoscaling_schedule_desired_capacities : (-1 <= i && i <= 250)], false)
+    condition     = !contains([for i in var.autoscaling_schedule_desired_capacities : (-1 <= i && i <= 250)], false)
     error_message = "One or more var.autoscaling_schedule_desired_capacities aren't between -1 and 250."
   }
 }
@@ -567,7 +567,7 @@ variable "autoscaling_schedule_recurrences" {
   default     = [null]
 
   validation {
-    condition = var.autoscaling_schedule_recurrences[0] != null ? ! contains([for i in var.autoscaling_schedule_recurrences :
+    condition = var.autoscaling_schedule_recurrences[0] != null ? !contains([for i in var.autoscaling_schedule_recurrences :
       can(regex(
         "^(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})$",
     i))], false) : true
@@ -581,7 +581,7 @@ variable "autoscaling_schedule_start_times" {
   default     = [null]
 
   validation {
-    condition     = var.autoscaling_schedule_start_times[0] != null ? ! contains([for i in var.autoscaling_schedule_start_times : can(regex("^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$", i))], false) : true
+    condition     = var.autoscaling_schedule_start_times[0] != null ? !contains([for i in var.autoscaling_schedule_start_times : can(regex("^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$", i))], false) : true
     error_message = "One or more var.autoscaling_schedule_start_times doesn't match “^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$”."
   }
 }
@@ -592,7 +592,7 @@ variable "autoscaling_schedule_end_times" {
   default     = [null]
 
   validation {
-    condition     = var.autoscaling_schedule_end_times[0] != null ? ! contains([for i in var.autoscaling_schedule_end_times : can(regex("^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$", i))], false) : true
+    condition     = var.autoscaling_schedule_end_times[0] != null ? !contains([for i in var.autoscaling_schedule_end_times : can(regex("^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$", i))], false) : true
     error_message = "One or more var.autoscaling_schedule_end_times doesn't match “^\\d{4}-\\d{2}-\\d{2}T[0-2]\\d:[0-5]\\d:[0-5]\\dZ$”."
   }
 }
@@ -613,7 +613,7 @@ variable "ec2_ipv4_addresses" {
   default     = []
 
   validation {
-    condition = ! contains([
+    condition = !contains([
       for i in var.ec2_ipv4_addresses : (
         can(regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", i))
       )
@@ -837,7 +837,7 @@ variable "iam_instance_profile_iam_role_policy_arns" {
   default     = []
 
   validation {
-    condition     = ! contains([for i in var.iam_instance_profile_iam_role_policy_arns : can(regex("^arn:aws:iam:([a-z]{2}-[a-z]{4,10}-[1-9]{1})?:([0-9]{12}|aws):policy/[a-zA-Z0-9+=,\\./@-]+$", i))], false)
+    condition     = !contains([for i in var.iam_instance_profile_iam_role_policy_arns : can(regex("^arn:aws:iam:([a-z]{2}-[a-z]{4,10}-[1-9]{1})?:([0-9]{12}|aws):policy/[a-zA-Z0-9+=,\\./@-]+$", i))], false)
     error_message = "One or more var.iam_instance_profile_iam_role_policy_arns don't match “^arn:aws:iam:([a-z]{2}-[a-z]{4,10}-[1-9]{1})?:([0-9]{12}|aws):policy/[a-zA-Z0-9+=,\\./@-]+$”."
   }
 }
@@ -921,7 +921,7 @@ variable "extra_volume_device_names" {
   default     = ["/dev/xvdf1"]
 
   validation {
-    condition     = ! contains([for i in var.extra_volume_device_names : can(regex("^/dev/(sd|xvd|hd)[f-p][1-6]?$", i))], false)
+    condition     = !contains([for i in var.extra_volume_device_names : can(regex("^/dev/(sd|xvd|hd)[f-p][1-6]?$", i))], false)
     error_message = "One or more of the “var.extra_volume_device_names” does not match “^/dev/(sd|xvd)[f-p][1-6]?$”."
   }
 }
@@ -942,7 +942,7 @@ variable "extra_volume_sizes" {
   type        = list(number)
   default     = [1]
   validation {
-    condition     = ! contains([for i in var.extra_volume_sizes : (i <= 16000 && i >= 1)], false)
+    condition     = !contains([for i in var.extra_volume_sizes : (i <= 16000 && i >= 1)], false)
     error_message = "One or more of the “var.extra_volume_sizes” is not between 1GB and 16TB."
   }
 }
@@ -953,13 +953,13 @@ variable "extra_volume_tags" {
 }
 
 variable "extra_volume_types" {
-  description = "The volume types of extra volumes to attach to the EC2 instance (or launch template). Can be `standard`, `gp2`, `io1`, `sc1` or `st1` (Default: `standard`)."
+  description = "The volume types of extra volumes to attach to the EC2 instance (or launch template). Can be `standard`, `gp2`, `gp3`, `io1`, `sc1` or `st1` (Default: `gp3`)."
   type        = list(string)
-  default     = ["gp2"]
+  default     = ["gp3"]
 
   validation {
-    condition     = ! contains([for i in var.extra_volume_types : (i == "standard" || i == "gp2" || i == "io1" || i == "sc1" || i == "st1")], false)
-    error_message = "One or more of the “var.extra_volume_types” is not 'standard', 'gp2', 'io1', 'sc1' or 'st1'."
+    condition     = !contains([for i in var.extra_volume_types : (i == "standard" || i == "gp2" || i == "gp3" || i == "io1" || i == "sc1" || i == "st1")], false)
+    error_message = "One or more of the “var.extra_volume_types” is not 'standard', 'gp2', 'gp3', 'io1', 'sc1' or 'st1'."
   }
 }
 ####
@@ -1004,7 +1004,7 @@ variable "extra_network_interface_private_ips" {
   default     = [null]
 
   validation {
-    condition = var.extra_network_interface_private_ips[0] != null ? ! contains([
+    condition = var.extra_network_interface_private_ips[0] != null ? !contains([
       for i in flatten(var.extra_network_interface_private_ips) : (
         can(regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", i))
       )
@@ -1019,7 +1019,7 @@ variable "extra_network_interface_private_ips_counts" {
   default     = [null]
 
   validation {
-    condition = var.extra_network_interface_private_ips_counts[0] != null ? ! contains([
+    condition = var.extra_network_interface_private_ips_counts[0] != null ? !contains([
       for i in var.extra_network_interface_private_ips_counts : (0 <= i && i <= 50)
     ], false) : true
     error_message = "One or more of the var.extra_network_interface_private_ips_counts isn't between 0 and 50."
@@ -1043,7 +1043,7 @@ variable "extra_network_interface_security_group_ids" {
   default     = null
 
   validation {
-    condition     = var.extra_network_interface_security_group_ids != null ? ! contains([for i in var.extra_network_interface_security_group_ids : can(regex("^sg-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false) : true
+    condition     = var.extra_network_interface_security_group_ids != null ? !contains([for i in var.extra_network_interface_security_group_ids : can(regex("^sg-([a-z0-9]{8}|[a-z0-9]{17})$", i))], false) : true
     error_message = "One or more of the “var.extra_network_interface_security_group_ids” does not match '^sg-([a-z0-9]{8}|[a-z0-9]{17})$'."
   }
 }

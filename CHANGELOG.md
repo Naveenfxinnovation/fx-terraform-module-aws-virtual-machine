@@ -1,7 +1,8 @@
-x.x.x (unreleased)
+11.1.0
 ==================
 
-* chore: bump pre-commit hooks to fix jenkins test
+* feat: add support for gp3 disks
+* chore: bump pre-commit hooks
 
 11.0.0
 =====
