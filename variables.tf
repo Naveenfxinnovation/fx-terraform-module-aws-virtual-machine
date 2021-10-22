@@ -910,8 +910,8 @@ variable "extra_volume_count" {
   default     = 0
 
   validation {
-    condition     = var.extra_volume_count <= 11 && var.extra_volume_count >= 0
-    error_message = "The var.extra_volume_count must be between 0 and 11."
+    condition     = var.extra_volume_count <= 21 && var.extra_volume_count >= 0
+    error_message = "The var.extra_volume_count must be between 0 and 21."
   }
 }
 
@@ -921,8 +921,8 @@ variable "extra_volume_device_names" {
   default     = ["/dev/xvdf1"]
 
   validation {
-    condition     = !contains([for i in var.extra_volume_device_names : can(regex("^/dev/(sd|xvd|hd)[f-p][1-6]?$", i))], false)
-    error_message = "One or more of the “var.extra_volume_device_names” does not match “^/dev/(sd|xvd)[f-p][1-6]?$”."
+    condition     = !contains([for i in var.extra_volume_device_names : can(regex("^/dev/(sd|xvd|hd)[f-z][1-6]?$", i))], false)
+    error_message = "One or more of the “var.extra_volume_device_names” does not match “^/dev/(sd|xvd)[f-z][1-6]?$”."
   }
 }
 

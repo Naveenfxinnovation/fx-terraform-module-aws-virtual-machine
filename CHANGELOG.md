@@ -1,3 +1,9 @@
+11.2.0
+==================
+
+* feat: increase the maximum number of extra volumes allowed
+* chore: bump pre-commit hooks
+
 11.1.0
 ==================
 
