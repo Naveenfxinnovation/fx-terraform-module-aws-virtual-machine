@@ -962,6 +962,29 @@ variable "extra_volume_types" {
     error_message = "One or more of the “var.extra_volume_types” is not 'standard', 'gp2', 'gp3', 'io1', 'sc1' or 'st1'."
   }
 }
+
+variable "extra_volume_iops" {
+  description = "The volume iops of extra volumes to attach to the EC2 instance (or launch template). Can be a value between `3000` and `64000` (Default: `3000`)."
+  type        = list(number)
+  default     = [3000]
+
+  validation {
+    condition     = !contains([for i in var.extra_volume_iops : (i <= 64000 && i >= 3000)], false)
+    error_message = "One or more of the “var.extra_volume_iops” is not between 3000 and 64000."
+  }
+}
+
+variable "extra_volume_throughput" {
+  description = "The volume iops of extra volumes to attach to the EC2 instance (or launch template). Can be a value between `125` and `1000` (Default: `125`)."
+  type        = list(number)
+  default     = [125]
+
+  validation {
+    condition     = !contains([for i in var.extra_volume_throughput : (i <= 1000 && i >= 125)], false)
+    error_message = "One or more of the “var.extra_volume_throughput” is not between 125 and 1000."
+  }
+}
+
 ####
 # Network Interface
 ####

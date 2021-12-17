@@ -1,3 +1,9 @@
+11.3.0
+==================
+
+* feat: allow to specify iops and throughput for extra volumes if the volume type permit it
+* chore: bump pre-commit hooks
+
 11.2.0
 ==================
 
