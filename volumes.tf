@@ -20,6 +20,8 @@ resource "aws_ebs_volume" "this_extra" {
   availability_zone = local.availability_zones[0]
   size              = element(var.extra_volume_sizes, count.index)
   type              = element(var.extra_volume_types, count.index)
+  iops              = contains(["io1", "io2", "gp3"], element(var.extra_volume_types, count.index)) ? element(var.extra_volume_iops, count.index) : null
+  throughput        = element(var.extra_volume_types, count.index) == "gp3" ? element(var.extra_volume_throughput, count.index) : null
 
   encrypted  = true
   kms_key_id = local.volume_kms_key_arn
