@@ -27,7 +27,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: example/autoscaling-group
+          directory: examples/autoscaling-group
           framework: terraform
 #       - name: Upload SARIF file
 #         uses: github/codeql-action/upload-sarif@v1
