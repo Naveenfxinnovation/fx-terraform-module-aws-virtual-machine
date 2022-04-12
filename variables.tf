@@ -152,11 +152,6 @@ variable "instance_tags" {
 variable "instance_type" {
   description = "The type of instance (or launch template) to start. Updates to this field will trigger a stop/start of the EC2 instance, except with launch template."
   default     = "t3.nano"
-
-  validation {
-    condition     = can(regex("^(u-)?[a-z0-9]{2,4}\\.(nano|micro|small|medium|metal|(2|4|8|16|24)?x?large)$", var.instance_type))
-    error_message = "The var.instance_type must match “^(u-)?[a-z0-9]{2,4}\\.(nano|micro|small|medium|metal|(2|4|8|16|24)?x?large)$”."
-  }
 }
 
 variable "ipv4_address_count" {
