@@ -21,7 +21,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnet_ids" "default" {
+data "aws_subnets" "default" {
   count = local.should_fetch_default_subnet ? length(data.aws_availability_zones.default.*.names[0]) : 0
 
   vpc_id = data.aws_vpc.default.*.id[0]

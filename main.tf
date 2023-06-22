@@ -6,7 +6,7 @@ locals {
 
   use_default_subnets = var.use_autoscaling_group ? var.autoscaling_group_subnet_ids_count == 0 : var.ec2_use_default_subnet
 
-  subnet_ids         = var.use_autoscaling_group ? (local.use_default_subnets ? flatten(data.aws_subnet_ids.default.*.ids) : var.autoscaling_group_subnet_ids) : (local.use_default_subnets ? [flatten(data.aws_subnet_ids.default.*.ids)[0]] : [var.ec2_subnet_id])
+  subnet_ids         = var.use_autoscaling_group ? (local.use_default_subnets ? flatten(data.aws_subnets.default.*.ids) : var.autoscaling_group_subnet_ids) : (local.use_default_subnets ? [flatten(data.aws_subnets.default.*.ids)[0]] : [var.ec2_subnet_id])
   availability_zones = data.aws_subnet.current.*.availability_zone
 
   security_group_ids = local.should_fetch_default_security_group ? data.aws_security_group.default.*.id : var.vpc_security_group_ids
