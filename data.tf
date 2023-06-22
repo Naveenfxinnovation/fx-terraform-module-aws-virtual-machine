@@ -24,11 +24,11 @@ data "aws_vpc" "default" {
 data "aws_subnets" "default" {
   count = local.should_fetch_default_subnet ? length(data.aws_availability_zones.default.*.names[0]) : 0
 
-  vpc_id = data.aws_vpc.default.*.id[0]
+#  vpc_id = data.aws_vpc.default.*.id[0]
 
   filter {
-    name   = "availability-zone"
-    values = [element(data.aws_availability_zones.default.*.names[0], count.index)]
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.*.id[0]]
   }
 }
 
