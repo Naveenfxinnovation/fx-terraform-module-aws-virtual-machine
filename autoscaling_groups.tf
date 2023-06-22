@@ -238,7 +238,7 @@ resource "aws_autoscaling_attachment" "this" {
   count = var.use_autoscaling_group ? length(var.autoscaling_group_target_group_arns) : 0
 
   autoscaling_group_name = aws_autoscaling_group.this.*.id[0]
-  alb_target_group_arn   = element(var.autoscaling_group_target_group_arns, count.index)
+  lb_target_group_arn   = element(var.autoscaling_group_target_group_arns, count.index)
 }
 
 resource "aws_autoscaling_schedule" "this" {
