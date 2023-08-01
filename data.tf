@@ -66,9 +66,9 @@ data "aws_subnet" "current" {
 locals {
   ebs_block_devices = [
     for i in range(var.extra_volume_count) : {
-      device_name = element(var.extra_volume_device_names, count.index)
-      type        = element(var.extra_volume_types, count.index)
-      size        = element(var.extra_volume_sizes, count.index)
+      device_name = element(var.extra_volume_device_names, i)
+      type        = element(var.extra_volume_types, i)
+      size        = element(var.extra_volume_sizes, i)
   }]
 }
 
