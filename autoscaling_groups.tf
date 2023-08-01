@@ -61,16 +61,16 @@ resource "aws_launch_template" "this" {
   }
 
   dynamic "block_device_mappings" {
-    for_each = data.null_data_source.ebs_block_device
+    for_each = local.ebs_block_devices
 
     content {
-      device_name = block_device_mappings.value.outputs.device_name
+      device_name = block_device_mappings.value.device_name
 
       ebs {
         delete_on_termination = true
         encrypted             = true
-        volume_size           = lookup(block_device_mappings.value.outputs, "size", null)
-        volume_type           = lookup(block_device_mappings.value.outputs, "type", null)
+        volume_size           = try(block_device_mappings.value.size, null)
+        volume_type           = try(block_device_mappings.value.type, null)
         kms_key_id            = local.volume_kms_key_arn
       }
     }
@@ -238,7 +238,7 @@ resource "aws_autoscaling_attachment" "this" {
   count = var.use_autoscaling_group ? length(var.autoscaling_group_target_group_arns) : 0
 
   autoscaling_group_name = aws_autoscaling_group.this.*.id[0]
-  lb_target_group_arn   = element(var.autoscaling_group_target_group_arns, count.index)
+  lb_target_group_arn    = element(var.autoscaling_group_target_group_arns, count.index)
 }
 
 resource "aws_autoscaling_schedule" "this" {

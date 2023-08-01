@@ -24,7 +24,7 @@ data "aws_vpc" "default" {
 data "aws_subnets" "default" {
   count = local.should_fetch_default_subnet ? length(data.aws_availability_zones.default.*.names[0]) : 0
 
-#  vpc_id = data.aws_vpc.default.*.id[0]
+  #  vpc_id = data.aws_vpc.default.*.id[0]
 
   filter {
     name   = "vpc-id"
@@ -52,15 +52,24 @@ data "aws_subnet" "current" {
 ####
 # EBS
 ####
+#
+#data "null_data_source" "ebs_block_device" {
+#  count = var.extra_volume_count
+#
+#  inputs = {
+#    device_name = element(var.extra_volume_device_names, count.index)
+#    type        = element(var.extra_volume_types, count.index)
+#    size        = element(var.extra_volume_sizes, count.index)
+#  }
+#}
 
-data "null_data_source" "ebs_block_device" {
-  count = var.extra_volume_count
-
-  inputs = {
-    device_name = element(var.extra_volume_device_names, count.index)
-    type        = element(var.extra_volume_types, count.index)
-    size        = element(var.extra_volume_sizes, count.index)
-  }
+locals {
+  ebs_block_devices = [
+    for i in range(var.extra_volume_count) : {
+      device_name = element(var.extra_volume_device_names, count.index)
+      type        = element(var.extra_volume_types, count.index)
+      size        = element(var.extra_volume_sizes, count.index)
+  }]
 }
 
 ####
