@@ -49,7 +49,7 @@ resource "aws_lb" "example" {
   name               = "tftestasg${random_string.this.result}"
   internal           = true
   load_balancer_type = "network"
-  subnets            = data.aws_subnets.all
+  subnets            = [for subnet in data.aws_subnets.all : subnet.id]
 }
 
 resource "aws_lb_target_group" "example" {

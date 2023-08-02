@@ -77,7 +77,7 @@ locals {
 resource "aws_eip" "this_primary" {
   count = local.should_create_primary_eip ? 1 : 0
 
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_eip_association" "this_primary" {
@@ -90,7 +90,7 @@ resource "aws_eip_association" "this_primary" {
 resource "aws_eip" "this_extra" {
   count = local.should_create_eip_for_extra_network_interfaces ? var.extra_network_interface_eips_count : 0
 
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_eip_association" "this_extra" {
