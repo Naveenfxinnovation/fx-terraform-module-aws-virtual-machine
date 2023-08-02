@@ -19,6 +19,11 @@ data "aws_subnets" "all" {
   }
 }
 
+data "aws_subnet" "all_subnets" {
+  for_each = toset(data.aws_subnets.all.ids)
+  id       = each.value
+}
+
 data "aws_ssm_parameter" "default" {
   name = "/aws/service/ami-windows-latest/Windows_Server-2019-English-Full-Base"
 }
@@ -49,7 +54,7 @@ resource "aws_lb" "example" {
   name               = "tftestasg${random_string.this.result}"
   internal           = true
   load_balancer_type = "network"
-  subnets            = [for subnet in data.aws_subnets.all : subnet.id]
+  subnets            = [for subnet in data.aws_subnet.all_subnets : subnet.id]
 }
 
 resource "aws_lb_target_group" "example" {
@@ -146,7 +151,7 @@ module "options" {
   vpc_security_group_ids = [aws_security_group.example.id]
 
   autoscaling_group_subnet_ids_count          = 2
-  autoscaling_group_subnet_ids                = data.aws_subnets.all
+  autoscaling_group_subnet_ids                = [for subnet in data.aws_subnet.all_subnets : subnet.id]
   autoscaling_group_name                      = format("%s-%02d", "tftestasg", count.index + 1)
   autoscaling_group_desired_capacity          = 1
   autoscaling_group_max_size                  = 2
