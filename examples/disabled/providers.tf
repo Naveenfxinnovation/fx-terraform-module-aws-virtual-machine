@@ -1,5 +1,5 @@
 provider "aws" {
-  version    = ">= 3.1.0, < 4.0.0"
+  version    = "> 4.0.0"
   region     = "ca-central-1"
   access_key = var.access_key
   secret_key = var.secret_key
