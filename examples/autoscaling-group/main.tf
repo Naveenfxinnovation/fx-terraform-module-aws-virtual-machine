@@ -15,7 +15,7 @@ data "aws_subnets" "all" {
     #    name   = "availability-zone"
     #    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
     name   = "vpc-id"
-    values = [data.aws_vpc.default.*.id[0]]
+    values = [data.aws_vpc.default.id]
   }
 }
 
