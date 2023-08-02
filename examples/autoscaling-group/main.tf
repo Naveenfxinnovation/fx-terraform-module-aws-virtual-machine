@@ -8,12 +8,14 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnet" "all" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "all" {
+  #  vpc_id = data.aws_vpc.default.id
 
   filter {
-    name   = "availability-zone"
-    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
+    #    name   = "availability-zone"
+    #    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.*.id[0]]
   }
 }
 
@@ -47,7 +49,7 @@ resource "aws_lb" "example" {
   name               = "tftestasg${random_string.this.result}"
   internal           = true
   load_balancer_type = "network"
-  subnets            = data.aws_subnet.all
+  subnets            = data.aws_subnets.all
 }
 
 resource "aws_lb_target_group" "example" {
@@ -144,7 +146,7 @@ module "options" {
   vpc_security_group_ids = [aws_security_group.example.id]
 
   autoscaling_group_subnet_ids_count          = 2
-  autoscaling_group_subnet_ids                = data.aws_subnet.all
+  autoscaling_group_subnet_ids                = data.aws_subnets.all
   autoscaling_group_name                      = format("%s-%02d", "tftestasg", count.index + 1)
   autoscaling_group_desired_capacity          = 1
   autoscaling_group_max_size                  = 2
