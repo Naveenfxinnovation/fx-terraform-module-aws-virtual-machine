@@ -15,10 +15,6 @@ data "aws_subnets" "all" {
     values = [data.aws_vpc.default.id]
   }
 }
-/*data "aws_subnet" "all_subnets" {
-  for_each = toset(data.aws_subnets.all.ids)
-  id       = each.value
-}*/
 
 
 data "aws_ssm_parameter" "default" {
