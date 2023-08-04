@@ -9,11 +9,8 @@ data "aws_vpc" "default" {
 }
 
 data "aws_subnets" "all" {
-  #  vpc_id = data.aws_vpc.default.id
 
   filter {
-    #    name   = "availability-zone"
-    #    values = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
